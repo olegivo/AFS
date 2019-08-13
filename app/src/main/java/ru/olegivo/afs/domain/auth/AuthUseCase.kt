@@ -1,4 +1,4 @@
-package ru.olegivo.afs.domain
+package ru.olegivo.afs.domain.auth
 
 import io.reactivex.Completable
 

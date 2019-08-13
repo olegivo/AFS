@@ -5,7 +5,6 @@ import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import ru.olegivo.afs.domain.RxSchedulerRule
 
 abstract class BaseTest {
     @Rule

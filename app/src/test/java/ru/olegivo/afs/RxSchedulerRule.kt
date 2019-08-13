@@ -1,4 +1,4 @@
-package ru.olegivo.afs.domain
+package ru.olegivo.afs
 
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
