@@ -7,10 +7,9 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import org.junit.Test
 import ru.olegivo.afs.BaseTest
-import ru.olegivo.afs.auth.data.AuthRepositoryImpl
-import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.auth.domain.AuthRepository
 import ru.olegivo.afs.helpers.getRandomString
+import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
 class AuthRepositoryImplTest : BaseTest() {
     override fun getAllMocks(): Array<Any> = arrayOf(preferencesDataSource)
@@ -21,26 +20,32 @@ class AuthRepositoryImplTest : BaseTest() {
 
     @Test
     fun `getApiKey RETURNS hardcoded accessToken WHEN accessToken not saved`() {
-        given(preferencesDataSource.getAccessToken()).willReturn(Maybe.empty())
-        given(preferencesDataSource.saveAccessToken(AuthRepositoryImpl.accessToken)).willReturn(Completable.complete())
-
-        authRepository.getAccessToken().test()
-            .assertNoErrors()
-            .assertValue(AuthRepositoryImpl.accessToken)
-
-        verify(preferencesDataSource).getAccessToken()
-        verify(preferencesDataSource).saveAccessToken(AuthRepositoryImpl.accessToken)
-    }
-
-    @Test
-    fun `getApiKey RETURNS saved accessToken WHEN accessToken saved`() {
-        val accessToken = getRandomString()
-        given(preferencesDataSource.getAccessToken()).willReturn(Maybe.just(accessToken))
+        given(preferencesDataSource.getString(AuthRepositoryImpl.KEY_ACCESS_TOKEN)).willReturn(Maybe.empty())
+        val accessToken = AuthRepositoryImpl.accessToken
+        given(
+            preferencesDataSource.putString(
+                AuthRepositoryImpl.KEY_ACCESS_TOKEN,
+                accessToken
+            )
+        ).willReturn(Completable.complete())
 
         authRepository.getAccessToken().test()
             .assertNoErrors()
             .assertValue(accessToken)
 
-        verify(preferencesDataSource).getAccessToken()
+        verify(preferencesDataSource).getString(AuthRepositoryImpl.KEY_ACCESS_TOKEN)
+        verify(preferencesDataSource).putString(AuthRepositoryImpl.KEY_ACCESS_TOKEN, accessToken)
+    }
+
+    @Test
+    fun `getApiKey RETURNS saved accessToken WHEN accessToken saved`() {
+        val accessToken = getRandomString()
+        given(preferencesDataSource.getString(AuthRepositoryImpl.KEY_ACCESS_TOKEN)).willReturn(Maybe.just(accessToken))
+
+        authRepository.getAccessToken().test()
+            .assertNoErrors()
+            .assertValue(accessToken)
+
+        verify(preferencesDataSource).getString(AuthRepositoryImpl.KEY_ACCESS_TOKEN)
     }
 }

@@ -4,6 +4,6 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 
 interface PreferencesDataSource {
-    fun saveAccessToken(accessToken: String): Completable
-    fun getAccessToken(): Maybe<String>
+    fun getString(key: String): Maybe<String>
+    fun putString(key: String, value: String): Completable
 }
