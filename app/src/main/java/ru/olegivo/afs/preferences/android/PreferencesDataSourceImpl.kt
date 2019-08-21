@@ -8,8 +8,11 @@ import io.reactivex.Maybe
 import io.reactivex.schedulers.Schedulers
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import javax.inject.Inject
+import javax.inject.Named
 
-class PreferencesDataSourceImpl @Inject constructor(private val context: Context) :
+class PreferencesDataSourceImpl @Inject constructor(
+    @Named("application") private val context: Context
+) :
     PreferencesDataSource {
     override fun getString(key: String) =
         Maybe.create<String> { emitter ->

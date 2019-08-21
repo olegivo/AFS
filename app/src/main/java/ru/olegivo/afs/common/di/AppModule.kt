@@ -1,18 +1,37 @@
 package ru.olegivo.afs.common.di
 
+import android.content.Context
+import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import ru.olegivo.afs.AfsApplication
 import ru.olegivo.afs.MainActivity
+import ru.olegivo.afs.auth.di.AuthModule
+import ru.olegivo.afs.clubs.di.ClubsModule
+import ru.olegivo.afs.preferences.di.PreferencesModule
+import javax.inject.Named
 
 @Module(
     includes = [
-        AppModule.AppProvidesModule::class
+        AppModule.AppProvidesModule::class,
+        RxModule::class,
+        NetworkModule::class,
+        AuthModule::class,
+        PreferencesModule::class
     ]
 )
 abstract class AppModule {
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(
+        modules = [
+            ClubsModule::class
+        ]
+    )
     abstract fun contributeMainActivity(): MainActivity
+
+    @Binds
+    @Named("application")
+    abstract fun bindApplicationContext(app: AfsApplication): Context
 
     @Module
     class AppProvidesModule
