@@ -5,15 +5,18 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import javax.inject.Inject
 import javax.inject.Named
 
 class PreferencesDataSourceImpl @Inject constructor(
-    @Named("application") private val context: Context
+    @Named("application") private val context: Context,
+    @Named("io") private val ioScheduler: Scheduler
 ) :
     PreferencesDataSource {
+
     override fun getString(key: String) =
         Maybe.create<String> { emitter ->
             val preferences = getSharedPreferences()
@@ -21,13 +24,13 @@ class PreferencesDataSourceImpl @Inject constructor(
                 emitter.onSuccess(it)
             }
             emitter.onComplete()
-        }.subscribeOn(Schedulers.io())
+        }.subscribeOn(ioScheduler)
 
-    override fun putString(keyAccessToken: String, value: String) =
+    override fun putString(key: String, value: String) =
         Completable.fromCallable {
             val preferences = getSharedPreferences()
-            preferences.edit().putString(keyAccessToken, value).apply()
-        }.subscribeOn(Schedulers.io())
+            preferences.edit().putString(key, value).apply()
+        }.subscribeOn(ioScheduler)
 
     private fun getSharedPreferences(): SharedPreferences {
         return context.getSharedPreferences(sharedPreferencesFileName, MODE_PRIVATE)
