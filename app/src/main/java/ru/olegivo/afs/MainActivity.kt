@@ -8,6 +8,7 @@ import io.reactivex.Scheduler
 import kotlinx.android.synthetic.main.activity_main.activity_main_choose_club
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
+import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.models.Club
 import javax.inject.Inject
 import javax.inject.Named
@@ -17,6 +18,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var getClubs: GetClubsUseCase
+    @Inject
+    lateinit var setCurrentClub: SetCurrentClubUseCase
 
     @field:[Inject Named("main")]
     lateinit var mainScheduler: Scheduler
@@ -42,6 +45,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setCurrentClub(club: Club) {
-        Toast.makeText(this, "Current club is ${club.title}", Toast.LENGTH_LONG).show()
+        setCurrentClub(club.id)
+            .observeOn(mainScheduler)
+            .subscribe(
+                {
+                    Toast.makeText(this, "Current club is ${club.title}", Toast.LENGTH_LONG).show()
+                },
+                ::onError
+            )
     }
 }
