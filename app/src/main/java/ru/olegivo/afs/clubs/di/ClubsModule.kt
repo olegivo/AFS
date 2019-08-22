@@ -7,6 +7,8 @@ import ru.olegivo.afs.clubs.data.ClubsRepositoryImpl
 import ru.olegivo.afs.clubs.domain.ClubsRepository
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
 import ru.olegivo.afs.clubs.domain.GetClubsUseCaseImpl
+import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
+import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCaseImpl
 import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCaseImpl
 import ru.olegivo.afs.clubs.network.ClubsNetworkSourceImpl
@@ -18,6 +20,9 @@ abstract class ClubsModule {
 
     @Binds
     abstract fun bindSetCurrentClubUseCase(impl: SetCurrentClubUseCaseImpl): SetCurrentClubUseCase
+
+    @Binds
+    abstract fun bindGetCurrentClubUseCase(impl: GetCurrentClubUseCaseImpl): GetCurrentClubUseCase
 
     @Binds
     abstract fun bindClubsRepository(impl: ClubsRepositoryImpl): ClubsRepository

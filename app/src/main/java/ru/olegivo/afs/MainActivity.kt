@@ -8,6 +8,7 @@ import io.reactivex.Scheduler
 import kotlinx.android.synthetic.main.activity_main.activity_main_choose_club
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
+import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.models.Club
 import javax.inject.Inject
@@ -18,6 +19,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var getClubs: GetClubsUseCase
+    @Inject
+    lateinit var getCurrentClub: GetCurrentClubUseCase
     @Inject
     lateinit var setCurrentClub: SetCurrentClubUseCase
 
@@ -35,10 +38,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun onChooseClubClicked() {
         getClubs()
+            .flatMap { clubs ->
+                getCurrentClub().toSingle(-1)
+                    .map { currentClubId -> clubs to currentClubId }
+            }
             .observeOn(mainScheduler)
             .subscribe(
-                { clubs ->
-                    val selectedClub = clubs.random()
+                { info ->
+                    val clubs = info.first
+
+                    val selectedClub = clubs.singleOrNull {
+                        val currentClubId = info.second
+                        it.id == currentClubId
+                    }
                     ChooseClubDialog.chooseClub(clubs, selectedClub, this) { club -> setCurrentClub(club) }
                 },
                 ::onError
