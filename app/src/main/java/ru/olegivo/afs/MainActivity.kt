@@ -41,7 +41,8 @@ class MainActivity : AppCompatActivity() {
                     val selectedClub = clubs.random()
                     ChooseClubDialog.chooseClub(clubs, selectedClub, this) { club -> setCurrentClub(club) }
                 },
-                {})
+                ::onError
+            )
     }
 
     private fun setCurrentClub(club: Club) {
@@ -53,5 +54,9 @@ class MainActivity : AppCompatActivity() {
                 },
                 ::onError
             )
+    }
+
+    private fun onError(t: Throwable) {
+        Toast.makeText(this, "Error \n${t.message}", Toast.LENGTH_LONG).show()
     }
 }
