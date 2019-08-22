@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Single
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import javax.inject.Inject
 import javax.inject.Named
@@ -26,11 +26,21 @@ class PreferencesDataSourceImpl @Inject constructor(
             emitter.onComplete()
         }.subscribeOn(ioScheduler)
 
-    override fun putString(key: String, value: String) =
-        Completable.fromCallable {
+    override fun getInt(key: String, defaultValue: Int): Single<Int> =
+        Single.fromCallable {
             val preferences = getSharedPreferences()
-            preferences.edit().putString(key, value).apply()
+            preferences.getInt(key, defaultValue)
         }.subscribeOn(ioScheduler)
+
+    override fun putString(key: String, value: String) = edit { putString(key, value) }
+
+    override fun putInt(key: String, value: Int): Completable = edit { putInt(key, value) }
+
+    private fun edit(block: SharedPreferences.Editor.() -> Unit) =
+        Completable.fromCallable {
+            getSharedPreferences().edit().apply(block).apply()
+        }.subscribeOn(ioScheduler)
+
 
     private fun getSharedPreferences(): SharedPreferences {
         return context.getSharedPreferences(sharedPreferencesFileName, MODE_PRIVATE)
