@@ -11,3 +11,7 @@ fun getRandomString(lenght: Int? = 4, minLength: Int = 1, maxLength: Int = 10): 
         .map(charPool::get)
         .joinToString("")
 }
+
+fun getRandomBoolean() = Random.nextBoolean()
+fun getRandomInt() = Random.nextInt()
+fun getRandomLong() = Random.nextLong()
