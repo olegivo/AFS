@@ -23,4 +23,8 @@ abstract class BaseTest {
     fun tearDown() {
         if(mocks.isNotEmpty()) verifyNoMoreInteractions(*mocks)
     }
+
+    fun <T> T.andTriggerActions(): T = also {
+        schedulerRule.testScheduler.triggerActions()
+    }
 }
