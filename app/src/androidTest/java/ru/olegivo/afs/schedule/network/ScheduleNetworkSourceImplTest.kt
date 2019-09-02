@@ -18,7 +18,7 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
         val scheduler = TestScheduler()
         val testObserver = ClubsNetworkSourceImpl(api, scheduler).getClubs()
             .flatMap { clubs ->
-                ScheduleNetworkSourceImpl(api, scheduler)
+                ScheduleNetworkSourceImpl(api, scheduler, scheduler)
                     .getSchedule(clubs.first().id)
             }
             .test()
@@ -30,17 +30,17 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
                 .assertNoErrors()
                 .values()
                 .single()
-        assertThat(schedules.schedule).isNotEmpty
+        assertThat(schedules).isNotEmpty
     }
 
     @Test
     fun `getSchedule_flatten_next`() {
         val scheduler = TestScheduler()
-        val scheduleNetworkSource: ScheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler)
+        val scheduleNetworkSource: ScheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler, scheduler)
         val testObserver = ClubsNetworkSourceImpl(api, scheduler).getClubs()
             .flatMap { clubs ->
                 scheduleNetworkSource
-                    .getSchedule(clubs.first().id)
+                    .getSchedules(clubs.first().id)
             }
             .toFlowable()
             .flatMap { schedules ->
@@ -68,11 +68,11 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
     @Test
     fun `getSchedule_flatten_prev`() {
         val scheduler = TestScheduler()
-        val scheduleNetworkSource: ScheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler)
+        val scheduleNetworkSource: ScheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler, scheduler)
         val testObserver = ClubsNetworkSourceImpl(api, scheduler).getClubs()
             .flatMap { clubs ->
                 scheduleNetworkSource
-                    .getSchedule(clubs.first().id)
+                    .getSchedules(clubs.first().id)
             }
             .toFlowable()
             .flatMap { schedules ->
