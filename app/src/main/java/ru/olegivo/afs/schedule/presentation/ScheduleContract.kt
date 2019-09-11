@@ -6,6 +6,7 @@ import ru.olegivo.afs.schedule.domain.models.Schedule
 interface ScheduleContract {
     interface Presenter : PresentationContract.Presenter<View> {
         fun start(clubId: Int)
+        fun onScheduleClicked(schedule: Schedule)
 
     }
 
