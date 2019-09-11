@@ -1,6 +1,7 @@
 package ru.olegivo.afs.schedule.network.models
 
 import com.squareup.moshi.JsonClass
+import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class Schedules(
@@ -35,7 +36,7 @@ data class Schedule(
     val beginDate: String?,
     val change: Change?,
     val commercial: Boolean,
-    val datetime: String,
+    val datetime: Date,
     val endDate: String,
     val firstFree: Boolean,
     val group: Group,
