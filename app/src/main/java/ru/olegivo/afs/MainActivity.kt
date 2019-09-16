@@ -1,11 +1,11 @@
 package ru.olegivo.afs
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import dagger.android.AndroidInjection
 import io.reactivex.Scheduler
-import kotlinx.android.synthetic.main.activity_main.activity_main_choose_club
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
@@ -31,8 +31,11 @@ class MainActivity : AppCompatActivity() {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        activity_main_choose_club.setOnClickListener {
+        findViewById<Button>(R.id.activity_main_choose_club_button).setOnClickListener {
             onChooseClubClicked()
+        }
+        findViewById<Button>(R.id.activity_main_reserve_button).setOnClickListener {
+            onReserveClicked()
         }
     }
 
@@ -55,6 +58,10 @@ class MainActivity : AppCompatActivity() {
                 },
                 ::onError
             )
+    }
+
+    private fun onReserveClicked() {
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     private fun setCurrentClub(club: Club) {
