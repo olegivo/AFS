@@ -17,6 +17,7 @@ import javax.inject.Named
     includes = [
         AppModule.AppProvidesModule::class,
         RxModule::class,
+        NavigationModule::class,
         NetworkModule::class,
         AuthModule::class,
         PreferencesModule::class
