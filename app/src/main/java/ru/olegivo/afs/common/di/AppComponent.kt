@@ -16,12 +16,8 @@ import javax.inject.Singleton
 )
 interface AppComponent : AndroidInjector<AfsApplication> {
 
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(app: AfsApplication): Builder
-
-        fun build(): AppComponent
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance app: AfsApplication): AppComponent
     }
 }
-

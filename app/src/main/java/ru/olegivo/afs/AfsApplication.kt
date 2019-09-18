@@ -13,10 +13,7 @@ class AfsApplication : Application(), HasAndroidInjector {
     override fun onCreate() {
         super.onCreate()
 
-        DaggerAppComponent.builder()
-            .application(this)
-            .build()
-            .inject(this)
+        DaggerAppComponent.factory().create(this).inject(this)
     }
 
     override fun androidInjector() = androidInjector
