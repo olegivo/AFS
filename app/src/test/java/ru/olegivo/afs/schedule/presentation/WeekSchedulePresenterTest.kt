@@ -5,10 +5,12 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import io.reactivex.Maybe
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTest
+import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
@@ -26,9 +28,11 @@ import java.util.*
 class WeekSchedulePresenterTest : BaseTest() {
 
     //<editor-fold desc="mocks">
+    private val getCurrentClubUseCase: GetCurrentClubUseCase = mock()
     private val getCurrentWeekScheduleUseCase: GetCurrentWeekScheduleUseCase = mock()
     private val view: ScheduleContract.View = mock()
     private val dateProvider: DateProvider = mock()
+
     private val navigator: Navigator = mock()
 
     override fun getAllMocks() = arrayOf(
@@ -40,6 +44,7 @@ class WeekSchedulePresenterTest : BaseTest() {
     //</editor-fold>
 
     private val weekSchedulePresenter: ScheduleContract.Presenter = WeekSchedulePresenter(
+        getCurrentClubUseCase,
         getCurrentWeekScheduleUseCase,
         dateProvider,
         navigator,
@@ -52,7 +57,7 @@ class WeekSchedulePresenterTest : BaseTest() {
         setupGetCurrentWeekSchedule(testData)
         weekSchedulePresenter.bindView(view)
 
-        weekSchedulePresenter.start(testData.clubId)
+        weekSchedulePresenter.start()
             .andTriggerActions()
 
         val shownSchedules = view.capture { param: List<Schedule> -> showSchedule(param) }
@@ -71,7 +76,7 @@ class WeekSchedulePresenterTest : BaseTest() {
         setupGetCurrentWeekSchedule(testData)
         weekSchedulePresenter.bindView(view)
 
-        weekSchedulePresenter.start(testData.clubId)
+        weekSchedulePresenter.start()
             .andTriggerActions()
 
         val shownSchedules = view.capture { param: List<Schedule> -> showSchedule(param) }
@@ -88,11 +93,13 @@ class WeekSchedulePresenterTest : BaseTest() {
     }
 
     private fun verifyGetCurrentWeekSchedule(testData: TestData) {
+        verify(getCurrentClubUseCase).invoke()
         verify(getCurrentWeekScheduleUseCase).invoke(testData.clubId)
         verify(dateProvider).getDate()
     }
 
     private fun setupGetCurrentWeekSchedule(testData: TestData) {
+        given(getCurrentClubUseCase.invoke()).willReturn(Maybe.just(testData.clubId))
         given(dateProvider.getDate()).willReturn(testData.now)
         given(getCurrentWeekScheduleUseCase.invoke(testData.clubId)).willReturn(Single.just(testData.weekSchedule))
     }

@@ -1,9 +1,10 @@
 package ru.olegivo.afs.schedule.presentation
 
 import io.reactivex.Scheduler
+import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
+import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.getDateWithoutTime
 import ru.olegivo.afs.common.presentation.BasePresenter
-import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.reserve.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedule.domain.GetCurrentWeekScheduleUseCase
@@ -12,6 +13,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class WeekSchedulePresenter @Inject constructor(
+    private val getCurrentClub: GetCurrentClubUseCase,
     private val getCurrentWeekSchedule: GetCurrentWeekScheduleUseCase,
     private val dateProvider: DateProvider,
     private val navigator: Navigator,
@@ -19,8 +21,11 @@ class WeekSchedulePresenter @Inject constructor(
 ) : BasePresenter<ScheduleContract.View>(),
     ScheduleContract.Presenter {
 
-    override fun start(clubId: Int) {
-        getCurrentWeekSchedule(clubId)
+    override fun start() {
+        getCurrentClub()
+            .flatMap { clubId ->
+                getCurrentWeekSchedule(clubId).toMaybe()
+            }
             .observeOn(mainScheduler)
             .subscribe(
                 { schedules ->
