@@ -12,6 +12,8 @@ import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.DateProviderImpl
 import ru.olegivo.afs.preferences.di.PreferencesModule
+import ru.olegivo.afs.schedule.android.ScheduleFragment
+import ru.olegivo.afs.schedule.di.ScheduleModule
 import javax.inject.Named
 
 @Module(
@@ -42,6 +44,9 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector(modules = [ClubsModule::class])
     abstract fun bindMainFragment(): MainFragment
+
+    @ContributesAndroidInjector(modules = [ScheduleModule::class])
+    abstract fun bindScheduleFragment(): ScheduleFragment
 
 }
 
