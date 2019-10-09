@@ -9,7 +9,7 @@ interface ScheduleContract {
         fun onScheduleClicked(schedule: Schedule)
     }
 
-    interface View : PresentationContract.View {
+    interface View : PresentationContract.View, PresentationContract.ErrorDisplay {
         fun showSchedule(schedules: List<Schedule>)
     }
 }

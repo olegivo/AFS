@@ -32,7 +32,9 @@ class WeekSchedulePresenter @Inject constructor(
                     val today = dateProvider.getDate().getDateWithoutTime()
                     view?.showSchedule(schedules.filter { it.datetime.getDateWithoutTime() == today })
                 },
-                {}
+                {
+                    view?.showErrorMessage(it.message ?: "Unknown error")
+                }
             )
             .addToComposite()
     }

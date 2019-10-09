@@ -18,6 +18,7 @@ import ru.olegivo.afs.common.getDateWithoutTime
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.reserve.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedule.domain.GetCurrentWeekScheduleUseCase
 import ru.olegivo.afs.schedule.domain.models.Schedule
@@ -52,7 +53,7 @@ class WeekSchedulePresenterTest : BaseTest() {
     )
 
     @Test
-    fun `start shows current day schedule`() {
+    fun `start shows current day schedule WHEN no errors and has current club`() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(testData)
         weekSchedulePresenter.bindView(view)
@@ -68,6 +69,37 @@ class WeekSchedulePresenterTest : BaseTest() {
         assertThat(shownSchedules).containsExactlyElementsOf(todaySchedules)
 
         verifyGetCurrentWeekSchedule(testData)
+    }
+
+    @Test
+    fun `start shows error WHEN has error`() {
+        val testData = TestData()
+        val message = getRandomString()
+        val exception = RuntimeException(message)
+        setupGetCurrentWeekSchedule(
+            testData,
+            currentClubIdMaybeProvider = { Maybe.error(exception) })
+        weekSchedulePresenter.bindView(view)
+
+        weekSchedulePresenter.start()
+            .andTriggerActions()
+
+        verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
+        verify(view).showErrorMessage(message)
+    }
+
+    @Test
+    fun `start do nothing WHEN has no current clubId`() {
+        val testData = TestData()
+        setupGetCurrentWeekSchedule(
+            testData,
+            currentClubIdMaybeProvider = { Maybe.empty() })
+        weekSchedulePresenter.bindView(view)
+
+        weekSchedulePresenter.start()
+            .andTriggerActions()
+
+        verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
     }
 
     @Test
@@ -92,14 +124,24 @@ class WeekSchedulePresenterTest : BaseTest() {
         verify(navigator).navigateTo(ReserveDestination(schedule))
     }
 
-    private fun verifyGetCurrentWeekSchedule(testData: TestData) {
+    private fun verifyGetCurrentWeekSchedule(
+        testData: TestData,
+        expectedGetCurrentWeekSchedule: Boolean = true
+    ) {
         verify(getCurrentClubUseCase).invoke()
-        verify(getCurrentWeekScheduleUseCase).invoke(testData.clubId)
-        verify(dateProvider).getDate()
+        if (expectedGetCurrentWeekSchedule) {
+            verify(getCurrentWeekScheduleUseCase).invoke(testData.clubId)
+            verify(dateProvider).getDate()
+        }
     }
 
-    private fun setupGetCurrentWeekSchedule(testData: TestData) {
-        given(getCurrentClubUseCase.invoke()).willReturn(Maybe.just(testData.clubId))
+    private fun setupGetCurrentWeekSchedule(
+        testData: TestData,
+        currentClubIdMaybeProvider: () -> Maybe<Int> = {
+            Maybe.just(testData.clubId)
+        }
+    ) {
+        given(getCurrentClubUseCase.invoke()).willReturn(currentClubIdMaybeProvider())
         given(dateProvider.getDate()).willReturn(testData.now)
         given(getCurrentWeekScheduleUseCase.invoke(testData.clubId)).willReturn(Single.just(testData.weekSchedule))
     }
