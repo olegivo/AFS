@@ -29,8 +29,8 @@ class ScheduleNetworkSourceImpl @Inject constructor(
                         it.activity.title,
                         it.datetime,
                         it.length,
-                        it.room.title,
-                        it.trainers.first().title,
+                        it.room?.title,
+                        it.trainers.firstOrNull()?.title,
                         it.preEntry
                     ) // TODO: mapper
                 }

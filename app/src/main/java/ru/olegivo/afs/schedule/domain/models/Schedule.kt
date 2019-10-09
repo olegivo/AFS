@@ -11,9 +11,9 @@ data class Schedule(
     val datetime: Date,
     val length: Int,
     // Игровой зал.
-    val room: String,
+    val room: String?,
     // Инструкторы - Цхададзе Алекси
-    val trainer: String,
+    val trainer: String?,
     // Предварительная запись
     val preEntry: Boolean
     // Свободно мест: 21

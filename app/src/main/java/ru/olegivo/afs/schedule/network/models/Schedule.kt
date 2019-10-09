@@ -47,7 +47,7 @@ data class Schedule(
     val new: Boolean,
     val popular: Boolean,
     val preEntry: Boolean,
-    val room: Room,
+    val room: Room?,
 //    val subscriptionId: Any?,
     val subscriptionId: Int?,
     val totalSlots: Int?,
