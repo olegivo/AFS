@@ -19,6 +19,11 @@ class RxModule {
 
         @JvmStatic
         @Provides
+        @Named("computation")
+        fun provideComputationScheduler(): Scheduler = Schedulers.computation()
+
+        @JvmStatic
+        @Provides
         @Named("main")
         fun provideMainScheduler(): Scheduler = AndroidSchedulers.mainThread()
     }
