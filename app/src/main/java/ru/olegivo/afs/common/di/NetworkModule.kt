@@ -12,6 +12,8 @@ import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.auth.domain.AuthRepository
 import ru.olegivo.afs.auth.network.AccessTokenInterceptor
 import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.common.network.DateJsonAdapter
+import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -48,7 +50,7 @@ class NetworkModule {
     @Provides
     @Singleton
     fun providesMoshi(): Moshi = Moshi.Builder()
-//        .add(Date::class.java, DateJsonAdapter().nullSafe())
+        .add(Date::class.java, DateJsonAdapter().nullSafe())
 //        .add(UUID::class.java, UuidJsonAdapter().nullSafe())
         .build()
 }

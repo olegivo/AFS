@@ -10,10 +10,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.auth.domain.AuthRepository
 import ru.olegivo.afs.auth.network.AccessTokenInterceptor
+import java.util.*
 
 open class AuthorizedApiTest {
     private fun createMoshi(): Moshi = Moshi.Builder()
-//        .add(Date::class.java, DateJsonAdapter().nullSafe())
+        .add(Date::class.java, DateJsonAdapter().nullSafe())
 //        .add(UUID::class.java, UuidJsonAdapter().nullSafe())
         .build()
 
