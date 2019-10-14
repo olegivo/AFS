@@ -17,7 +17,7 @@ abstract class BaseTest {
     protected abstract fun getAllMocks(): Array<Any>
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         if(mocks.isNotEmpty()) reset(*mocks)
         schedulerRule.testScheduler.triggerActions()
     }
