@@ -5,7 +5,8 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.schedule.data.ScheduleNetworkSource
-import ru.olegivo.afs.schedule.domain.models.Schedule
+import ru.olegivo.afs.schedule.data.models.DataSchedule
+import ru.olegivo.afs.schedule.data.models.Slot
 import ru.olegivo.afs.schedule.network.models.Schedules
 import javax.inject.Inject
 import javax.inject.Named
@@ -19,19 +20,33 @@ class ScheduleNetworkSourceImpl @Inject constructor(
         return api.getSchedule(clubId).subscribeOn(ioScheduler)
     }
 
-    override fun getSchedule(clubId: Int): Single<List<Schedule>> {
+    override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> {
+        val idByPosition =
+            ids.mapIndexed { index, id -> index.toString() to id.toString() }
+                .associate { it }
+        return api.getSlots(clubId, idByPosition)
+            .subscribeOn(ioScheduler)
+            .observeOn(computationScheduler)
+            .map { slots ->
+                slots.map { Slot(it.id, it.slots) }
+            }
+    }
+
+    override fun getSchedule(clubId: Int): Single<List<DataSchedule>> {
         return getSchedules(clubId)
             .observeOn(computationScheduler)
             .map { schedules ->
                 schedules.schedule.map {
-                    Schedule(
+                    DataSchedule(
+                        it.id,
                         it.group.title,
                         it.activity.title,
                         it.datetime,
                         it.length,
                         it.room?.title,
                         it.trainers.firstOrNull()?.title,
-                        it.preEntry
+                        it.preEntry,
+                        it.totalSlots
                     ) // TODO: mapper
                 }
             }

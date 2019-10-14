@@ -3,11 +3,13 @@ package ru.olegivo.afs.schedule.android
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.row_schedule_item.view.textViewActivity
 import kotlinx.android.synthetic.main.row_schedule_item.view.textViewDuty
 import kotlinx.android.synthetic.main.row_schedule_item.view.textViewGroup
+import kotlinx.android.synthetic.main.row_schedule_item.view.textViewSlots
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.android.BaseAdapter
 import ru.olegivo.afs.schedule.domain.models.Schedule
@@ -23,6 +25,12 @@ class SchedulesAdapter(context: Context, private val onItemClick: (Schedule) -> 
         holder.itemView.textViewGroup.text = item.group
         holder.itemView.textViewActivity.text = item.activity
         holder.itemView.textViewDuty.text = hoursMinutesFormat.format(item.datetime)
+        item.totalSlots?.let {
+            holder.itemView.textViewSlots.text =
+                context.getString(R.string.slots_count, item.availableSlots, item.totalSlots)
+        } ?: run {
+            holder.itemView.textViewSlots.visibility = View.GONE
+        }
         holder.itemView.setOnClickListener { onItemClick(item) }
     }
 

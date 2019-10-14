@@ -53,7 +53,7 @@ class WeekSchedulePresenterTest : BaseTest() {
     )
 
     @Test
-    fun `start shows current day schedule WHEN no errors and has current club`() {
+    fun `start shows current day schedule with preEntry = true WHEN no errors and has current club`() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(testData)
         weekSchedulePresenter.bindView(view)
@@ -64,7 +64,7 @@ class WeekSchedulePresenterTest : BaseTest() {
         val shownSchedules = view.capture { param: List<Schedule> -> showSchedule(param) }
         val today = testData.now.getDateWithoutTime()
         val todaySchedules =
-            testData.weekSchedule.filter { it.datetime.getDateWithoutTime() == today }
+            testData.weekSchedule.filter { it.preEntry && it.datetime.getDateWithoutTime() == today }
 
         assertThat(shownSchedules).containsExactlyElementsOf(todaySchedules)
 

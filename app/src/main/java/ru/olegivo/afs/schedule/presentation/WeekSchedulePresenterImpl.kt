@@ -30,7 +30,7 @@ class WeekSchedulePresenter @Inject constructor(
             .subscribe(
                 { schedules ->
                     val today = dateProvider.getDate().getDateWithoutTime()
-                    view?.showSchedule(schedules.filter { it.datetime.getDateWithoutTime() == today })
+                    view?.showSchedule(schedules.filter { it.preEntry && it.datetime.getDateWithoutTime() == today })
                 },
                 {
                     view?.showErrorMessage(it.message ?: "Unknown error")

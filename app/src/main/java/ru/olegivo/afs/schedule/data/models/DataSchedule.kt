@@ -1,8 +1,9 @@
-package ru.olegivo.afs.schedule.domain.models
+package ru.olegivo.afs.schedule.data.models
 
 import java.util.*
 
-data class Schedule(
+data class DataSchedule(
+    val id: Long,
     // Направление - Игровые виды спорта
     val group: String,
     // Занятие - Волейбол клиенты
@@ -17,7 +18,5 @@ data class Schedule(
     // Предварительная запись
     val preEntry: Boolean,
     // Всего мест: 21
-    val totalSlots: Int?,
-    // Свободно мест: 5
-    val availableSlots: Int?
+    val totalSlots: Int?
 )
