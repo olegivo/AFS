@@ -3,6 +3,8 @@ package ru.olegivo.afs.schedule.domain.models
 import java.util.*
 
 data class Schedule(
+    val id: Long,
+    val clubId: Int,
     // Направление - Игровые виды спорта
     val group: String,
     // Занятие - Волейбол клиенты

@@ -9,7 +9,6 @@ interface ScheduleNetworkSource {
 
     fun getSchedules(clubId: Int): Single<Schedules>
     fun getSchedule(clubId: Int): Single<List<DataSchedule>>
-    fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>>
     fun getNextSchedule(schedules: Schedules): Schedules?
     fun getPrevSchedule(schedules: Schedules): Schedules?
 }

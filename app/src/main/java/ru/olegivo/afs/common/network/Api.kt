@@ -1,16 +1,18 @@
 package ru.olegivo.afs.common.network
 
+import io.reactivex.Completable
 import io.reactivex.Single
+import retrofit2.http.Body
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Headers
-import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import ru.olegivo.afs.clubs.domain.models.Club
+import ru.olegivo.afs.reserve.network.models.ReserveRequest
 import ru.olegivo.afs.schedule.network.models.Schedules
 import ru.olegivo.afs.schedule.network.models.Slot
 
@@ -27,4 +29,8 @@ interface Api {
     @FormUrlEncoded
     @POST("api/v6/schedule/chain/slots.json")
     fun getSlots(@Query("clubId") clubId: Int, @FieldMap idByPosition: Map<String, String>): Single<List<Slot>>
+
+    @POST("api/v6/account/reserve.json")
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    fun reserve(@Body reserveRequest: ReserveRequest): Completable
 }

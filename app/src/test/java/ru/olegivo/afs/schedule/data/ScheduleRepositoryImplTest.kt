@@ -8,20 +8,23 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTest
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.reserve.data.ReserveNetworkSource
 import ru.olegivo.afs.schedule.data.models.createDataSchedule
 import ru.olegivo.afs.schedule.data.models.createSlot
 import ru.olegivo.afs.schedule.domain.ScheduleRepository
-import ru.olegivo.afs.schedule.domain.models.Schedule
 
 class ScheduleRepositoryImplTest : BaseTest() {
     private val scheduleNetworkSource: ScheduleNetworkSource = mock()
+    private val reserveNetworkSource: ReserveNetworkSource = mock()
 
     private val scheduleRepository: ScheduleRepository = ScheduleRepositoryImpl(
-        scheduleNetworkSource
+        scheduleNetworkSource,
+        reserveNetworkSource
     )
 
-    override fun getAllMocks() = arrayOf<Any>(
-        scheduleNetworkSource
+    override fun getAllMocks() = arrayOf(
+        scheduleNetworkSource,
+        reserveNetworkSource
     )
 
     @Test
@@ -32,17 +35,17 @@ class ScheduleRepositoryImplTest : BaseTest() {
         val slots = ids.map(::createSlot)
 
         given(scheduleNetworkSource.getSchedule(clubId)).willReturn(Single.just(schedules))
-        given(scheduleNetworkSource.getSlots(clubId, ids)).willReturn(Single.just(slots))
+        given(reserveNetworkSource.getSlots(clubId, ids)).willReturn(Single.just(slots))
 
         val result = scheduleRepository.getCurrentWeekSchedule(clubId)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()
 
-        assertThat(result).extracting<String> {it.activity}.isEqualTo(schedules.map { it.activity })
+        assertThat(result).extracting<String> {it.activity }.isEqualTo(schedules.map { it.activity })
 
         verify(scheduleNetworkSource).getSchedule(clubId)
-        verify(scheduleNetworkSource).getSlots(clubId, ids)
+        verify(reserveNetworkSource).getSlots(clubId, ids)
     }
 
 }

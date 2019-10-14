@@ -3,6 +3,8 @@ package ru.olegivo.afs.schedule.di
 import dagger.Binds
 import dagger.Module
 import ru.olegivo.afs.clubs.di.ClubsModule
+import ru.olegivo.afs.reserve.data.ReserveNetworkSource
+import ru.olegivo.afs.reserve.network.ReserveNetworkSourceImpl
 import ru.olegivo.afs.schedule.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedule.data.ScheduleRepositoryImpl
 import ru.olegivo.afs.schedule.domain.GetCurrentWeekScheduleUseCase
@@ -25,4 +27,7 @@ abstract class ScheduleModule {
 
     @Binds
     abstract fun bindScheduleNetworkSource(impl: ScheduleNetworkSourceImpl): ScheduleNetworkSource
+
+    @Binds
+    abstract fun bindReserveNetworkSource(impl: ReserveNetworkSourceImpl): ReserveNetworkSource
 }
