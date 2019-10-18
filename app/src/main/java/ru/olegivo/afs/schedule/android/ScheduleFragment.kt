@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Scheduler
+import kotlinx.android.synthetic.main.fragment_schedule.progressBar
 import kotlinx.android.synthetic.main.fragment_schedule.schedule_recycler_view
 import ru.olegivo.afs.R
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
@@ -58,5 +59,13 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule), ScheduleContract.
 
     override fun showErrorMessage(message: String) {
         Toast.makeText(requireContext(), "Error \n${message}", Toast.LENGTH_LONG).show()
+    }
+
+    override fun showProgress() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        progressBar.visibility = View.GONE
     }
 }

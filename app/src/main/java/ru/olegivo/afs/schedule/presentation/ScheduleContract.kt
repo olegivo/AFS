@@ -9,7 +9,8 @@ interface ScheduleContract {
         fun onScheduleClicked(schedule: Schedule)
     }
 
-    interface View : PresentationContract.View, PresentationContract.ErrorDisplay {
+    interface View : PresentationContract.View, PresentationContract.ErrorDisplay,
+        PresentationContract.ViewWithProgress {
         fun showSchedule(schedules: List<Schedule>)
     }
 }

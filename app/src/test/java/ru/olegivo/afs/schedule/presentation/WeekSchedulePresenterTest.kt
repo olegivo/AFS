@@ -133,6 +133,8 @@ class WeekSchedulePresenterTest : BaseTest() {
             verify(getCurrentWeekScheduleUseCase).invoke(testData.clubId)
             verify(dateProvider).getDate()
         }
+        verify(view).showProgress()
+        verify(view).hideProgress()
     }
 
     private fun setupGetCurrentWeekSchedule(

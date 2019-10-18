@@ -27,6 +27,8 @@ class WeekSchedulePresenter @Inject constructor(
                 getCurrentWeekSchedule(clubId).toMaybe()
             }
             .observeOn(mainScheduler)
+            .doOnSubscribe { view?.showProgress() }
+            .doFinally { view?.hideProgress() }
             .subscribe(
                 { schedules ->
                     val today = dateProvider.getDate().getDateWithoutTime()
