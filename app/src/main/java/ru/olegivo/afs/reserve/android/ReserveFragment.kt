@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_reserve.textViewGroup
 import kotlinx.android.synthetic.main.fragment_reserve.textViewSlots
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.presentation.Navigator
+import ru.olegivo.afs.reserve.domain.models.ReserveContacts
 import ru.olegivo.afs.reserve.presentation.ReserveContract
 import ru.olegivo.afs.schedule.domain.models.Schedule
 import java.text.SimpleDateFormat
@@ -63,6 +64,12 @@ class ReserveFragment : Fragment(R.layout.fragment_reserve),
 
     override fun onStop() {
         presenter.unbindView()
+        presenter.saveReserveContacts(
+            ReserveContacts(
+                textInputLayoutFio.editText!!.text.toString(),
+                textInputLayoutPhone.editText!!.text.toString()
+            )
+        )
         super.onStop()
     }
 
@@ -100,6 +107,11 @@ class ReserveFragment : Fragment(R.layout.fragment_reserve),
             "Необходимо указать ФИО и телефон",
             Snackbar.LENGTH_LONG
         ).show()
+    }
+
+    override fun setReserveContacts(reserveContacts: ReserveContacts) {
+        textInputLayoutFio.editText!!.setText(reserveContacts.fio)
+        textInputLayoutPhone.editText!!.setText(reserveContacts.phone)
     }
 
     override fun showTheTimeHasGone() {

@@ -7,6 +7,8 @@ import ru.olegivo.afs.reserve.data.ReserveRepositoryImpl
 import ru.olegivo.afs.reserve.domain.ReserveRepository
 import ru.olegivo.afs.reserve.domain.ReserveUseCase
 import ru.olegivo.afs.reserve.domain.ReserveUseCaseImpl
+import ru.olegivo.afs.reserve.domain.SavedReserveContactsUseCase
+import ru.olegivo.afs.reserve.domain.SavedReserveContactsUseCaseImpl
 import ru.olegivo.afs.reserve.network.ReserveNetworkSourceImpl
 import ru.olegivo.afs.reserve.presentation.ReserveContract
 import ru.olegivo.afs.reserve.presentation.ReservePresenter
@@ -20,6 +22,9 @@ abstract class ReserveModule {
 
     @Binds
     abstract fun bindReserveUseCase(impl: ReserveUseCaseImpl): ReserveUseCase
+
+    @Binds
+    abstract fun bindSavedReserveContactsUseCase(impl: SavedReserveContactsUseCaseImpl): SavedReserveContactsUseCase
 
     @Binds
     abstract fun bindReserveRepository(impl: ReserveRepositoryImpl): ReserveRepository

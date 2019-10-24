@@ -4,6 +4,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -11,17 +12,26 @@ import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
+import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.reserve.domain.ReserveRepository
 import ru.olegivo.afs.reserve.domain.models.Reserve
 import ru.olegivo.afs.schedule.data.models.Slot
+import ru.olegivo.afs.schedule.domain.models.createReserveContacts
 
 class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
-    override fun createInstance(): ReserveRepository = ReserveRepositoryImpl(reserveNetworkSource)
+    override fun createInstance(): ReserveRepository = ReserveRepositoryImpl(
+        reserveNetworkSource,
+        preferencesDataSource
+    )
 
     //<editor-fold desc="mocks">
     private val reserveNetworkSource: ReserveNetworkSource = mock()
+    private val preferencesDataSource: PreferencesDataSource = mock()
 
-    override fun getAllMocks() = arrayOf<Any>(reserveNetworkSource)
+    override fun getAllMocks() = arrayOf(
+        reserveNetworkSource,
+        preferencesDataSource
+    )
     //</editor-fold>
 
     @Test
@@ -91,4 +101,43 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
 
         verify(reserveNetworkSource).reserve(reserve)
     }
+
+    @Test
+    fun `saveReserveContacts COMPLETES successfully`() {
+        val reserveContacts = createReserveContacts()
+        given(preferencesDataSource.putString(ReserveRepositoryImpl.Fio, reserveContacts.fio))
+            .willReturn(Completable.complete())
+        given(preferencesDataSource.putString(ReserveRepositoryImpl.Phone, reserveContacts.phone))
+            .willReturn(Completable.complete())
+
+        instance.saveReserveContacts(reserveContacts)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
+
+        verify(preferencesDataSource).putString(ReserveRepositoryImpl.Fio, reserveContacts.fio)
+        verify(preferencesDataSource).putString(ReserveRepositoryImpl.Phone, reserveContacts.phone)
+    }
+
+    @Test
+    fun `getReserveContacts RETURNS data from prefs`() {
+        val createReserveContacts = createReserveContacts()
+        val fio = createReserveContacts.fio
+        val phone = createReserveContacts.phone
+        given(preferencesDataSource.getString(ReserveRepositoryImpl.Fio))
+            .willReturn(Maybe.just(fio))
+        given(preferencesDataSource.getString(ReserveRepositoryImpl.Phone))
+            .willReturn(Maybe.just(phone))
+
+        val reserveContacts = instance.getReserveContacts()
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        assertThat(reserveContacts).isEqualTo(createReserveContacts)
+
+        verify(preferencesDataSource).getString(ReserveRepositoryImpl.Fio)
+        verify(preferencesDataSource).getString(ReserveRepositoryImpl.Phone)
+    }
+
 }

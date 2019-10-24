@@ -3,26 +3,35 @@ package ru.olegivo.afs.reserve.presentation
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.reserve.domain.ReserveUseCase
+import ru.olegivo.afs.reserve.domain.SavedReserveContactsUseCase
+import ru.olegivo.afs.reserve.domain.models.ReserveContacts
 import ru.olegivo.afs.reserve.domain.models.ReserveResult
+import ru.olegivo.afs.schedule.domain.models.Schedule
+import ru.olegivo.afs.schedule.domain.models.createReserveContacts
 import ru.olegivo.afs.schedule.domain.models.createSchedule
-import java.lang.RuntimeException
 
 class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
     override fun createInstance() = ReservePresenter(
         reserveUseCase,
+        savedReserveContactsUseCase,
         schedulerRule.testScheduler
     )
 
     //<editor-fold desc="mocks">
     private val reserveUseCase: ReserveUseCase = mock()
+    private val savedReserveContactsUseCase: SavedReserveContactsUseCase = mock()
     private val view: ReserveContract.View = mock()
 
-    override fun getAllMocks() = arrayOf<Any>(
+    override fun getAllMocks() = arrayOf(
+        reserveUseCase,
+        savedReserveContactsUseCase,
         view
     )
     //</editor-fold>
@@ -33,13 +42,36 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
     }
 
     @Test
-    fun `start shows schedule WHEN view bound`() {
+    fun `start shows schedule WHEN view bound, has saved reserve contacts`() {
         val schedule = createSchedule()
 
         instance.bindView(view)
-        instance.start(schedule)
+        val reserveContacts = createReserveContacts()
+        start(schedule, reserveContacts)
 
-        verify(view).showScheduleToReserve(schedule)
+        verifyStart(schedule, reserveContacts)
+    }
+
+    @Test
+    fun `start shows schedule WHEN view bound, has no saved reserve contacts`() {
+        val schedule = createSchedule()
+
+        instance.bindView(view)
+        start(schedule)
+
+        verifyStart(schedule)
+    }
+
+    @Test
+    fun `saveReserveContacts WHEN no errors`() {
+        val reserveContacts = createReserveContacts()
+        given(savedReserveContactsUseCase.saveReserveContacts(reserveContacts))
+            .willReturn(Completable.complete())
+
+        instance.saveReserveContacts(reserveContacts)
+            .andTriggerActions()
+
+        verify(savedReserveContactsUseCase).saveReserveContacts(reserveContacts)
     }
 
     @Test
@@ -47,7 +79,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         val schedule = createSchedule()
 
         instance.bindView(view)
-        instance.start(schedule)
+        val reserveContacts = createReserveContacts()
+        start(schedule, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
@@ -57,7 +90,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         instance.onReserveClicked(schedule, fio, phone)
             .andTriggerActions()
 
-        verify(view).showScheduleToReserve(schedule)
+        verifyStart(schedule, reserveContacts)
+        verify(reserveUseCase).reserve(schedule, fio, phone)
         verify(view).showSuccessReserved()
     }
 
@@ -66,7 +100,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         val schedule = createSchedule()
 
         instance.bindView(view)
-        instance.start(schedule)
+        val reserveContacts = createReserveContacts()
+        start(schedule, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
@@ -77,7 +112,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         instance.onReserveClicked(schedule, fio, phone)
             .andTriggerActions()
 
-        verify(view).showScheduleToReserve(schedule)
+        verifyStart(schedule, reserveContacts)
+        verify(reserveUseCase).reserve(schedule, fio, phone)
         verify(view).showTryLater()
     }
 
@@ -86,7 +122,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         val schedule = createSchedule()
 
         instance.bindView(view)
-        instance.start(schedule)
+        val reserveContacts = createReserveContacts()
+        start(schedule, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
@@ -96,7 +133,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         instance.onReserveClicked(schedule, fio, phone)
             .andTriggerActions()
 
-        verify(view).showScheduleToReserve(schedule)
+        verifyStart(schedule, reserveContacts)
+        verify(reserveUseCase).reserve(schedule, fio, phone)
         verify(view).showTheTimeHasGone()
     }
 
@@ -105,7 +143,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         val schedule = createSchedule()
 
         instance.bindView(view)
-        instance.start(schedule)
+        val reserveContacts = createReserveContacts()
+        start(schedule, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
@@ -115,7 +154,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         instance.onReserveClicked(schedule, fio, phone)
             .andTriggerActions()
 
-        verify(view).showScheduleToReserve(schedule)
+        verifyStart(schedule, reserveContacts)
+        verify(reserveUseCase).reserve(schedule, fio, phone)
         verify(view).showHasNoSlotsAPriori()
     }
 
@@ -124,7 +164,8 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         val schedule = createSchedule()
 
         instance.bindView(view)
-        instance.start(schedule)
+        val reserveContacts = createReserveContacts()
+        start(schedule, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
@@ -134,7 +175,20 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         instance.onReserveClicked(schedule, fio, phone)
             .andTriggerActions()
 
-        verify(view).showScheduleToReserve(schedule)
+        verifyStart(schedule, reserveContacts)
+        verify(reserveUseCase).reserve(schedule, fio, phone)
         verify(view).showHasNoSlotsAPosteriori()
+    }
+
+    private fun verifyStart(schedule: Schedule, reserveContacts: ReserveContacts? = null) {
+        verify(view).showScheduleToReserve(schedule)
+        verify(savedReserveContactsUseCase).getReserveContacts()
+        reserveContacts?.let { verify(view).setReserveContacts(it) }
+    }
+
+    private fun start(schedule: Schedule, reserveContacts: ReserveContacts? = null) {
+        given(savedReserveContactsUseCase.getReserveContacts())
+            .willReturn(reserveContacts.toMaybe())
+        instance.start(schedule).andTriggerActions()
     }
 }

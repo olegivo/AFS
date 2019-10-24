@@ -28,4 +28,8 @@ protected constructor(
         compositeDisposable.add(this)
     }
 
+    protected fun onError(throwable: Throwable, message: String) {
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    }
+
 }
