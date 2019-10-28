@@ -24,6 +24,7 @@ import javax.inject.Named
         RxModule::class,
         NavigationModule::class,
         NetworkModule::class,
+        DbModule::class,
         AuthModule::class,
         PreferencesModule::class
     ]

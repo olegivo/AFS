@@ -15,22 +15,26 @@ import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.reserve.domain.ReserveRepository
 import ru.olegivo.afs.reserve.domain.models.Reserve
+import ru.olegivo.afs.schedule.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedule.data.models.Slot
 import ru.olegivo.afs.schedule.domain.models.createReserveContacts
 
 class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
     override fun createInstance(): ReserveRepository = ReserveRepositoryImpl(
         reserveNetworkSource,
-        preferencesDataSource
+        preferencesDataSource,
+        scheduleNetworkSource
     )
 
     //<editor-fold desc="mocks">
     private val reserveNetworkSource: ReserveNetworkSource = mock()
     private val preferencesDataSource: PreferencesDataSource = mock()
+    private val scheduleNetworkSource: ScheduleNetworkSource = mock()
 
     override fun getAllMocks() = arrayOf(
         reserveNetworkSource,
-        preferencesDataSource
+        preferencesDataSource,
+        scheduleNetworkSource
     )
     //</editor-fold>
 
@@ -39,7 +43,7 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
         val expected = getRandomInt()
-        given(reserveNetworkSource.getSlots(clubId, listOf(scheduleId)))
+        given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
             .willReturn(Single.just(listOf(Slot(getRandomLong(), expected))))
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
@@ -48,14 +52,14 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
             .values().single()
 
         assertThat(availableSlots).isEqualTo(expected)
-        verify(reserveNetworkSource).getSlots(clubId, listOf(scheduleId))
+        verify(scheduleNetworkSource).getSlots(clubId, listOf(scheduleId))
     }
 
     @Test
     fun `getAvailableSlots RETURNS 0 WHEN returned slot is null`() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
-        given(reserveNetworkSource.getSlots(clubId, listOf(scheduleId)))
+        given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
             .willReturn(Single.just(listOf(Slot(getRandomLong(), null))))
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
@@ -64,14 +68,14 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
             .values().single()
 
         assertThat(availableSlots).isEqualTo(0)
-        verify(reserveNetworkSource).getSlots(clubId, listOf(scheduleId))
+        verify(scheduleNetworkSource).getSlots(clubId, listOf(scheduleId))
     }
 
     @Test
     fun `getAvailableSlots RETURNS 0 WHEN returned slots is empty`() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
-        given(reserveNetworkSource.getSlots(clubId, listOf(scheduleId)))
+        given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
             .willReturn(Single.just(emptyList()))
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
@@ -80,7 +84,7 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
             .values().single()
 
         assertThat(availableSlots).isEqualTo(0)
-        verify(reserveNetworkSource).getSlots(clubId, listOf(scheduleId))
+        verify(scheduleNetworkSource).getSlots(clubId, listOf(scheduleId))
     }
 
     @Test
@@ -139,5 +143,4 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         verify(preferencesDataSource).getString(ReserveRepositoryImpl.Fio)
         verify(preferencesDataSource).getString(ReserveRepositoryImpl.Phone)
     }
-
 }

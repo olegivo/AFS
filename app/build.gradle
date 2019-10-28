@@ -31,6 +31,7 @@ android {
             }
 
             buildConfigField "String", "API_URL", "\"${apiAddress}\""
+            buildConfigField "String", "DB_NAME", "\"afs\""
             buildConfigField "Boolean", "DEBUG_MODE", debugMode
         }
         release {

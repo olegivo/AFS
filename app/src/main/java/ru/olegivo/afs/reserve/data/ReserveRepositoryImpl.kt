@@ -7,11 +7,13 @@ import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.reserve.domain.ReserveRepository
 import ru.olegivo.afs.reserve.domain.models.Reserve
 import ru.olegivo.afs.reserve.domain.models.ReserveContacts
+import ru.olegivo.afs.schedule.data.ScheduleNetworkSource
 import javax.inject.Inject
 
 class ReserveRepositoryImpl @Inject constructor(
     private val reserveNetworkSource: ReserveNetworkSource,
-    private val preferencesDataSource: PreferencesDataSource
+    private val preferencesDataSource: PreferencesDataSource,
+    private val scheduleNetworkSource: ScheduleNetworkSource
 ) : ReserveRepository {
 
     override fun saveReserveContacts(reserveContacts: ReserveContacts): Completable =
@@ -27,7 +29,7 @@ class ReserveRepositoryImpl @Inject constructor(
         }
 
     override fun getAvailableSlots(clubId: Int, scheduleId: Long): Single<Int> =
-        reserveNetworkSource.getSlots(clubId, listOf(scheduleId))
+        scheduleNetworkSource.getSlots(clubId, listOf(scheduleId))
             .map {
                 it.singleOrNull()?.slots ?: 0
             }

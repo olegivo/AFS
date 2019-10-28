@@ -15,7 +15,7 @@ class ReserveNetworkSourceImplTest : AuthorizedApiTest() {
 
         val networkSourceImpl = ClubsNetworkSourceImpl(api, scheduler)
         val scheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler, scheduler)
-        val reserveNetworkSource = ReserveNetworkSourceImpl(api, scheduler, scheduler)
+        val reserveNetworkSource = ReserveNetworkSourceImpl(api, scheduler)
 
         val now = Date()
         val testObserver1 = reserveNetworkSource.getSlots(375, listOf(101514102019))

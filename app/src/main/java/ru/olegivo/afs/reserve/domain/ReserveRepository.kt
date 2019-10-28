@@ -5,6 +5,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.olegivo.afs.reserve.domain.models.Reserve
 import ru.olegivo.afs.reserve.domain.models.ReserveContacts
+import ru.olegivo.afs.schedule.domain.models.Schedule
 
 interface ReserveRepository {
     fun getAvailableSlots(clubId: Int, scheduleId: Long): Single<Int>

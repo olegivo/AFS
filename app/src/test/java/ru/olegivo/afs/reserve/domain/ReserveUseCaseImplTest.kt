@@ -13,19 +13,27 @@ import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.reserve.domain.models.Reserve
 import ru.olegivo.afs.reserve.domain.models.ReserveResult
+import ru.olegivo.afs.schedule.domain.ScheduleRepository
 import ru.olegivo.afs.schedule.domain.models.createSchedule
 import java.util.*
 
 class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
-    override fun createInstance() = ReserveUseCaseImpl(dateProvider, reserveRepository)
+
+    override fun createInstance() = ReserveUseCaseImpl(
+        dateProvider,
+        reserveRepository,
+        scheduleRepository
+    )
 
     //<editor-fold desc="mocks">
     private val dateProvider: DateProvider = mock()
     private val reserveRepository: ReserveRepository = mock()
+    private val scheduleRepository: ScheduleRepository = mock()
 
     override fun getAllMocks() = arrayOf(
         dateProvider,
-        reserveRepository
+        reserveRepository,
+        scheduleRepository
     )
     //</editor-fold>
 
@@ -38,6 +46,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             availableSlots = 0,
             datetime = now.add(minutes = 1)
         )
+        given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
         val phone = getRandomString()
 
@@ -47,6 +56,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             .values().single()
 
         assertThat(result).isEqualTo(ReserveResult.NoSlots.APriori)
+        verify(scheduleRepository).setScheduleReserved(schedule)
     }
 
     @Test
@@ -60,6 +70,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         )
         given(reserveRepository.getAvailableSlots(schedule.clubId, schedule.id))
             .willReturn(Single.just(0))
+        given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
         val phone = getRandomString()
 
@@ -72,6 +83,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
 
         verify(dateProvider).getDate()
         verify(reserveRepository).getAvailableSlots(schedule.clubId, schedule.id)
+        verify(scheduleRepository).setScheduleReserved(schedule)
     }
 
     @Test
@@ -83,6 +95,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             availableSlots = 1,
             datetime = now.add(minutes = -1)
         )
+        given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
         val phone = getRandomString()
 
@@ -94,6 +107,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         assertThat(result).isEqualTo(ReserveResult.TheTimeHasGone)
 
         verify(dateProvider).getDate()
+        verify(scheduleRepository).setScheduleReserved(schedule)
     }
 
     @Test
@@ -113,6 +127,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         given(reserveRepository.reserve(reserve)).willReturn(
             Completable.complete()
         )
+        given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
 
         val result = instance.reserve(schedule, fio, phone)
             .test().andTriggerActions()
@@ -122,6 +137,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         assertThat(result).isEqualTo(ReserveResult.NameAndPhoneShouldBeStated)
 
         verify(dateProvider).getDate()
+        verify(scheduleRepository).setScheduleReserved(schedule)
     }
 
     @Test
@@ -138,9 +154,9 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         given(reserveRepository.getAvailableSlots(schedule.clubId, schedule.id))
             .willReturn(Single.just(1))
         val reserve = Reserve(fio, phone, schedule.id, schedule.clubId)
-        given(reserveRepository.reserve(reserve)).willReturn(
-            Completable.complete()
-        )
+        given(reserveRepository.reserve(reserve))
+            .willReturn(Completable.complete())
+        given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
 
         val result = instance.reserve(schedule, fio, phone)
             .test().andTriggerActions()
@@ -150,6 +166,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         assertThat(result).isEqualTo(ReserveResult.NameAndPhoneShouldBeStated)
 
         verify(dateProvider).getDate()
+        verify(scheduleRepository).setScheduleReserved(schedule)
     }
 
     @Test
@@ -166,9 +183,9 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         given(reserveRepository.getAvailableSlots(schedule.clubId, schedule.id))
             .willReturn(Single.just(1))
         val reserve = Reserve(fio, phone, schedule.id, schedule.clubId)
-        given(reserveRepository.reserve(reserve)).willReturn(
-            Completable.complete()
-        )
+        given(reserveRepository.reserve(reserve))
+            .willReturn(Completable.complete())
+        given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
 
         val result = instance.reserve(schedule, fio, phone)
             .test().andTriggerActions()
@@ -180,5 +197,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         verify(dateProvider).getDate()
         verify(reserveRepository).getAvailableSlots(schedule.clubId, schedule.id)
         verify(reserveRepository).reserve(reserve)
+        verify(scheduleRepository).setScheduleReserved(schedule)
     }
 }
