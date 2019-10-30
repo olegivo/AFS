@@ -155,35 +155,54 @@ class ReserveFragment : Fragment(R.layout.fragment_reserve),
     }
 }
 
+private object Fields {
+    const val id = "Schedule.id"
+    const val clubId = "Schedule.clubId"
+    const val availableSlots = "Schedule.availableSlots"
+    const val datetime = "Schedule.datetime"
+    const val totalSlots = "Schedule.totalSlots"
+    const val activity = "Schedule.activity"
+    const val group = "Schedule.group"
+    const val length = "Schedule.length"
+    const val preEntry = "Schedule.preEntry"
+    const val room = "Schedule.room"
+    const val trainer = "Schedule.trainer"
+    const val isReserved = "Schedule.isReserved"
+
+}
+
+
 private fun Schedule.toBundle(): Bundle {
     return Bundle().apply {
-        putLong("Schedule.id", id)
-        putInt("Schedule.clubId", clubId)
-        availableSlots?.let { putInt("Schedule.availableSlots", it) }
-        totalSlots?.let { putInt("Schedule.totalSlots", it) }
-        putLong("Schedule.datetime", datetime.time)
-        putString("Schedule.activity", activity)
-        putString("Schedule.group", group)
-        putInt("Schedule.length", length)
-        putBoolean("Schedule.preEntry", preEntry)
-        room?.let { putString("Schedule.room", it) }
-        trainer?.let { putString("Schedule.trainer", it) }
+        putLong(Fields.id, id)
+        putInt(Fields.clubId, clubId)
+        availableSlots?.let { putInt(Fields.availableSlots, it) }
+        totalSlots?.let { putInt(Fields.totalSlots, it) }
+        putLong(Fields.datetime, datetime.time)
+        putString(Fields.activity, activity)
+        putString(Fields.group, group)
+        putInt(Fields.length, length)
+        putBoolean(Fields.preEntry, preEntry)
+        room?.let { putString(Fields.room, it) }
+        trainer?.let { putString(Fields.trainer, it) }
+        putBoolean(Fields.isReserved, isReserved)
     }
 }
 
 private fun Bundle.toSchedule(): Schedule {
     return Schedule(
-        id = requireLong("Schedule.id"),
-        clubId = requireInt("Schedule.clubId"),
-        availableSlots = getIntOrNull("Schedule.availableSlots"),
-        totalSlots = getIntOrNull("Schedule.totalSlots"),
-        datetime = requireDate("Schedule.datetime"),
-        activity = requireString("Schedule.activity"),
-        group = requireString("Schedule.group"),
-        length = requireInt("Schedule.length"),
-        preEntry = requireBoolean("Schedule.preEntry"),
-        room = getStringOrNull("Schedule.room"),
-        trainer = getStringOrNull("Schedule.trainer")
+        id = requireLong(Fields.id),
+        clubId = requireInt(Fields.clubId),
+        availableSlots = getIntOrNull(Fields.availableSlots),
+        totalSlots = getIntOrNull(Fields.totalSlots),
+        datetime = requireDate(Fields.datetime),
+        activity = requireString(Fields.activity),
+        group = requireString(Fields.group),
+        length = requireInt(Fields.length),
+        preEntry = requireBoolean(Fields.preEntry),
+        room = getStringOrNull(Fields.room),
+        trainer = getStringOrNull(Fields.trainer),
+        isReserved = requireBoolean(Fields.isReserved)
     )
 }
 

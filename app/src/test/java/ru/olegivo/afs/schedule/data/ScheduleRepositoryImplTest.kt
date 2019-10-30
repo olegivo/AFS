@@ -8,29 +8,37 @@ import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.common.add
+import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.reserve.data.ReserveNetworkSource
 import ru.olegivo.afs.schedule.data.models.createDataSchedule
 import ru.olegivo.afs.schedule.data.models.createSlot
 import ru.olegivo.afs.schedule.domain.ScheduleRepository
 import ru.olegivo.afs.schedule.domain.models.createSchedule
+import java.util.*
 
 class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
 
     override fun createInstance() = ScheduleRepositoryImpl(
         scheduleNetworkSource,
-        scheduleDbSource
+        scheduleDbSource,
+        dateProvider,
+        schedulerRule.testScheduler
     )
 
     //<editor-fold desc="mocks">
     private val scheduleNetworkSource: ScheduleNetworkSource = mock()
     private val reserveNetworkSource: ReserveNetworkSource = mock()
     private val scheduleDbSource: ScheduleDbSource = mock()
+    private val dateProvider: DateProvider = mock()
 
     override fun getAllMocks() = arrayOf(
         scheduleNetworkSource,
         reserveNetworkSource,
-        scheduleDbSource
+        scheduleDbSource,
+        dateProvider
     )
     //</editor-fold>
 
@@ -43,6 +51,12 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
 
         given(scheduleNetworkSource.getSchedule(clubId)).willReturn(Single.just(schedules))
         given(scheduleNetworkSource.getSlots(clubId, ids)).willReturn(Single.just(slots))
+        val now = Date()
+        given(dateProvider.getDate()).willReturn(now)
+        val weekStart = firstDayOfWeek(now)
+        val nextWeekStart = weekStart.add(days = 7)
+        given(scheduleDbSource.getReservedScheduleIds(weekStart, nextWeekStart))
+            .willReturn(Single.just(listOf()))
 
         val result = instance.getCurrentWeekSchedule(clubId)
             .test().andTriggerActions()
@@ -54,17 +68,19 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
 
         verify(scheduleNetworkSource).getSchedule(clubId)
         verify(scheduleNetworkSource).getSlots(clubId, ids)
+        verify(dateProvider).getDate()
+        verify(scheduleDbSource).getReservedScheduleIds(weekStart, nextWeekStart)
     }
 
     @Test
     fun `setScheduleReserved CALL scheduleDbSource`() {
         val schedule = createSchedule()
-        given(scheduleDbSource.setScheduleReserved(schedule.id)).willReturn(Completable.complete())
+        given(scheduleDbSource.setScheduleReserved(schedule)).willReturn(Completable.complete())
 
         instance.setScheduleReserved(schedule)
             .test().andTriggerActions()
 
-        verify(scheduleDbSource).setScheduleReserved(schedule.id)
+        verify(scheduleDbSource).setScheduleReserved(schedule)
     }
 
 }

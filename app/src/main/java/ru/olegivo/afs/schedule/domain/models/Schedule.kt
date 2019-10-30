@@ -21,5 +21,7 @@ data class Schedule(
     // Всего мест: 21
     val totalSlots: Int?,
     // Свободно мест: 5
-    val availableSlots: Int?
+    val availableSlots: Int?,
+    // Я записан на это занятие
+    val isReserved: Boolean
 )

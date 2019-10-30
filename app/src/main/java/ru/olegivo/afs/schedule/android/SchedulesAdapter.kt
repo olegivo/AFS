@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.row_schedule_item.view.imageViewIsReserved
 import kotlinx.android.synthetic.main.row_schedule_item.view.textViewActivity
 import kotlinx.android.synthetic.main.row_schedule_item.view.textViewDuty
 import kotlinx.android.synthetic.main.row_schedule_item.view.textViewGroup
@@ -22,6 +23,10 @@ class SchedulesAdapter(context: Context, private val onItemClick: (Schedule) -> 
         ScheduleViewHolder(inflater, parent)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Schedule) {
+        val res =
+            if (item.isReserved) R.drawable.ic_check_box_black_24dp else R.drawable.ic_check_box_outline_blank_black_24dp
+        holder.itemView.imageViewIsReserved.setImageResource(res)
+
         holder.itemView.textViewGroup.text = item.group
         holder.itemView.textViewActivity.text = item.activity
         holder.itemView.textViewDuty.text = hoursMinutesFormat.format(item.datetime)

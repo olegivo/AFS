@@ -19,7 +19,8 @@ fun createSchedule() =
         getRandomString(),
         getRandomBoolean(),
         getRandomInt(),
-        getRandomInt()
+        getRandomInt(),
+        getRandomBoolean()
     )
 
 fun createReserveContacts() =

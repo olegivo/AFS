@@ -5,10 +5,10 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/cardview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         card_view:cardCornerRadius="3dp"
         card_view:cardElevation="4dp"
         card_view:cardUseCompatPadding="true"
@@ -16,7 +16,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             >
 
@@ -24,12 +24,13 @@
                 android:id="@+id/textViewGroup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="28dp"
+                android:layout_marginBottom="20dp"
                 android:maxLines="2"
+                app:layout_constraintBottom_toBottomOf="@+id/guidelinePrimaryText"
                 app:layout_constraintEnd_toStartOf="@+id/textViewDuty"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageViewIsReserved"
                 tools:text="Игровые виды спорта"
                 />
 
@@ -37,11 +38,8 @@
                 android:id="@+id/textViewActivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/guidelinePrimaryText"
                 app:layout_constraintStart_toStartOf="@+id/textViewGroup"
-                app:layout_constraintTop_toBottomOf="@+id/textViewGroup"
                 tools:text="Волейбол клиенты"
                 />
 
@@ -60,11 +58,30 @@
                 android:id="@+id/textViewSlots"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/textViewDuty"
                 tools:text="Мест: 21"
+                />
+
+        <ImageView
+                android:id="@+id/imageViewIsReserved"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                card_view:srcCompat="@drawable/ic_check_box_black_24dp"
+                />
+
+        <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelinePrimaryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="52dp"
+                app:layout_constraintTop_toTopOf="parent"
                 />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

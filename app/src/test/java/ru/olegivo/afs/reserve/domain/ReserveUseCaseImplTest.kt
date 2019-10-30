@@ -38,13 +38,14 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     //</editor-fold>
 
     @Test
-    fun `reserve returns ReserveResult-NoSlots-APriori WHEN has no slots a priori, the time hasn't gone`() {
+    fun `reserve returns ReserveResult-NoSlots-APriori WHEN has no slots a priori, the time hasn't gone, isReserved = false`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn(now)
         val schedule = createSchedule().copy(
             totalSlots = 21,
             availableSlots = 0,
-            datetime = now.add(minutes = 1)
+            datetime = now.add(minutes = 1),
+            isReserved = false
         )
         given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
@@ -60,13 +61,14 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     }
 
     @Test
-    fun `reserve returns ReserveResult-NoSlots-APosteriori WHEN has no slots a posteriori (other concurrent reserve on server decremented available slots), the time hasn't gone`() {
+    fun `reserve returns ReserveResult-NoSlots-APosteriori WHEN has no slots a posteriori (other concurrent reserve on server decremented available slots), the time hasn't gone, isReserved = false`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn(now)
         val schedule = createSchedule().copy(
             totalSlots = 21,
             availableSlots = 1,
-            datetime = now.add(minutes = 1)
+            datetime = now.add(minutes = 1),
+            isReserved = false
         )
         given(reserveRepository.getAvailableSlots(schedule.clubId, schedule.id))
             .willReturn(Single.just(0))
@@ -87,13 +89,14 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     }
 
     @Test
-    fun `reserve returns ReserveResult-TheTimeHasGone WHEN the time has gone, has available slots`() {
+    fun `reserve returns ReserveResult-TheTimeHasGone WHEN the time has gone, has available slots, isReserved = false`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn(now)
         val schedule = createSchedule().copy(
             totalSlots = 21,
             availableSlots = 1,
-            datetime = now.add(minutes = -1)
+            datetime = now.add(minutes = -1),
+            isReserved = false
         )
         given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
@@ -111,13 +114,14 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     }
 
     @Test
-    fun `reserve returns ReserveResult-NameAndPhoneShouldBeStated WHEN the time hasn't gone, has available slots, fio is empty, phone is not empty`() {
+    fun `reserve returns ReserveResult-NameAndPhoneShouldBeStated WHEN the time hasn't gone, has available slots, fio is empty, phone is not empty, isReserved = false`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn(now)
         val schedule = createSchedule().copy(
             totalSlots = 21,
             availableSlots = 1,
-            datetime = now.add(minutes = 1)
+            datetime = now.add(minutes = 1),
+            isReserved = false
         )
         val fio = ""
         val phone = getRandomString()
@@ -141,13 +145,14 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     }
 
     @Test
-    fun `reserve returns ReserveResult-NameAndPhoneShouldBeStated WHEN the time hasn't gone, has available slots, fio is not empty, phone is empty`() {
+    fun `reserve returns ReserveResult-NameAndPhoneShouldBeStated WHEN the time hasn't gone, has available slots, fio is not empty, phone is empty, isReserved = false`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn(now)
         val schedule = createSchedule().copy(
             totalSlots = 21,
             availableSlots = 1,
-            datetime = now.add(minutes = 1)
+            datetime = now.add(minutes = 1),
+            isReserved = false
         )
         val fio = getRandomString()
         val phone = ""
@@ -170,13 +175,14 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     }
 
     @Test
-    fun `reserve returns ReserveResult-Success WHEN the time hasn't gone, has available slots`() {
+    fun `reserve returns ReserveResult-Success WHEN the time hasn't gone, has available slots, isReserved = false`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn(now)
         val schedule = createSchedule().copy(
             totalSlots = 21,
             availableSlots = 1,
-            datetime = now.add(minutes = 1)
+            datetime = now.add(minutes = 1),
+            isReserved = false
         )
         val fio = getRandomString()
         val phone = getRandomString()
