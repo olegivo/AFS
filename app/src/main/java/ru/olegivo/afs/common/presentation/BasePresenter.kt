@@ -5,6 +5,7 @@ import io.reactivex.disposables.Disposable
 
 abstract class BasePresenter<TView : PresentationContract.View>
 protected constructor(
+
 ) : PresentationContract.Presenter<TView> {
 
     protected var view: TView? = null
@@ -29,7 +30,13 @@ protected constructor(
     }
 
     protected fun onError(throwable: Throwable, message: String) {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        // TODO: log error centrally
+        throwable.printStackTrace()
+        view?.also {
+            when (it) {
+                is PresentationContract.ErrorDisplay -> it.showErrorMessage(message)
+            }
+        }
     }
 
 }
