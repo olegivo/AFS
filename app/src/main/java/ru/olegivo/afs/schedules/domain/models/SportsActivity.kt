@@ -5,5 +5,7 @@ data class SportsActivity(
     // Свободно мест: 5
     val availableSlots: Int?,
     // Я записан на это занятие
-    val isReserved: Boolean
+    val isReserved: Boolean,
+    // Занятие в избранном
+    val isFavorite: Boolean
 )

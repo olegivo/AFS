@@ -2,12 +2,15 @@ package ru.olegivo.afs.schedule.presentation
 
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.extensions.toMaybe
+import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.SavedReserveContactsUseCase
@@ -21,17 +24,20 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
     override fun createInstance() = ScheduleDetailsPresenter(
         reserveUseCase,
         savedReserveContactsUseCase,
+        addToFavoritesUseCase,
         schedulerRule.testScheduler
     )
 
     //<editor-fold desc="mocks">
     private val reserveUseCase: ReserveUseCase = mock()
     private val savedReserveContactsUseCase: SavedReserveContactsUseCase = mock()
+    private val addToFavoritesUseCase: AddToFavoritesUseCase = mock()
     private val view: ScheduleDetailsContract.View = mock()
 
     override fun getAllMocks() = arrayOf(
         reserveUseCase,
         savedReserveContactsUseCase,
+        addToFavoritesUseCase,
         view
     )
     //</editor-fold>
@@ -180,7 +186,6 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verify(view).showHasNoSlotsAPosteriori()
     }
 
-
     @Test
     fun `onReserveClicked show has already reserved WHEN already reserved, view bound`() {
         val sportsActivity = createSportsActivity()
@@ -202,8 +207,30 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verify(view).showAlreadyReserved()
     }
 
+    @Test
+    fun `onFavoriteClick show isFavorite true WHEN isFavorite was false, view bound`() {
+        val sportsActivity = createSportsActivity().copy(isFavorite = false)
+
+        instance.bindView(view)
+        val reserveContacts = createReserveContacts()
+        start(sportsActivity, reserveContacts)
+        verifyStart(sportsActivity, reserveContacts)
+        verifyNoMoreInteractions(view)
+        reset(view)
+
+        given(addToFavoritesUseCase.invoke(sportsActivity.schedule))
+            .willReturn(Completable.complete())
+
+        instance.onFavoriteClick(sportsActivity.schedule, sportsActivity.isFavorite)
+            .andTriggerActions()
+
+        verify(addToFavoritesUseCase).invoke(sportsActivity.schedule)
+        verify(view).showIsFavorite(true)
+    }
+
     private fun verifyStart(sportsActivity: SportsActivity, reserveContacts: ReserveContacts? = null) {
         verify(view).showScheduleToReserve(sportsActivity)
+        verify(view).showIsFavorite(sportsActivity.isFavorite)
         verify(savedReserveContactsUseCase).getReserveContacts()
         reserveContacts?.let { verify(view).setReserveContacts(it) }
     }

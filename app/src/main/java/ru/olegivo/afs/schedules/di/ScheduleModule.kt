@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.favorites.di.FavoritesModule
 import ru.olegivo.afs.schedules.data.ScheduleDbSource
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.data.ScheduleRepositoryImpl
@@ -19,7 +20,8 @@ import ru.olegivo.afs.schedules.presentation.WeekSchedulePresenter
 @Module(
     includes = [
         ScheduleModule.ProvidesModule::class,
-        ClubsModule::class
+        ClubsModule::class,
+        FavoritesModule::class
     ]
 )
 abstract class ScheduleModule {

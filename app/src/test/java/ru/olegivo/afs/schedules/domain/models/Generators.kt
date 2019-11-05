@@ -12,11 +12,13 @@ fun createSportsActivity(
     datetime: Date? = null,
     totalSlots: Int? = null,
     availableSlots: Int? = null,
-    isReserved: Boolean? = null
+    isReserved: Boolean? = null,
+    isFavorite: Boolean? = null
 ) = SportsActivity(
     schedule = createSchedule(datetime, totalSlots),
     availableSlots = availableSlots ?: getRandomInt(),
-    isReserved = isReserved ?: getRandomBoolean()
+    isReserved = isReserved ?: getRandomBoolean(),
+    isFavorite = isFavorite ?: getRandomBoolean()
 )
 
 fun createSchedule(

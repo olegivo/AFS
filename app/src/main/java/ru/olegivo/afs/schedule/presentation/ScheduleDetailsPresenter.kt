@@ -2,10 +2,12 @@ package ru.olegivo.afs.schedule.presentation
 
 import io.reactivex.Scheduler
 import ru.olegivo.afs.common.presentation.BasePresenter
+import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.SavedReserveContactsUseCase
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
+import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import javax.inject.Inject
 import javax.inject.Named
@@ -13,6 +15,7 @@ import javax.inject.Named
 class ScheduleDetailsPresenter @Inject constructor(
     private val reserveUseCase: ReserveUseCase,
     private val savedReserveContactsUseCase: SavedReserveContactsUseCase,
+    private val addToFavorites: AddToFavoritesUseCase,
     @Named("main") private val mainScheduler: Scheduler
 ) :
     BasePresenter<ScheduleDetailsContract.View>(),
@@ -20,6 +23,7 @@ class ScheduleDetailsPresenter @Inject constructor(
 
     override fun start(sportsActivity: SportsActivity) {
         view?.showScheduleToReserve(sportsActivity)
+        view?.showIsFavorite(sportsActivity.isFavorite)
         savedReserveContactsUseCase.getReserveContacts()
             .observeOn(mainScheduler)
             .subscribe(
@@ -59,4 +63,20 @@ class ScheduleDetailsPresenter @Inject constructor(
             )
             .addToComposite()
     }
+
+    override fun onFavoriteClick(
+        schedule: Schedule,
+        isFavorite: Boolean
+    ) {
+        if (!isFavorite) {
+            addToFavorites(schedule)
+                .observeOn(mainScheduler)
+                .subscribe(
+                    { view?.showIsFavorite(!isFavorite) },
+                    { onError(it, "Ошибка при изменении избранного") }
+                )
+                .addToComposite()
+        }
+    }
+
 }

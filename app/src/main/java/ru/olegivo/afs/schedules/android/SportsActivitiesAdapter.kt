@@ -2,6 +2,7 @@ package ru.olegivo.afs.schedules.android
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,20 +24,38 @@ class SportsActivitiesAdapter(context: Context, private val onItemClick: (Sports
         SportsActivityViewHolder(inflater, parent)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: SportsActivity) {
-        val res =
-            if (item.isReserved) R.drawable.ic_check_box_black_24dp else R.drawable.ic_check_box_outline_blank_black_24dp
-        holder.itemView.imageViewIsReserved.setImageResource(res)
+        holder.itemView.apply {
+            val res =
+                if (item.isReserved) R.drawable.ic_check_box_black_24dp else R.drawable.ic_check_box_outline_blank_black_24dp
+            imageViewIsReserved.setImageResource(res)
 
-        holder.itemView.textViewGroup.text = item.schedule.group
-        holder.itemView.textViewActivity.text = item.schedule.activity
-        holder.itemView.textViewDuty.text = hoursMinutesFormat.format(item.schedule.datetime)
-        item.schedule.totalSlots?.let {
-            holder.itemView.textViewSlots.text =
-                context.getString(R.string.slots_count, item.availableSlots, item.schedule.totalSlots)
-        } ?: run {
-            holder.itemView.textViewSlots.visibility = View.GONE
+            val schedule = item.schedule
+
+            textViewGroup.text = schedule.group
+            textViewActivity.text = schedule.activity
+            textViewDuty.text = hoursMinutesFormat.format(schedule.datetime)
+            schedule.totalSlots?.let {
+                textViewSlots.text =
+                    context.getString(
+                        R.string.slots_count,
+                        item.availableSlots,
+                        schedule.totalSlots
+                    )
+            } ?: run {
+                textViewSlots.visibility = View.GONE
+            }
+
+            if (item.isFavorite) {
+                listOf(
+                    textViewSlots,
+                    textViewGroup,
+                    textViewActivity,
+                    textViewDuty
+                ).forEach { it.setTypeface(it.typeface, Typeface.BOLD) }
+            }
+
+            setOnClickListener { onItemClick(item) }
         }
-        holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
     class SportsActivityViewHolder(inflater: LayoutInflater, parent: ViewGroup) :

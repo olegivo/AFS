@@ -1,5 +1,7 @@
 package ru.olegivo.afs.schedules.domain.models
 
+import ru.olegivo.afs.common.get
+import ru.olegivo.afs.common.getDateWithoutTime
 import java.util.*
 
 data class Schedule(
@@ -20,4 +22,10 @@ data class Schedule(
     val preEntry: Boolean,
     // Всего мест: 21
     val totalSlots: Int?
-)
+) {
+    fun getTimeOfDay() = datetime.let {
+        it.time - it.getDateWithoutTime().time
+    }
+
+    fun getDayOfWeek() = datetime.get(Calendar.DAY_OF_WEEK)
+}

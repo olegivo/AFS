@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_schedule_details.buttonReserve
+import kotlinx.android.synthetic.main.fragment_schedule_details.imageViewIsFavorite
 import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutFio
 import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutPhone
 import kotlinx.android.synthetic.main.fragment_schedule_details.textViewActivity
@@ -48,6 +49,8 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        imageViewIsFavorite
+
         buttonReserve.setOnClickListener {
             presenter.onReserveClicked(
                 sportsActivity,
@@ -55,6 +58,13 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
                 textInputLayoutPhone.editText!!.text.toString()
             )
         }
+        imageViewIsFavorite.setOnClickListener {
+            presenter.onFavoriteClick(sportsActivity.schedule, sportsActivity.isFavorite)
+        }
+    }
+
+    override fun showIsFavorite(isFavorite: Boolean) {
+        imageViewIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
     }
 
     override fun onStart() {
@@ -173,6 +183,7 @@ private object Fields {
     const val room = "Schedule.room"
     const val trainer = "Schedule.trainer"
     const val isReserved = "Schedule.isReserved"
+    const val isFavorite = "Schedule.isFavorite"
 
 }
 
@@ -191,6 +202,7 @@ private fun SportsActivity.toBundle(): Bundle {
         schedule.room?.let { putString(Fields.room, it) }
         schedule.trainer?.let { putString(Fields.trainer, it) }
         putBoolean(Fields.isReserved, isReserved)
+        putBoolean(Fields.isFavorite, isFavorite)
     }
 }
 
@@ -209,7 +221,8 @@ private fun Bundle.toSportsActivity(): SportsActivity {
             trainer = getStringOrNull(Fields.trainer)
         ),
         availableSlots = getIntOrNull(Fields.availableSlots),
-        isReserved = requireBoolean(Fields.isReserved)
+        isReserved = requireBoolean(Fields.isReserved),
+        isFavorite = requireBoolean(Fields.isFavorite)
     )
 }
 
