@@ -10,14 +10,14 @@ import ru.olegivo.afs.schedule.domain.ReserveUseCaseImpl
 import ru.olegivo.afs.schedule.domain.SavedReserveContactsUseCase
 import ru.olegivo.afs.schedule.domain.SavedReserveContactsUseCaseImpl
 import ru.olegivo.afs.schedule.network.ReserveNetworkSourceImpl
-import ru.olegivo.afs.schedule.presentation.ReserveContract
-import ru.olegivo.afs.schedule.presentation.ReservePresenter
+import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
+import ru.olegivo.afs.schedule.presentation.ScheduleDetailsPresenter
 import ru.olegivo.afs.schedules.di.ScheduleModule
 
 @Module(includes = [ScheduleModule::class])
 abstract class ReserveModule {
     @Binds
-    abstract fun bindReservePresenter(impl: ReservePresenter): ReserveContract.Presenter
+    abstract fun bindReservePresenter(impl: ScheduleDetailsPresenter): ScheduleDetailsContract.Presenter
 
     @Binds
     abstract fun bindReserveUseCase(impl: ReserveUseCaseImpl): ReserveUseCase

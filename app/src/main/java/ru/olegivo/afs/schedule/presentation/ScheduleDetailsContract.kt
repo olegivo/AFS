@@ -4,7 +4,7 @@ import ru.olegivo.afs.common.presentation.PresentationContract
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedules.domain.models.Schedule
 
-interface ReserveContract {
+interface ScheduleDetailsContract {
     interface Presenter : PresentationContract.Presenter<View> {
         fun start(schedule: Schedule)
         fun onReserveClicked(schedule: Schedule, fio: String, phone: String)

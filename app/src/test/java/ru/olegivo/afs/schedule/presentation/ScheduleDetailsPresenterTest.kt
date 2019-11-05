@@ -17,8 +17,8 @@ import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.createReserveContacts
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 
-class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
-    override fun createInstance() = ReservePresenter(
+class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presenter>() {
+    override fun createInstance() = ScheduleDetailsPresenter(
         reserveUseCase,
         savedReserveContactsUseCase,
         schedulerRule.testScheduler
@@ -27,7 +27,7 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
     //<editor-fold desc="mocks">
     private val reserveUseCase: ReserveUseCase = mock()
     private val savedReserveContactsUseCase: SavedReserveContactsUseCase = mock()
-    private val view: ReserveContract.View = mock()
+    private val view: ScheduleDetailsContract.View = mock()
 
     override fun getAllMocks() = arrayOf(
         reserveUseCase,

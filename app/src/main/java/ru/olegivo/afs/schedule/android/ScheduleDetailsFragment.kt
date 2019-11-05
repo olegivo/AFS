@@ -7,29 +7,29 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_reserve.buttonReserve
-import kotlinx.android.synthetic.main.fragment_reserve.textInputLayoutFio
-import kotlinx.android.synthetic.main.fragment_reserve.textInputLayoutPhone
-import kotlinx.android.synthetic.main.fragment_reserve.textViewActivity
-import kotlinx.android.synthetic.main.fragment_reserve.textViewDuty
-import kotlinx.android.synthetic.main.fragment_reserve.textViewGroup
-import kotlinx.android.synthetic.main.fragment_reserve.textViewSlots
+import kotlinx.android.synthetic.main.fragment_schedule_details.buttonReserve
+import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutFio
+import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutPhone
+import kotlinx.android.synthetic.main.fragment_schedule_details.textViewActivity
+import kotlinx.android.synthetic.main.fragment_schedule_details.textViewDuty
+import kotlinx.android.synthetic.main.fragment_schedule_details.textViewGroup
+import kotlinx.android.synthetic.main.fragment_schedule_details.textViewSlots
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
-import ru.olegivo.afs.schedule.presentation.ReserveContract
+import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class ReserveFragment : Fragment(R.layout.fragment_reserve),
-    ReserveContract.View {
+class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
+    ScheduleDetailsContract.View {
 
     private lateinit var schedule: Schedule
 
     @Inject
-    lateinit var presenter: ReserveContract.Presenter
+    lateinit var presenter: ScheduleDetailsContract.Presenter
 
     @Inject
     lateinit var navigator: Navigator
@@ -143,8 +143,8 @@ class ReserveFragment : Fragment(R.layout.fragment_reserve),
 
     @SuppressLint("ConstantLocale")
     companion object {
-        fun createInstance(schedule: Schedule): ReserveFragment {
-            return ReserveFragment().apply {
+        fun createInstance(schedule: Schedule): ScheduleDetailsFragment {
+            return ScheduleDetailsFragment().apply {
                 arguments = schedule.toBundle()
             }
         }

@@ -12,7 +12,7 @@ import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.DateProviderImpl
 import ru.olegivo.afs.preferences.di.PreferencesModule
-import ru.olegivo.afs.schedule.android.ReserveFragment
+import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedule.di.ReserveModule
 import ru.olegivo.afs.schedules.android.ScheduleFragment
 import ru.olegivo.afs.schedules.di.ScheduleModule
@@ -53,7 +53,7 @@ abstract class FragmentBuilderModule {
 
 
     @ContributesAndroidInjector(modules = [ReserveModule::class])
-    abstract fun bindReserveFragment(): ReserveFragment
+    abstract fun bindReserveFragment(): ScheduleDetailsFragment
 }
 
 @Module

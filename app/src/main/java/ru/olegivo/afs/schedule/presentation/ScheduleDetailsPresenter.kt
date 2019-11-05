@@ -10,13 +10,13 @@ import ru.olegivo.afs.schedules.domain.models.Schedule
 import javax.inject.Inject
 import javax.inject.Named
 
-class ReservePresenter @Inject constructor(
+class ScheduleDetailsPresenter @Inject constructor(
     private val reserveUseCase: ReserveUseCase,
     private val savedReserveContactsUseCase: SavedReserveContactsUseCase,
     @Named("main") private val mainScheduler: Scheduler
 ) :
-    BasePresenter<ReserveContract.View>(),
-    ReserveContract.Presenter {
+    BasePresenter<ScheduleDetailsContract.View>(),
+    ScheduleDetailsContract.Presenter {
 
     override fun start(schedule: Schedule) {
         view?.showScheduleToReserve(schedule)
