@@ -12,9 +12,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import ru.olegivo.afs.clubs.domain.models.Club
-import ru.olegivo.afs.reserve.network.models.ReserveRequest
-import ru.olegivo.afs.schedule.network.models.Schedules
-import ru.olegivo.afs.schedule.network.models.Slot
+import ru.olegivo.afs.schedule.network.models.ReserveRequest
+import ru.olegivo.afs.schedules.network.models.Schedules
+import ru.olegivo.afs.schedules.network.models.Slot
 
 interface Api {
     @GET("api/v6/franchise/clubs.json")

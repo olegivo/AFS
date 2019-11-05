@@ -2,10 +2,10 @@ package ru.olegivo.afs.common.android
 
 import ru.olegivo.afs.common.presentation.Destination
 import ru.olegivo.afs.common.presentation.Navigator
-import ru.olegivo.afs.reserve.presentation.ReserveScreen
-import ru.olegivo.afs.reserve.presentation.models.ReserveDestination
-import ru.olegivo.afs.schedule.presentation.ScheduleScreen
-import ru.olegivo.afs.schedule.presentation.models.ScheduleDestination
+import ru.olegivo.afs.schedule.presentation.ReserveScreen
+import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
+import ru.olegivo.afs.schedules.presentation.ScheduleScreen
+import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.Screen
 import javax.inject.Inject

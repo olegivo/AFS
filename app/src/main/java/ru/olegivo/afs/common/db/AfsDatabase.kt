@@ -3,8 +3,8 @@ package ru.olegivo.afs.common.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import ru.olegivo.afs.schedule.db.ScheduleDao
-import ru.olegivo.afs.schedule.db.models.ReservedSchedule
+import ru.olegivo.afs.schedules.db.ScheduleDao
+import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 
 
 @Database(

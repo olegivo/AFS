@@ -15,7 +15,7 @@ import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.common.presentation.Navigator
-import ru.olegivo.afs.schedule.presentation.models.ScheduleDestination
+import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import javax.inject.Inject
 import javax.inject.Named
 

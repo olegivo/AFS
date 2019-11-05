@@ -12,10 +12,10 @@ import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.DateProviderImpl
 import ru.olegivo.afs.preferences.di.PreferencesModule
-import ru.olegivo.afs.reserve.android.ReserveFragment
-import ru.olegivo.afs.reserve.di.ReserveModule
-import ru.olegivo.afs.schedule.android.ScheduleFragment
-import ru.olegivo.afs.schedule.di.ScheduleModule
+import ru.olegivo.afs.schedule.android.ReserveFragment
+import ru.olegivo.afs.schedule.di.ReserveModule
+import ru.olegivo.afs.schedules.android.ScheduleFragment
+import ru.olegivo.afs.schedules.di.ScheduleModule
 import javax.inject.Named
 
 @Module(
