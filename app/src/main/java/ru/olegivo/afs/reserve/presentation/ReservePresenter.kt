@@ -48,6 +48,7 @@ class ReservePresenter @Inject constructor(
                         ReserveResult.NoSlots.APriori -> view?.showHasNoSlotsAPriori()
                         ReserveResult.NoSlots.APosteriori -> view?.showHasNoSlotsAPosteriori()
                         ReserveResult.NameAndPhoneShouldBeStated -> view?.showNameAndPhoneShouldBeStated()
+                        ReserveResult.AlreadyReserved -> view?.showAlreadyReserved()
                     }
                 },
                 { t ->

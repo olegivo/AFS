@@ -180,6 +180,28 @@ class ReservePresenterTest : BaseTestOf<ReserveContract.Presenter>() {
         verify(view).showHasNoSlotsAPosteriori()
     }
 
+
+    @Test
+    fun `onReserveClicked show has already reserved WHEN already reserved, view bound`() {
+        val schedule = createSchedule()
+
+        instance.bindView(view)
+        val reserveContacts = createReserveContacts()
+        start(schedule, reserveContacts)
+
+        val fio = getRandomString()
+        val phone = getRandomString()
+        given(reserveUseCase.reserve(schedule, fio, phone))
+            .willReturn(Single.just(ReserveResult.AlreadyReserved))
+
+        instance.onReserveClicked(schedule, fio, phone)
+            .andTriggerActions()
+
+        verifyStart(schedule, reserveContacts)
+        verify(reserveUseCase).reserve(schedule, fio, phone)
+        verify(view).showAlreadyReserved()
+    }
+
     private fun verifyStart(schedule: Schedule, reserveContacts: ReserveContacts? = null) {
         verify(view).showScheduleToReserve(schedule)
         verify(savedReserveContactsUseCase).getReserveContacts()

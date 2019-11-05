@@ -175,6 +175,34 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     }
 
     @Test
+    fun `reserve returns ReserveResult-AlreadyReserved WHEN the time hasn't gone, has available slots, fio is not empty, phone is not empty, isReserved = true`() {
+        val now = Date()
+        val schedule = createSchedule().copy(
+            totalSlots = 21,
+            availableSlots = 1,
+            datetime = now.add(minutes = 1),
+            isReserved = true
+        )
+        val fio = getRandomString()
+        val phone = getRandomString()
+        given(reserveRepository.getAvailableSlots(schedule.clubId, schedule.id))
+            .willReturn(Single.just(1))
+        val reserve = Reserve(fio, phone, schedule.id, schedule.clubId)
+        given(reserveRepository.reserve(reserve))
+            .willReturn(Completable.complete())
+        given(scheduleRepository.setScheduleReserved(schedule)).willReturn(Completable.complete())
+
+        val result = instance.reserve(schedule, fio, phone)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        assertThat(result).isEqualTo(ReserveResult.AlreadyReserved)
+
+        verify(scheduleRepository).setScheduleReserved(schedule)
+    }
+
+    @Test
     fun `reserve returns ReserveResult-Success WHEN the time hasn't gone, has available slots, isReserved = false`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn(now)

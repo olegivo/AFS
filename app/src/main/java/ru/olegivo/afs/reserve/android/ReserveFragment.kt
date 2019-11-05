@@ -126,6 +126,10 @@ class ReserveFragment : Fragment(R.layout.fragment_reserve),
         showExitMessage("Не осталось свободных мест. Места закончились до того, как вы отправили запрос.")
     }
 
+    override fun showAlreadyReserved() {
+        showExitMessage("Вы уже записывались на это занятие")
+    }
+
     private fun showExitMessage(message: String) {
         buttonReserve.isEnabled = false
         Snackbar.make(

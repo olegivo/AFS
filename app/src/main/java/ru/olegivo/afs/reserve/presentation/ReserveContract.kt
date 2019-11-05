@@ -20,5 +20,6 @@ interface ReserveContract {
         fun showHasNoSlotsAPosteriori()
         fun showNameAndPhoneShouldBeStated()
         fun setReserveContacts(reserveContacts: ReserveContacts)
+        fun showAlreadyReserved()
     }
 }

@@ -17,6 +17,7 @@ class ReserveUseCaseImpl @Inject constructor(
     ReserveUseCase {
     override fun reserve(schedule: Schedule, fio: String, phone: String) =
         when {
+            schedule.isReserved -> Single.just(ReserveResult.AlreadyReserved)
             schedule.availableSlots ?: 0 == 0 -> Single.just(ReserveResult.NoSlots.APriori)
             dateProvider.getDate().after(schedule.datetime) -> Single.just(ReserveResult.TheTimeHasGone)
             fio.isEmpty() || phone.isEmpty() -> Single.just(ReserveResult.NameAndPhoneShouldBeStated)
