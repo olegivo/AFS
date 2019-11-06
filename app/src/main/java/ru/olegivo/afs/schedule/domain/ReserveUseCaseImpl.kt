@@ -6,7 +6,7 @@ import ru.olegivo.afs.extensions.andThen
 import ru.olegivo.afs.schedule.domain.models.Reserve
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
-import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import javax.inject.Inject
 
 class ReserveUseCaseImpl @Inject constructor(
@@ -15,21 +15,21 @@ class ReserveUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository
 ) :
     ReserveUseCase {
-    override fun reserve(schedule: Schedule, fio: String, phone: String) =
+    override fun reserve(sportsActivity: SportsActivity, fio: String, phone: String) =
         when {
-            schedule.isReserved -> Single.just(ReserveResult.AlreadyReserved)
-            schedule.availableSlots ?: 0 == 0 -> Single.just(ReserveResult.NoSlots.APriori)
-            dateProvider.getDate().after(schedule.datetime) -> Single.just(ReserveResult.TheTimeHasGone)
+            sportsActivity.isReserved -> Single.just(ReserveResult.AlreadyReserved)
+            sportsActivity.availableSlots ?: 0 == 0 -> Single.just(ReserveResult.NoSlots.APriori)
+            dateProvider.getDate().after(sportsActivity.schedule.datetime) -> Single.just(ReserveResult.TheTimeHasGone)
             fio.isEmpty() || phone.isEmpty() -> Single.just(ReserveResult.NameAndPhoneShouldBeStated)
-            else -> reserveRepository.getAvailableSlots(schedule.clubId, schedule.id)
+            else -> reserveRepository.getAvailableSlots(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
                 .flatMap { availableSlots ->
                     if (availableSlots == 0) {
                         Single.just(ReserveResult.NoSlots.APosteriori)
                     } else {
-                        val reserve = Reserve(fio, phone, schedule.id, schedule.clubId)
+                        val reserve = Reserve(fio, phone, sportsActivity.schedule.id, sportsActivity.schedule.clubId)
                         reserveRepository.reserve(reserve)
                             .andThen(Single.just(ReserveResult.Success))
                     }
                 }
-        }.andThen { scheduleRepository.setScheduleReserved(schedule) }
+        }.andThen { scheduleRepository.setScheduleReserved(sportsActivity.schedule) }
 }

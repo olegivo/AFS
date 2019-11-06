@@ -8,7 +8,7 @@ import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCase
-import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -30,9 +30,9 @@ class WeekSchedulePresenter @Inject constructor(
             .doOnSubscribe { view?.showProgress() }
             .doFinally { view?.hideProgress() }
             .subscribe(
-                { schedules ->
+                { sportsActivity ->
                     val today = dateProvider.getDate().getDateWithoutTime()
-                    view?.showSchedule(schedules.filter { it.preEntry && it.datetime.getDateWithoutTime() == today })
+                    view?.showSchedule(sportsActivity.filter { it.schedule.preEntry && it.schedule.datetime.getDateWithoutTime() == today })
                 },
                 {
                     view?.showErrorMessage(it.message ?: "Unknown error")
@@ -41,8 +41,8 @@ class WeekSchedulePresenter @Inject constructor(
             .addToComposite()
     }
 
-    override fun onScheduleClicked(schedule: Schedule) {
-        navigator.navigateTo(ReserveDestination(schedule))
+    override fun onSportsActivityClicked(sportsActivity: SportsActivity) {
+        navigator.navigateTo(ReserveDestination(sportsActivity))
     }
 }
 

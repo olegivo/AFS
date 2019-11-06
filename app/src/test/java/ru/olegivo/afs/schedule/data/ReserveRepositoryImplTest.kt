@@ -16,7 +16,7 @@ import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedule.domain.models.Reserve
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
-import ru.olegivo.afs.schedules.data.models.Slot
+import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.domain.models.createReserveContacts
 
 class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
@@ -44,7 +44,12 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         val scheduleId = getRandomLong()
         val expected = getRandomInt()
         given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
-            .willReturn(Single.just(listOf(Slot(getRandomLong(), expected))))
+            .willReturn(Single.just(listOf(
+                Slot(
+                    getRandomLong(),
+                    expected
+                )
+            )))
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
             .test().andTriggerActions()
@@ -60,7 +65,12 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
         given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
-            .willReturn(Single.just(listOf(Slot(getRandomLong(), null))))
+            .willReturn(Single.just(listOf(
+                Slot(
+                    getRandomLong(),
+                    null
+                )
+            )))
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
             .test().andTriggerActions()

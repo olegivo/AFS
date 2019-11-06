@@ -12,9 +12,9 @@ import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.schedule.data.ReserveNetworkSource
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
-import ru.olegivo.afs.schedules.data.models.createSlot
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 import java.util.*
@@ -46,17 +46,8 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
     fun `getCurrentWeekSchedule returns transformed data from network source`() {
         val clubId = getRandomInt()
         val schedules = listOf(createDataSchedule())
-        val ids = schedules.map { it.id }
-        val slots = ids.map(::createSlot)
 
         given(scheduleNetworkSource.getSchedule(clubId)).willReturn(Single.just(schedules))
-        given(scheduleNetworkSource.getSlots(clubId, ids)).willReturn(Single.just(slots))
-        val now = Date()
-        given(dateProvider.getDate()).willReturn(now)
-        val weekStart = firstDayOfWeek(now)
-        val nextWeekStart = weekStart.add(days = 7)
-        given(scheduleDbSource.getReservedScheduleIds(weekStart, nextWeekStart))
-            .willReturn(Single.just(listOf()))
 
         val result = instance.getCurrentWeekSchedule(clubId)
             .test().andTriggerActions()
@@ -67,9 +58,6 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
             .isEqualTo(schedules.map { it.activity })
 
         verify(scheduleNetworkSource).getSchedule(clubId)
-        verify(scheduleNetworkSource).getSlots(clubId, ids)
-        verify(dateProvider).getDate()
-        verify(scheduleDbSource).getReservedScheduleIds(weekStart, nextWeekStart)
     }
 
     @Test
@@ -83,4 +71,25 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
         verify(scheduleDbSource).setScheduleReserved(schedule)
     }
 
+    @Test
+    fun `getCurrentWeekReservedScheduleIds RETURNS ids from scheduleDbSource`() {
+        val now = Date()
+        given(dateProvider.getDate()).willReturn(now)
+        val weekStart = firstDayOfWeek(now)
+        val nextWeekStart = weekStart.add(days = 7)
+        val expectedIds = listOf(getRandomLong(), getRandomLong())
+        given(scheduleDbSource.getReservedScheduleIds(weekStart, nextWeekStart))
+            .willReturn(Single.just(expectedIds))
+
+        val ids = instance.getCurrentWeekReservedScheduleIds()
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
+            .values()
+            .single()
+
+        assertThat(ids).containsExactlyElementsOf(expectedIds)
+        verify(dateProvider).getDate()
+        verify(scheduleDbSource).getReservedScheduleIds(weekStart, nextWeekStart)
+    }
 }

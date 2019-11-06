@@ -2,8 +2,8 @@ package ru.olegivo.afs.schedule.domain
 
 import io.reactivex.Single
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
-import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 
 interface ReserveUseCase {
-    fun reserve(schedule: Schedule, fio: String, phone: String): Single<out ReserveResult>
+    fun reserve(sportsActivity: SportsActivity, fio: String, phone: String): Single<out ReserveResult>
 }

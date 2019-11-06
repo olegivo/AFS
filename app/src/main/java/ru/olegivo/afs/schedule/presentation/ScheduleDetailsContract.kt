@@ -2,17 +2,17 @@ package ru.olegivo.afs.schedule.presentation
 
 import ru.olegivo.afs.common.presentation.PresentationContract
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
-import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 
 interface ScheduleDetailsContract {
     interface Presenter : PresentationContract.Presenter<View> {
-        fun start(schedule: Schedule)
-        fun onReserveClicked(schedule: Schedule, fio: String, phone: String)
+        fun start(sportsActivity: SportsActivity)
+        fun onReserveClicked(sportsActivity: SportsActivity, fio: String, phone: String)
         fun saveReserveContacts(reserveContacts: ReserveContacts)
     }
 
     interface View : PresentationContract.View {
-        fun showScheduleToReserve(schedule: Schedule)
+        fun showScheduleToReserve(sportsActivity: SportsActivity)
         fun showSuccessReserved()
         fun showTryLater()
         fun showTheTimeHasGone()

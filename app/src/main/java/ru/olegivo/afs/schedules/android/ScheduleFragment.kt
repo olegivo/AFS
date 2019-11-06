@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_schedule.progressBar
 import kotlinx.android.synthetic.main.fragment_schedule.schedule_recycler_view
 import ru.olegivo.afs.R
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
-import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.ScheduleContract
 import javax.inject.Inject
 import javax.inject.Named
@@ -32,14 +32,14 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule), ScheduleContract.
         super.onAttach(context)
     }
 
-    private val schedulesAdapter: SchedulesAdapter by lazy {
-        SchedulesAdapter(requireContext(), presenter::onScheduleClicked)
+    private val sportsActivitiesAdapter: SportsActivitiesAdapter by lazy {
+        SportsActivitiesAdapter(requireContext(), presenter::onSportsActivityClicked)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         schedule_recycler_view.layoutManager = LinearLayoutManager(requireContext())
-        schedule_recycler_view.adapter = schedulesAdapter
+        schedule_recycler_view.adapter = sportsActivitiesAdapter
     }
 
     override fun onStart() {
@@ -53,8 +53,8 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule), ScheduleContract.
         super.onStop()
     }
 
-    override fun showSchedule(schedules: List<Schedule>) {
-        schedulesAdapter.items = schedules.toMutableList()
+    override fun showSchedule(sportsActivities: List<SportsActivity>) {
+        sportsActivitiesAdapter.items = sportsActivities.toMutableList()
     }
 
     override fun showErrorMessage(message: String) {

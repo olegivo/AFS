@@ -6,7 +6,7 @@ import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.SavedReserveContactsUseCase
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
-import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -18,8 +18,8 @@ class ScheduleDetailsPresenter @Inject constructor(
     BasePresenter<ScheduleDetailsContract.View>(),
     ScheduleDetailsContract.Presenter {
 
-    override fun start(schedule: Schedule) {
-        view?.showScheduleToReserve(schedule)
+    override fun start(sportsActivity: SportsActivity) {
+        view?.showScheduleToReserve(sportsActivity)
         savedReserveContactsUseCase.getReserveContacts()
             .observeOn(mainScheduler)
             .subscribe(
@@ -37,8 +37,8 @@ class ScheduleDetailsPresenter @Inject constructor(
             .addToComposite()
     }
 
-    override fun onReserveClicked(schedule: Schedule, fio: String, phone: String) {
-        reserveUseCase.reserve(schedule, fio, phone)
+    override fun onReserveClicked(sportsActivity: SportsActivity, fio: String, phone: String) {
+        reserveUseCase.reserve(sportsActivity, fio, phone)
             .observeOn(mainScheduler)
             .subscribe(
                 { reserveResult ->

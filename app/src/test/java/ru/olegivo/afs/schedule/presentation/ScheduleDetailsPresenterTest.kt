@@ -13,9 +13,9 @@ import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.SavedReserveContactsUseCase
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
-import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.domain.models.createReserveContacts
-import ru.olegivo.afs.schedules.domain.models.createSchedule
+import ru.olegivo.afs.schedules.domain.models.createSportsActivity
 
 class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presenter>() {
     override fun createInstance() = ScheduleDetailsPresenter(
@@ -43,23 +43,23 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
     @Test
     fun `start shows schedule WHEN view bound, has saved reserve contacts`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
         val reserveContacts = createReserveContacts()
-        start(schedule, reserveContacts)
+        start(sportsActivity, reserveContacts)
 
-        verifyStart(schedule, reserveContacts)
+        verifyStart(sportsActivity, reserveContacts)
     }
 
     @Test
     fun `start shows schedule WHEN view bound, has no saved reserve contacts`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
-        start(schedule)
+        start(sportsActivity)
 
-        verifyStart(schedule)
+        verifyStart(sportsActivity)
     }
 
     @Test
@@ -76,141 +76,141 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
     @Test
     fun `onReserveClicked show success WHEN reserve success, view bound`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
         val reserveContacts = createReserveContacts()
-        start(schedule, reserveContacts)
+        start(sportsActivity, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
-        given(reserveUseCase.reserve(schedule, fio, phone))
+        given(reserveUseCase.reserve(sportsActivity, fio, phone))
             .willReturn(Single.just(ReserveResult.Success))
 
-        instance.onReserveClicked(schedule, fio, phone)
+        instance.onReserveClicked(sportsActivity, fio, phone)
             .andTriggerActions()
 
-        verifyStart(schedule, reserveContacts)
-        verify(reserveUseCase).reserve(schedule, fio, phone)
+        verifyStart(sportsActivity, reserveContacts)
+        verify(reserveUseCase).reserve(sportsActivity, fio, phone)
         verify(view).showSuccessReserved()
     }
 
     @Test
     fun `onReserveClicked show try later WHEN error, view bound`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
         val reserveContacts = createReserveContacts()
-        start(schedule, reserveContacts)
+        start(sportsActivity, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
         val exception = RuntimeException(getRandomString())
-        given(reserveUseCase.reserve(schedule, fio, phone))
+        given(reserveUseCase.reserve(sportsActivity, fio, phone))
             .willReturn(Single.error(exception))
 
-        instance.onReserveClicked(schedule, fio, phone)
+        instance.onReserveClicked(sportsActivity, fio, phone)
             .andTriggerActions()
 
-        verifyStart(schedule, reserveContacts)
-        verify(reserveUseCase).reserve(schedule, fio, phone)
+        verifyStart(sportsActivity, reserveContacts)
+        verify(reserveUseCase).reserve(sportsActivity, fio, phone)
         verify(view).showTryLater()
     }
 
     @Test
     fun `onReserveClicked show the time has gone WHEN the time has gone, view bound`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
         val reserveContacts = createReserveContacts()
-        start(schedule, reserveContacts)
+        start(sportsActivity, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
-        given(reserveUseCase.reserve(schedule, fio, phone))
+        given(reserveUseCase.reserve(sportsActivity, fio, phone))
             .willReturn(Single.just(ReserveResult.TheTimeHasGone))
 
-        instance.onReserveClicked(schedule, fio, phone)
+        instance.onReserveClicked(sportsActivity, fio, phone)
             .andTriggerActions()
 
-        verifyStart(schedule, reserveContacts)
-        verify(reserveUseCase).reserve(schedule, fio, phone)
+        verifyStart(sportsActivity, reserveContacts)
+        verify(reserveUseCase).reserve(sportsActivity, fio, phone)
         verify(view).showTheTimeHasGone()
     }
 
     @Test
     fun `onReserveClicked show has no slots a priori WHEN a priori has no slots, view bound`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
         val reserveContacts = createReserveContacts()
-        start(schedule, reserveContacts)
+        start(sportsActivity, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
-        given(reserveUseCase.reserve(schedule, fio, phone))
+        given(reserveUseCase.reserve(sportsActivity, fio, phone))
             .willReturn(Single.just(ReserveResult.NoSlots.APriori))
 
-        instance.onReserveClicked(schedule, fio, phone)
+        instance.onReserveClicked(sportsActivity, fio, phone)
             .andTriggerActions()
 
-        verifyStart(schedule, reserveContacts)
-        verify(reserveUseCase).reserve(schedule, fio, phone)
+        verifyStart(sportsActivity, reserveContacts)
+        verify(reserveUseCase).reserve(sportsActivity, fio, phone)
         verify(view).showHasNoSlotsAPriori()
     }
 
     @Test
     fun `onReserveClicked show has no slots a posteriori WHEN a posteriori has no slots, view bound`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
         val reserveContacts = createReserveContacts()
-        start(schedule, reserveContacts)
+        start(sportsActivity, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
-        given(reserveUseCase.reserve(schedule, fio, phone))
+        given(reserveUseCase.reserve(sportsActivity, fio, phone))
             .willReturn(Single.just(ReserveResult.NoSlots.APosteriori))
 
-        instance.onReserveClicked(schedule, fio, phone)
+        instance.onReserveClicked(sportsActivity, fio, phone)
             .andTriggerActions()
 
-        verifyStart(schedule, reserveContacts)
-        verify(reserveUseCase).reserve(schedule, fio, phone)
+        verifyStart(sportsActivity, reserveContacts)
+        verify(reserveUseCase).reserve(sportsActivity, fio, phone)
         verify(view).showHasNoSlotsAPosteriori()
     }
 
 
     @Test
     fun `onReserveClicked show has already reserved WHEN already reserved, view bound`() {
-        val schedule = createSchedule()
+        val sportsActivity = createSportsActivity()
 
         instance.bindView(view)
         val reserveContacts = createReserveContacts()
-        start(schedule, reserveContacts)
+        start(sportsActivity, reserveContacts)
 
         val fio = getRandomString()
         val phone = getRandomString()
-        given(reserveUseCase.reserve(schedule, fio, phone))
+        given(reserveUseCase.reserve(sportsActivity, fio, phone))
             .willReturn(Single.just(ReserveResult.AlreadyReserved))
 
-        instance.onReserveClicked(schedule, fio, phone)
+        instance.onReserveClicked(sportsActivity, fio, phone)
             .andTriggerActions()
 
-        verifyStart(schedule, reserveContacts)
-        verify(reserveUseCase).reserve(schedule, fio, phone)
+        verifyStart(sportsActivity, reserveContacts)
+        verify(reserveUseCase).reserve(sportsActivity, fio, phone)
         verify(view).showAlreadyReserved()
     }
 
-    private fun verifyStart(schedule: Schedule, reserveContacts: ReserveContacts? = null) {
-        verify(view).showScheduleToReserve(schedule)
+    private fun verifyStart(sportsActivity: SportsActivity, reserveContacts: ReserveContacts? = null) {
+        verify(view).showScheduleToReserve(sportsActivity)
         verify(savedReserveContactsUseCase).getReserveContacts()
         reserveContacts?.let { verify(view).setReserveContacts(it) }
     }
 
-    private fun start(schedule: Schedule, reserveContacts: ReserveContacts? = null) {
+    private fun start(sportsActivity: SportsActivity, reserveContacts: ReserveContacts? = null) {
         given(savedReserveContactsUseCase.getReserveContacts())
             .willReturn(reserveContacts.toMaybe())
-        instance.start(schedule).andTriggerActions()
+        instance.start(sportsActivity).andTriggerActions()
     }
 }

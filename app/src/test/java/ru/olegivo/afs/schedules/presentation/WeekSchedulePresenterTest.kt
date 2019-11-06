@@ -21,8 +21,8 @@ import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCase
-import ru.olegivo.afs.schedules.domain.models.Schedule
-import ru.olegivo.afs.schedules.domain.models.createSchedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
+import ru.olegivo.afs.schedules.domain.models.createSportsActivity
 import java.util.*
 
 
@@ -61,10 +61,10 @@ class WeekSchedulePresenterTest : BaseTest() {
         weekSchedulePresenter.start()
             .andTriggerActions()
 
-        val shownSchedules = view.capture { param: List<Schedule> -> showSchedule(param) }
+        val shownSchedules = view.capture { param: List<SportsActivity> -> showSchedule(param) }
         val today = testData.now.getDateWithoutTime()
         val todaySchedules =
-            testData.weekSchedule.filter { it.preEntry && it.datetime.getDateWithoutTime() == today }
+            testData.weekSchedule.filter { it.schedule.preEntry && it.schedule.datetime.getDateWithoutTime() == today }
 
         assertThat(shownSchedules).containsExactlyElementsOf(todaySchedules)
 
@@ -111,7 +111,7 @@ class WeekSchedulePresenterTest : BaseTest() {
         weekSchedulePresenter.start()
             .andTriggerActions()
 
-        val shownSchedules = view.capture { param: List<Schedule> -> showSchedule(param) }
+        val shownSchedules = view.capture { param: List<SportsActivity> -> showSchedule(param) }
         verifyGetCurrentWeekSchedule(testData)
 
         verifyNoMoreInteractions(view)
@@ -119,7 +119,7 @@ class WeekSchedulePresenterTest : BaseTest() {
 
         val schedule = shownSchedules.random()
 
-        weekSchedulePresenter.onScheduleClicked(schedule)
+        weekSchedulePresenter.onSportsActivityClicked(schedule)
 
         verify(navigator).navigateTo(ReserveDestination(schedule))
     }
@@ -157,7 +157,7 @@ class WeekSchedulePresenterTest : BaseTest() {
         val weekSchedule = (0..6).flatMap { dayOfWeek ->
             val scheduleDate = firstDayOfWeek.add(days = dayOfWeek)
             (1..23).map { hoursOfDay ->
-                createSchedule().copy(datetime = scheduleDate.add(hours = hoursOfDay))
+                createSportsActivity(datetime = scheduleDate.add(hours = hoursOfDay))
             }
         }
     }

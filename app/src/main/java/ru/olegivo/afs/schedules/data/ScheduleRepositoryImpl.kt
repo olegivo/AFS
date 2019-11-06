@@ -8,6 +8,7 @@ import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.Slot
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -22,40 +23,36 @@ class ScheduleRepositoryImpl @Inject constructor(
         scheduleDbSource.setScheduleReserved(schedule)
 
     override fun getCurrentWeekSchedule(clubId: Int): Single<List<Schedule>> =
-        scheduleNetworkSource.getSchedule(clubId).flatMap { schedules ->
-            scheduleNetworkSource.getSlots(clubId, schedules.map { it.id })
-                .flatMap { slots ->
-                    val slotsById = slots.associate { it.id to it.slots }
-                    getCurrentWeekReservedScheduleIds()
-                        .observeOn(computationScheduler)
-                        .flatMap { currentWeekReservedScheduleIds ->
-                            Single.just(
-                                schedules.map {
-                                    with(it) {
-                                        Schedule( // TODO: mapper
-                                            id = id,
-                                            clubId = clubId,
-                                            group = group,
-                                            activity = activity,
-                                            datetime = datetime,
-                                            length = length,
-                                            room = room,
-                                            trainer = trainer,
-                                            preEntry = preEntry,
-                                            totalSlots = totalSlots,
-                                            availableSlots = slotsById[id] ?: 0,
-                                            isReserved = currentWeekReservedScheduleIds.contains(id)
-                                        )
-                                    }
-                                })
-                        }
-
+        scheduleNetworkSource.getSchedule(clubId)
+            .observeOn(computationScheduler)
+            .map { schedules ->
+                schedules.map {
+                    with(it) {
+                        Schedule( // TODO: mapper
+                            id = id,
+                            clubId = clubId,
+                            group = group,
+                            activity = activity,
+                            datetime = datetime,
+                            length = length,
+                            room = room,
+                            trainer = trainer,
+                            preEntry = preEntry,
+                            totalSlots = totalSlots
+                        )
+                    }
                 }
-        }
+            }
 
-    private fun getCurrentWeekReservedScheduleIds(): Single<List<Long>> {
+    override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> =
+        scheduleNetworkSource.getSlots(clubId, ids)
+
+    override fun getCurrentWeekReservedScheduleIds(): Single<List<Long>> {
         val now = dateProvider.getDate()
         val weekStart = firstDayOfWeek(now)
-        return scheduleDbSource.getReservedScheduleIds(weekStart, weekStart.add(days = 7))
+        return scheduleDbSource.getReservedScheduleIds(
+            weekStart,
+            weekStart.add(days = 7)
+        )
     }
 }

@@ -10,7 +10,7 @@ import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.data.ScheduleRepositoryImpl
 import ru.olegivo.afs.schedules.db.ScheduleDbSourceImpl
 import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCase
-import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCaseImpl
+import ru.olegivo.afs.schedules.domain.GetCurrentWeekSportsActivitiesUseCaseImpl
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
 import ru.olegivo.afs.schedules.presentation.ScheduleContract
@@ -27,7 +27,7 @@ abstract class ScheduleModule {
     abstract fun bindSchedulePresenter(impl: WeekSchedulePresenter): ScheduleContract.Presenter
 
     @Binds
-    abstract fun bindGetCurrentWeekScheduleUseCase(impl: GetCurrentWeekScheduleUseCaseImpl): GetCurrentWeekScheduleUseCase
+    abstract fun bindGetCurrentWeekScheduleUseCase(impl: GetCurrentWeekSportsActivitiesUseCaseImpl): GetCurrentWeekScheduleUseCase
 
     @Binds
     abstract fun bindScheduleRepository(impl: ScheduleRepositoryImpl): ScheduleRepository

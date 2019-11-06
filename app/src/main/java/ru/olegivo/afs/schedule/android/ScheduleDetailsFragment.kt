@@ -19,6 +19,7 @@ import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
 import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -26,7 +27,7 @@ import javax.inject.Inject
 class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
     ScheduleDetailsContract.View {
 
-    private lateinit var schedule: Schedule
+    private lateinit var sportsActivity: SportsActivity
 
     @Inject
     lateinit var presenter: ScheduleDetailsContract.Presenter
@@ -41,7 +42,7 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        schedule = requireArguments().toSchedule()
+        sportsActivity = requireArguments().toSportsActivity()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,7 +50,7 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
 
         buttonReserve.setOnClickListener {
             presenter.onReserveClicked(
-                schedule,
+                sportsActivity,
                 textInputLayoutFio.editText!!.text.toString(),
                 textInputLayoutPhone.editText!!.text.toString()
             )
@@ -59,7 +60,7 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
     override fun onStart() {
         super.onStart()
         presenter.bindView(this)
-        presenter.start(schedule)
+        presenter.start(sportsActivity)
     }
 
     override fun onStop() {
@@ -73,16 +74,16 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
         super.onStop()
     }
 
-    override fun showScheduleToReserve(schedule: Schedule) {
-        textViewGroup.text = schedule.group
-        textViewActivity.text = schedule.activity
-        textViewDuty.text = hoursMinutesFormat.format(schedule.datetime)
-        schedule.totalSlots?.let {
+    override fun showScheduleToReserve(sportsActivity: SportsActivity) {
+        textViewGroup.text = sportsActivity.schedule.group
+        textViewActivity.text = sportsActivity.schedule.activity
+        textViewDuty.text = hoursMinutesFormat.format(sportsActivity.schedule.datetime)
+        sportsActivity.schedule.totalSlots?.let {
             textViewSlots.text =
                 requireContext().getString(
                     R.string.slots_count,
-                    schedule.availableSlots,
-                    schedule.totalSlots
+                    sportsActivity.availableSlots,
+                    sportsActivity.schedule.totalSlots
                 )
         } ?: run {
             textViewSlots.visibility = View.GONE
@@ -143,9 +144,9 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
 
     @SuppressLint("ConstantLocale")
     companion object {
-        fun createInstance(schedule: Schedule): ScheduleDetailsFragment {
+        fun createInstance(sportsActivity: SportsActivity): ScheduleDetailsFragment {
             return ScheduleDetailsFragment().apply {
-                arguments = schedule.toBundle()
+                arguments = sportsActivity.toBundle()
             }
         }
 
@@ -176,36 +177,38 @@ private object Fields {
 }
 
 
-private fun Schedule.toBundle(): Bundle {
+private fun SportsActivity.toBundle(): Bundle {
     return Bundle().apply {
-        putLong(Fields.id, id)
-        putInt(Fields.clubId, clubId)
+        putLong(Fields.id, schedule.id)
+        putInt(Fields.clubId, schedule.clubId)
         availableSlots?.let { putInt(Fields.availableSlots, it) }
-        totalSlots?.let { putInt(Fields.totalSlots, it) }
-        putLong(Fields.datetime, datetime.time)
-        putString(Fields.activity, activity)
-        putString(Fields.group, group)
-        putInt(Fields.length, length)
-        putBoolean(Fields.preEntry, preEntry)
-        room?.let { putString(Fields.room, it) }
-        trainer?.let { putString(Fields.trainer, it) }
+        schedule.totalSlots?.let { putInt(Fields.totalSlots, it) }
+        putLong(Fields.datetime, schedule.datetime.time)
+        putString(Fields.activity, schedule.activity)
+        putString(Fields.group, schedule.group)
+        putInt(Fields.length, schedule.length)
+        putBoolean(Fields.preEntry, schedule.preEntry)
+        schedule.room?.let { putString(Fields.room, it) }
+        schedule.trainer?.let { putString(Fields.trainer, it) }
         putBoolean(Fields.isReserved, isReserved)
     }
 }
 
-private fun Bundle.toSchedule(): Schedule {
-    return Schedule(
-        id = requireLong(Fields.id),
-        clubId = requireInt(Fields.clubId),
+private fun Bundle.toSportsActivity(): SportsActivity {
+    return SportsActivity(
+        schedule = Schedule(
+            id = requireLong(Fields.id),
+            clubId = requireInt(Fields.clubId),
+            totalSlots = getIntOrNull(Fields.totalSlots),
+            datetime = requireDate(Fields.datetime),
+            activity = requireString(Fields.activity),
+            group = requireString(Fields.group),
+            length = requireInt(Fields.length),
+            preEntry = requireBoolean(Fields.preEntry),
+            room = getStringOrNull(Fields.room),
+            trainer = getStringOrNull(Fields.trainer)
+        ),
         availableSlots = getIntOrNull(Fields.availableSlots),
-        totalSlots = getIntOrNull(Fields.totalSlots),
-        datetime = requireDate(Fields.datetime),
-        activity = requireString(Fields.activity),
-        group = requireString(Fields.group),
-        length = requireInt(Fields.length),
-        preEntry = requireBoolean(Fields.preEntry),
-        room = getStringOrNull(Fields.room),
-        trainer = getStringOrNull(Fields.trainer),
         isReserved = requireBoolean(Fields.isReserved)
     )
 }
