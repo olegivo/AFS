@@ -3,6 +3,7 @@ package ru.olegivo.afs
 import android.app.Application
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import net.danlew.android.joda.JodaTimeAndroid
 import ru.olegivo.afs.common.di.DaggerAppComponent
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,6 +19,7 @@ class AfsApplication : Application(), HasAndroidInjector {
             Timber.plant(Timber.DebugTree())
         }
 
+        JodaTimeAndroid.init(this)
         DaggerAppComponent.factory().create(this).inject(this)
     }
 
