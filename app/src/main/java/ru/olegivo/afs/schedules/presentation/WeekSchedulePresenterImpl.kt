@@ -35,7 +35,7 @@ class WeekSchedulePresenter @Inject constructor(
                     view?.showSchedule(sportsActivity.filter { it.schedule.preEntry && it.schedule.datetime.getDateWithoutTime() == today })
                 },
                 {
-                    view?.showErrorMessage(it.message ?: "Unknown error")
+                    onError(it, it.message ?: "Unknown error")
                 }
             )
             .addToComposite()
