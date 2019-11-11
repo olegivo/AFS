@@ -47,7 +47,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             datetime = now.add(minutes = 1),
             isReserved = false
         )
-        given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
         val phone = getRandomString()
 
@@ -57,7 +56,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             .values().single()
 
         assertThat(result).isEqualTo(ReserveResult.NoSlots.APriori)
-        verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
     }
 
     @Test
@@ -72,7 +70,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         )
         given(reserveRepository.getAvailableSlots(sportsActivity.schedule.clubId, sportsActivity.schedule.id))
             .willReturn(Single.just(0))
-        given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
         val phone = getRandomString()
 
@@ -85,7 +82,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
 
         verify(dateProvider).getDate()
         verify(reserveRepository).getAvailableSlots(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
-        verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
     }
 
     @Test
@@ -98,7 +94,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             datetime = now.add(minutes = -1),
             isReserved = false
         )
-        given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn(Completable.complete())
         val fio = getRandomString()
         val phone = getRandomString()
 
@@ -110,7 +105,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         assertThat(result).isEqualTo(ReserveResult.TheTimeHasGone)
 
         verify(dateProvider).getDate()
-        verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
     }
 
     @Test
@@ -131,7 +125,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         given(reserveRepository.reserve(reserve)).willReturn(
             Completable.complete()
         )
-        given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn(Completable.complete())
 
         val result = instance.reserve(sportsActivity, fio, phone)
             .test().andTriggerActions()
@@ -141,7 +134,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         assertThat(result).isEqualTo(ReserveResult.NameAndPhoneShouldBeStated)
 
         verify(dateProvider).getDate()
-        verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
     }
 
     @Test
@@ -161,7 +153,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         val reserve = Reserve(fio, phone, sportsActivity.schedule.id, sportsActivity.schedule.clubId)
         given(reserveRepository.reserve(reserve))
             .willReturn(Completable.complete())
-        given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn(Completable.complete())
 
         val result = instance.reserve(sportsActivity, fio, phone)
             .test().andTriggerActions()
@@ -171,7 +162,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         assertThat(result).isEqualTo(ReserveResult.NameAndPhoneShouldBeStated)
 
         verify(dateProvider).getDate()
-        verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
     }
 
     @Test
@@ -190,7 +180,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         val reserve = Reserve(fio, phone, sportsActivity.schedule.id, sportsActivity.schedule.clubId)
         given(reserveRepository.reserve(reserve))
             .willReturn(Completable.complete())
-        given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn(Completable.complete())
 
         val result = instance.reserve(sportsActivity, fio, phone)
             .test().andTriggerActions()
@@ -198,8 +187,6 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             .values().single()
 
         assertThat(result).isEqualTo(ReserveResult.AlreadyReserved)
-
-        verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
     }
 
     @Test
