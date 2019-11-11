@@ -3,6 +3,7 @@ package ru.olegivo.afs.schedules.network
 import android.util.Log
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.schedulers.TestScheduler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -14,13 +15,20 @@ import ru.olegivo.afs.schedules.network.models.Schedules
 class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
 
     @Test
-    fun getSchedule() {
+    fun getSchedule_all_clubs() {
         val scheduler = TestScheduler()
-        val testObserver = ClubsNetworkSourceImpl(api, scheduler).getClubs()
-            .flatMap { clubs ->
-                ScheduleNetworkSourceImpl(api, scheduler, scheduler)
-                    .getSchedule(clubs.first().id)
+        val flatMapObservable = ClubsNetworkSourceImpl(api, scheduler).getClubs()
+            .flatMapObservable { clubs ->
+                val scheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler, scheduler)
+                val observables = Observable.fromIterable(clubs.map { it.id })
+                    .map { clubId ->
+                        scheduleNetworkSource
+                            .getSchedule(clubId)
+                            .toObservable()
+                    }
+                Observable.merge(observables)
             }
+        val testObserver = flatMapObservable
             .test()
 
         scheduler.triggerActions()
@@ -29,14 +37,18 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
             testObserver
                 .assertNoErrors()
                 .values()
-                .single()
+
         assertThat(schedules).isNotEmpty
+        schedules.forEach {
+            assertThat(it).isNotEmpty
+        }
     }
 
     @Test
-    fun `getSchedule_flatten_next`() {
+    fun getSchedule_flatten_next() {
         val scheduler = TestScheduler()
-        val scheduleNetworkSource: ScheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler, scheduler)
+        val scheduleNetworkSource: ScheduleNetworkSource =
+            ScheduleNetworkSourceImpl(api, scheduler, scheduler)
         val testObserver = ClubsNetworkSourceImpl(api, scheduler).getClubs()
             .flatMap { clubs ->
                 scheduleNetworkSource
@@ -66,9 +78,10 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
     }
 
     @Test
-    fun `getSchedule_flatten_prev`() {
+    fun getSchedule_flatten_prev() {
         val scheduler = TestScheduler()
-        val scheduleNetworkSource: ScheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler, scheduler)
+        val scheduleNetworkSource: ScheduleNetworkSource =
+            ScheduleNetworkSourceImpl(api, scheduler, scheduler)
         val testObserver = ClubsNetworkSourceImpl(api, scheduler).getClubs()
             .flatMap { clubs ->
                 scheduleNetworkSource

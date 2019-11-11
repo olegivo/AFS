@@ -43,7 +43,7 @@ data class Schedule(
     val id: Long,
     val length: Int,
 //    val level: Any?,
-    val level: Int?,
+    val level: String?,
     val new: Boolean,
     val popular: Boolean,
     val preEntry: Boolean,
@@ -120,7 +120,7 @@ data class Group(
 
 @JsonClass(generateAdapter = true)
 data class ActivityX(
-    val color: String,
+    val color: String?,
     val id: Int,
     val title: String,
     val type: String,
