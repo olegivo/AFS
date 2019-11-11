@@ -24,6 +24,10 @@ class FavoritesDbSourceImpl @Inject constructor(
                 favoriteDao.addFilter(it)
             }
 
+    override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
+        with(favoriteFilter) { favoriteDao.removeFilter(group, activity, dayOfWeek, timeOfDay) }
+            .subscribeOn(ioScheduler)
+
     override fun getFavoriteFilters(): Single<List<FavoriteFilter>> =
         favoriteDao.getFavoriteFilters()
             .subscribeOn(ioScheduler)

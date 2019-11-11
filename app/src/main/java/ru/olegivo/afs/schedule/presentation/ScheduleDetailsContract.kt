@@ -2,18 +2,16 @@ package ru.olegivo.afs.schedule.presentation
 
 import ru.olegivo.afs.common.presentation.PresentationContract
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
-import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 
 interface ScheduleDetailsContract {
     interface Presenter : PresentationContract.Presenter<View> {
-        fun start(sportsActivity: SportsActivity)
-        fun onReserveClicked(sportsActivity: SportsActivity, fio: String, phone: String)
-        fun saveReserveContacts(reserveContacts: ReserveContacts)
-        fun onFavoriteClick(
-            schedule: Schedule,
-            isFavorite: Boolean
+        fun onReserveClicked(
+            hasAcceptedAgreement: Boolean
         )
+        fun onFavoriteClick()
+
+        fun onAgreementClicked()
     }
 
     interface View : PresentationContract.View {
@@ -26,6 +24,11 @@ interface ScheduleDetailsContract {
         fun showNameAndPhoneShouldBeStated()
         fun setReserveContacts(reserveContacts: ReserveContacts)
         fun showAlreadyReserved()
-        fun showIsFavorite(isFavorite: Boolean)
+        fun setIsFavorite(isFavorite: Boolean)
+        fun showHaveToAcceptAgreement()
+        fun setAgreementAccepted()
+        fun getSportsActivity(): SportsActivity
+        fun getReserveContacts(): ReserveContacts?
+        fun isAgreementAccepted(): Boolean
     }
 }

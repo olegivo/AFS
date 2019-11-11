@@ -15,8 +15,14 @@ class ReserveUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository
 ) :
     ReserveUseCase {
-    override fun reserve(sportsActivity: SportsActivity, fio: String, phone: String) =
+    override fun reserve(
+        sportsActivity: SportsActivity,
+        fio: String,
+        phone: String,
+        hasAcceptedAgreement: Boolean
+    ) =
         when {
+            !hasAcceptedAgreement -> Single.just(ReserveResult.HaveToAcceptAgreement)
             sportsActivity.isReserved -> Single.just(ReserveResult.AlreadyReserved)
             sportsActivity.availableSlots ?: 0 == 0 -> Single.just(ReserveResult.NoSlots.APriori)
             dateProvider.getDate().after(sportsActivity.schedule.datetime) -> Single.just(

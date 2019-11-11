@@ -8,10 +8,12 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_schedule_details.buttonReserve
+import kotlinx.android.synthetic.main.fragment_schedule_details.checkBoxAgreement
 import kotlinx.android.synthetic.main.fragment_schedule_details.imageViewIsFavorite
 import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutFio
 import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutPhone
 import kotlinx.android.synthetic.main.fragment_schedule_details.textViewActivity
+import kotlinx.android.synthetic.main.fragment_schedule_details.textViewAgreement
 import kotlinx.android.synthetic.main.fragment_schedule_details.textViewDuty
 import kotlinx.android.synthetic.main.fragment_schedule_details.textViewGroup
 import kotlinx.android.synthetic.main.fragment_schedule_details.textViewSlots
@@ -27,9 +29,6 @@ import javax.inject.Inject
 
 class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
     ScheduleDetailsContract.View {
-
-    private lateinit var sportsActivity: SportsActivity
-
     @Inject
     lateinit var presenter: ScheduleDetailsContract.Presenter
 
@@ -41,11 +40,6 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
         super.onAttach(context)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sportsActivity = requireArguments().toSportsActivity()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -53,34 +47,39 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
 
         buttonReserve.setOnClickListener {
             presenter.onReserveClicked(
-                sportsActivity,
-                textInputLayoutFio.editText!!.text.toString(),
-                textInputLayoutPhone.editText!!.text.toString()
+                checkBoxAgreement.isChecked
             )
         }
         imageViewIsFavorite.setOnClickListener {
-            presenter.onFavoriteClick(sportsActivity.schedule, sportsActivity.isFavorite)
+            presenter.onFavoriteClick()
+        }
+        textViewAgreement.setOnClickListener {
+            presenter.onAgreementClicked()
         }
     }
 
-    override fun showIsFavorite(isFavorite: Boolean) {
+    override fun isAgreementAccepted() = checkBoxAgreement.isChecked
+
+    override fun getSportsActivity() = requireArguments().toSportsActivity()
+
+    override fun getReserveContacts() =
+        ReserveContacts(
+            fio = textInputLayoutFio.editText!!.text.toString(),
+            phone = textInputLayoutPhone.editText!!.text.toString()
+        )
+
+    override fun setIsFavorite(isFavorite: Boolean) { // TODO: need made and rename to showIsFavorite
         imageViewIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
+        requireArguments().putBoolean(Fields.isFavorite, isFavorite)
     }
 
     override fun onStart() {
         super.onStart()
         presenter.bindView(this)
-        presenter.start(sportsActivity)
     }
 
     override fun onStop() {
         presenter.unbindView()
-        presenter.saveReserveContacts(
-            ReserveContacts(
-                textInputLayoutFio.editText!!.text.toString(),
-                textInputLayoutPhone.editText!!.text.toString()
-            )
-        )
         super.onStop()
     }
 
@@ -104,6 +103,14 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
         showExitMessage("Вы записаны на занятие")
     }
 
+    override fun showHaveToAcceptAgreement() {
+        Snackbar.make(
+            requireView(),
+            "Необходимо согласиться с обработкой персональных данных",
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
     override fun showTryLater() {
         Snackbar.make(
             requireView(),
@@ -123,6 +130,10 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
     override fun setReserveContacts(reserveContacts: ReserveContacts) {
         textInputLayoutFio.editText!!.setText(reserveContacts.fio)
         textInputLayoutPhone.editText!!.setText(reserveContacts.phone)
+    }
+
+    override fun setAgreementAccepted() {
+        checkBoxAgreement.isChecked = true
     }
 
     override fun showTheTimeHasGone() {

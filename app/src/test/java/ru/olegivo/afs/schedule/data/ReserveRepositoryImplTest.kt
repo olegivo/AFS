@@ -9,6 +9,7 @@ import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
@@ -152,5 +153,34 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
 
         verify(preferencesDataSource).getString(ReserveRepositoryImpl.Fio)
         verify(preferencesDataSource).getString(ReserveRepositoryImpl.Phone)
+    }
+
+    @Test
+    fun `isAgreementAccepted RETURNS value from prefs`() {
+        val expected = getRandomBoolean()
+        given(preferencesDataSource.getBoolean(ReserveRepositoryImpl.IsAgreementAccepted))
+            .willReturn(Maybe.just(expected))
+
+        val isAgreementAccepted = instance.isAgreementAccepted()
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
+            .values().single()
+
+        assertThat(isAgreementAccepted).isEqualTo(expected)
+        verify(preferencesDataSource).getBoolean(ReserveRepositoryImpl.IsAgreementAccepted)
+    }
+
+    @Test
+    fun `setAgreementAccepted`() {
+        given(preferencesDataSource.putBoolean(ReserveRepositoryImpl.IsAgreementAccepted, true))
+            .willReturn(Completable.complete())
+
+        instance.setAgreementAccepted()
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
+
+        verify(preferencesDataSource).putBoolean(ReserveRepositoryImpl.IsAgreementAccepted, true)
     }
 }

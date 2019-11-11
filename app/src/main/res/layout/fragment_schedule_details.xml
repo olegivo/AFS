@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         tools:context=".MainActivity"
         >
 
@@ -14,7 +14,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:maxLines="2"
+            android:layout_marginEnd="24dp"
+            android:maxLines="4"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewIsFavorite"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Игровые виды спорта"
@@ -22,9 +25,12 @@
 
     <TextView
             android:id="@+id/textViewActivity"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewIsFavorite"
             app:layout_constraintStart_toStartOf="@+id/textViewGroup"
             app:layout_constraintTop_toBottomOf="@+id/textViewGroup"
             tools:text="Волейбол клиенты"
@@ -37,10 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/textInputLayoutFio"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewActivity"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDutyCaption"
             tools:text="Мест: 21"
             />
 
@@ -48,9 +52,10 @@
             android:id="@+id/textViewDuty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewSlots"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewDutyCaption"
+            app:layout_constraintStart_toEndOf="@+id/textViewDutyCaption"
+            app:layout_constraintTop_toTopOf="@+id/textViewDutyCaption"
             tools:text="21:30"
             />
 
@@ -58,10 +63,11 @@
             android:id="@+id/textViewDutyCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:text="Начало занятия"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewDuty"
-            app:layout_constraintEnd_toStartOf="@+id/textViewDuty"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewActivity"
             />
 
     <Button
@@ -80,10 +86,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/textInputLayoutPhone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewSlots"
             >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -99,10 +105,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/buttonReserve"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/checkBoxAgreement"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewSlots"
             >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -116,12 +122,37 @@
             android:id="@+id/imageViewIsFavorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="12dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:padding="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_favorite_border_black_24dp"
+            />
+
+    <CheckBox
+            android:id="@+id/checkBoxAgreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/interaction"
+            app:layout_constraintBottom_toTopOf="@+id/buttonReserve"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+    <TextView
+            android:id="@+id/textViewAgreement"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/agreement"
+            android:textColor="@android:color/holo_blue_dark"
+            app:layout_constraintBottom_toBottomOf="@+id/checkBoxAgreement"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/checkBoxAgreement"
+            app:layout_constraintTop_toTopOf="@+id/checkBoxAgreement"
             />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

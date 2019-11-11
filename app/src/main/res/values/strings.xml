@@ -3,4 +3,5 @@
     <string name="activity_main_choose_club_button_text">Choose club</string>
     <string name="activity_main_reserve_button_text">Reserve</string>
     <string name="slots_count">Мест: %d/%d</string>
+    <string name="agreement"><u>Ознакомлен с правилами, согласен на обработку персональных данных</u></string>
 </resources>

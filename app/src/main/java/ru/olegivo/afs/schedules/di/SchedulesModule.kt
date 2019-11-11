@@ -19,12 +19,12 @@ import ru.olegivo.afs.schedules.presentation.WeekSchedulePresenter
 
 @Module(
     includes = [
-        ScheduleModule.ProvidesModule::class,
+        SchedulesModule.ProvidesModule::class,
         ClubsModule::class,
         FavoritesModule::class
     ]
 )
-abstract class ScheduleModule {
+abstract class SchedulesModule {
     @Binds
     abstract fun bindSchedulePresenter(impl: WeekSchedulePresenter): ScheduleContract.Presenter
 

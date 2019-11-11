@@ -15,4 +15,7 @@ class FavoritesRepositoryImpl @Inject constructor(private val favoritesDbSource:
     override fun addFilter(favoriteFilter: FavoriteFilter): Completable =
         favoritesDbSource.addFilter(favoriteFilter)
 
+    override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
+        favoritesDbSource.removeFilter(favoriteFilter)
+
 }

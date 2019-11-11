@@ -11,4 +11,6 @@ interface ReserveRepository {
     fun reserve(reserve: Reserve): Completable
     fun saveReserveContacts(reserveContacts: ReserveContacts): Completable
     fun getReserveContacts(): Maybe<ReserveContacts>
+    fun isAgreementAccepted(): Single<Boolean>
+    fun setAgreementAccepted(): Completable
 }

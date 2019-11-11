@@ -7,4 +7,5 @@ import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 interface FavoritesRepository {
     fun addFilter(favoriteFilter: FavoriteFilter): Completable
     fun getFavoriteFilters(): Single<List<FavoriteFilter>>
+    fun removeFilter(favoriteFilter: FavoriteFilter): Completable
 }

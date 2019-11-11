@@ -10,19 +10,17 @@ import ru.olegivo.afs.favorites.db.FavoritesDbSourceImpl
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCaseImpl
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
+import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
+import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCaseImpl
 
 @Module(includes = [FavoritesModule.ProvidesModule::class])
 abstract class FavoritesModule {
-    //    @Binds
-//    abstract fun bindReservePresenter(impl: ScheduleDetailsPresenter): ScheduleDetailsContract.Presenter
-//
     @Binds
     abstract fun bindAddToFavoritesUseCase(impl: AddToFavoritesUseCaseImpl): AddToFavoritesUseCase
 
-    //
-//    @Binds
-//    abstract fun bindSavedReserveContactsUseCase(impl: SavedReserveContactsUseCaseImpl): SavedReserveContactsUseCase
-//
+    @Binds
+    abstract fun bindRemoveFromFavoritesUseCase(impl: RemoveFromFavoritesUseCaseImpl): RemoveFromFavoritesUseCase
+
     @Binds
     abstract fun bindFavoritesRepository(impl: FavoritesRepositoryImpl): FavoritesRepository
 

@@ -13,3 +13,6 @@ fun <T : Any> T?.toMaybe() =
         this?.let { Maybe.just(it) }
             ?: Maybe.empty()
     }
+
+fun <T : Any> T.toSingle() =
+    Single.defer<T> { Single.just(this) }

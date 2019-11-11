@@ -50,12 +50,32 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         val fio = getRandomString()
         val phone = getRandomString()
 
-        val result = instance.reserve(sportsActivity, fio, phone)
+        val result = instance.reserve(sportsActivity, fio, phone, true)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()
 
         assertThat(result).isEqualTo(ReserveResult.NoSlots.APriori)
+    }
+
+    @Test
+    fun `reserve returns ReserveResult-HaveToAcceptAgreement WHEN not accepted agreement`() {
+        val now = Date()
+        val sportsActivity = createSportsActivity(
+            totalSlots = 21,
+            availableSlots = 1,
+            datetime = now.add(minutes = 1),
+            isReserved = false
+        )
+        val fio = getRandomString()
+        val phone = getRandomString()
+
+        val result = instance.reserve(sportsActivity, fio, phone, hasAcceptedAgreement = false)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        assertThat(result).isEqualTo(ReserveResult.HaveToAcceptAgreement)
     }
 
     @Test
@@ -73,7 +93,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         val fio = getRandomString()
         val phone = getRandomString()
 
-        val result = instance.reserve(sportsActivity, fio, phone)
+        val result = instance.reserve(sportsActivity, fio, phone, true)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()
@@ -97,7 +117,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         val fio = getRandomString()
         val phone = getRandomString()
 
-        val result = instance.reserve(sportsActivity, fio, phone)
+        val result = instance.reserve(sportsActivity, fio, phone, true)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()
@@ -126,7 +146,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             Completable.complete()
         )
 
-        val result = instance.reserve(sportsActivity, fio, phone)
+        val result = instance.reserve(sportsActivity, fio, phone, true)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()
@@ -154,7 +174,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         given(reserveRepository.reserve(reserve))
             .willReturn(Completable.complete())
 
-        val result = instance.reserve(sportsActivity, fio, phone)
+        val result = instance.reserve(sportsActivity, fio, phone, true)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()
@@ -181,7 +201,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
         given(reserveRepository.reserve(reserve))
             .willReturn(Completable.complete())
 
-        val result = instance.reserve(sportsActivity, fio, phone)
+        val result = instance.reserve(sportsActivity, fio, phone, true)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()
@@ -208,7 +228,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             .willReturn(Completable.complete())
         given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn(Completable.complete())
 
-        val result = instance.reserve(sportsActivity, fio, phone)
+        val result = instance.reserve(sportsActivity, fio, phone, true)
             .test().andTriggerActions()
             .assertNoErrors()
             .values().single()

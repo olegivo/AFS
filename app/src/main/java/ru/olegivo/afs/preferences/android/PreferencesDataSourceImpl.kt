@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
-import io.reactivex.Single
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import javax.inject.Inject
 import javax.inject.Named
@@ -17,30 +16,36 @@ class PreferencesDataSourceImpl @Inject constructor(
 ) :
     PreferencesDataSource {
 
-    override fun getString(key: String) =
-        Maybe.create<String> { emitter ->
-            val preferences = getSharedPreferences()
-            preferences.getString(key, null)?.let {
-                emitter.onSuccess(it)
-            }
-            emitter.onComplete()
-        }.subscribeOn(ioScheduler)
+    override fun getString(key: String) = getValueMaybe(key) { getString(it, null) }
 
-    override fun getInt(key: String, defaultValue: Int): Single<Int> =
-        Single.fromCallable {
-            val preferences = getSharedPreferences()
-            preferences.getInt(key, defaultValue)
-        }.subscribeOn(ioScheduler)
+    override fun getInt(key: String): Maybe<Int> = getValueMaybe(key) { getInt(it, 0) }
+
+    override fun getBoolean(key: String): Maybe<Boolean> =
+        getValueMaybe(key) { this.getBoolean(it, false) }
+
+    private inline fun <T> getValueMaybe(
+        key: String,
+        crossinline getValue: SharedPreferences.(String) -> T
+    ): Maybe<T> = Maybe.create<T> {
+        val preferences = getSharedPreferences()
+        if (preferences.contains(key)) {
+            val value = preferences.getValue(key)
+            it.onSuccess(value)
+        }
+        it.onComplete()
+    }.subscribeOn(ioScheduler)
 
     override fun putString(key: String, value: String) = edit { putString(key, value) }
 
     override fun putInt(key: String, value: Int): Completable = edit { putInt(key, value) }
 
+    override fun putBoolean(key: String, value: Boolean): Completable =
+        edit { putBoolean(key, value) }
+
     private fun edit(block: SharedPreferences.Editor.() -> Unit) =
         Completable.fromCallable {
             getSharedPreferences().edit().apply(block).apply()
         }.subscribeOn(ioScheduler)
-
 
     private fun getSharedPreferences(): SharedPreferences {
         return context.getSharedPreferences(sharedPreferencesFileName, MODE_PRIVATE)

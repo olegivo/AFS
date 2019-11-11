@@ -39,6 +39,21 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
     }
 
     @Test
+    fun `removeFilter PASSES data to favoritesDbSource`() {
+        val favoriteFilter = createFavoriteFilter()
+
+        given(favoritesDbSource.removeFilter(favoriteFilter))
+            .willReturn(Completable.complete())
+
+        instance.removeFilter(favoriteFilter)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
+
+        verify(favoritesDbSource).removeFilter(favoriteFilter)
+    }
+
+    @Test
     fun `getFavoritesScheduleIds RETURNS data from favoritesDbSource`() {
         val favoriteFilters = { createFavoriteFilter() }.repeat(10)
 

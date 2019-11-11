@@ -14,4 +14,7 @@ interface FavoriteDao {
 
     @Query("select id, [group], activity, dayOfWeek, timeOfDay from favoriteFilters")
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
+
+    @Query("delete from favoriteFilters where [group] = :group and activity = :activity and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay")
+    fun removeFilter(group: String, activity: String, dayOfWeek: Int, timeOfDay: Long): Completable
 }

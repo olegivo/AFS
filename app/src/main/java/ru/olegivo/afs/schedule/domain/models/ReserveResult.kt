@@ -9,5 +9,6 @@ sealed class ReserveResult {
     object TheTimeHasGone : ReserveResult()
     object NameAndPhoneShouldBeStated : ReserveResult()
     object AlreadyReserved : ReserveResult()
+    object HaveToAcceptAgreement : ReserveResult()
     object Success : ReserveResult()
 }

@@ -1,5 +1,6 @@
 package ru.olegivo.afs.common.android
 
+import ru.olegivo.afs.common.presentation.BrowserDestination
 import ru.olegivo.afs.common.presentation.Destination
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.ReserveScreen
@@ -15,6 +16,7 @@ class NavigatorImpl @Inject constructor(val router: Router) : Navigator {
         val screen: Screen = when (destination) {
             is ReserveDestination -> ReserveScreen(destination)
             is ScheduleDestination -> ScheduleScreen(destination)
+            is BrowserDestination -> BrowserScreen(destination)
             else -> TODO("Not implemented ($destination)")
         }
         router.navigateTo(screen)
