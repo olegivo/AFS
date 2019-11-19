@@ -9,7 +9,7 @@ import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import java.util.*
 
 @Dao
-abstract class ScheduleDao {
+abstract class ReserveDao {
 
     @Insert
     abstract fun addReservedSchedule(reservedSchedule: ReservedSchedule): Completable

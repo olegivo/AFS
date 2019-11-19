@@ -11,15 +11,15 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ScheduleDbSourceImpl @Inject constructor(
-    private val scheduleDao: ScheduleDao,
+    private val reserveDao: ReserveDao,
     @Named("io") private val ioScheduler: Scheduler
 ) : ScheduleDbSource {
     override fun setScheduleReserved(schedule: Schedule): Completable =
-        scheduleDao.addReservedSchedule(ReservedSchedule(schedule.id, schedule.datetime))
+        reserveDao.addReservedSchedule(ReservedSchedule(schedule.id, schedule.datetime))
             .subscribeOn(ioScheduler)
 
     override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> =
-        scheduleDao.getReservedScheduleIds(from, until)
+        reserveDao.getReservedScheduleIds(from, until)
             .subscribeOn(ioScheduler)
 
 }

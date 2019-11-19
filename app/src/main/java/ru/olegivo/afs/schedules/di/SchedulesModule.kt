@@ -43,6 +43,6 @@ abstract class SchedulesModule {
     @Module
     object ProvidesModule {
         @Provides
-        fun provideScheduleDao(afsDatabase: AfsDatabase) = afsDatabase.schedule
+        fun provideResrerveDao(afsDatabase: AfsDatabase) = afsDatabase.reserve
     }
 }
