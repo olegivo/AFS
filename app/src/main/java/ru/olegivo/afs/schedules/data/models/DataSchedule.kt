@@ -1,5 +1,6 @@
 package ru.olegivo.afs.schedules.data.models
 
+import ru.olegivo.afs.schedules.domain.models.Schedule
 import java.util.*
 
 data class DataSchedule(
@@ -20,3 +21,18 @@ data class DataSchedule(
     // Всего мест: 21
     val totalSlots: Int?
 )
+
+fun DataSchedule.toDomain(clubId: Int): Schedule {
+    return Schedule(
+        id = id,
+        clubId = clubId,
+        group = group,
+        activity = activity,
+        datetime = datetime,
+        length = length,
+        room = room,
+        trainer = trainer,
+        preEntry = preEntry,
+        totalSlots = totalSlots
+    )
+}

@@ -6,6 +6,7 @@ import io.reactivex.Single
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
+import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.Slot
@@ -27,20 +28,7 @@ class ScheduleRepositoryImpl @Inject constructor(
             .observeOn(computationScheduler)
             .map { schedules ->
                 schedules.map {
-                    with(it) {
-                        Schedule( // TODO: mapper
-                            id = id,
-                            clubId = clubId,
-                            group = group,
-                            activity = activity,
-                            datetime = datetime,
-                            length = length,
-                            room = room,
-                            trainer = trainer,
-                            preEntry = preEntry,
-                            totalSlots = totalSlots
-                        )
-                    }
+                    it.toDomain(clubId)
                 }
             }
 
