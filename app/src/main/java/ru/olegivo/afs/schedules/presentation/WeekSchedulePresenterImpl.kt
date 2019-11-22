@@ -24,7 +24,7 @@ class WeekSchedulePresenter @Inject constructor(
     override fun start() {
         getCurrentClub()
             .flatMap { clubId ->
-                getCurrentWeekSchedule(clubId).toMaybe()
+                getCurrentWeekSchedule(clubId)
             }
             .observeOn(mainScheduler)
             .doOnSubscribe { view?.showProgress() }

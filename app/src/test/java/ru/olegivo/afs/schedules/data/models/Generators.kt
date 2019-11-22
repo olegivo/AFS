@@ -5,11 +5,11 @@ import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
-import ru.olegivo.afs.schedules.domain.models.Slot
 
 fun createDataSchedule() =
     DataSchedule(
         getRandomLong(),
+        getRandomInt(),
         getRandomString(),
         getRandomString(),
         getRandomDate(),

@@ -44,5 +44,8 @@ abstract class SchedulesModule {
     object ProvidesModule {
         @Provides
         fun provideResrerveDao(afsDatabase: AfsDatabase) = afsDatabase.reserve
+
+        @Provides
+        fun provideScheduleDao(afsDatabase: AfsDatabase) = afsDatabase.schedules
     }
 }

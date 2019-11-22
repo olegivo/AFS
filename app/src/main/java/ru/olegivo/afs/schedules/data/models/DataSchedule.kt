@@ -5,6 +5,7 @@ import java.util.*
 
 data class DataSchedule(
     val id: Long,
+    val clubId: Int,
     // Направление - Игровые виды спорта
     val group: String,
     // Занятие - Волейбол клиенты
@@ -22,7 +23,7 @@ data class DataSchedule(
     val totalSlots: Int?
 )
 
-fun DataSchedule.toDomain(clubId: Int): Schedule {
+fun DataSchedule.toDomain(): Schedule {
     return Schedule(
         id = id,
         clubId = clubId,

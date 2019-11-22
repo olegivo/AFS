@@ -6,7 +6,6 @@ import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import io.reactivex.Maybe
-import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTest
@@ -53,7 +52,7 @@ class WeekSchedulePresenterTest : BaseTest() {
     )
 
     @Test
-    fun `start shows current day schedule with preEntry = true WHEN no errors and has current club`() {
+    fun `start shows current day schedule with preEntry = true WHEN no errors, has current club, has schedule`() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(testData)
         weekSchedulePresenter.bindView(view)
@@ -103,6 +102,20 @@ class WeekSchedulePresenterTest : BaseTest() {
     }
 
     @Test
+    fun `start do nothing WHEN has no schedule`() {
+        val testData = TestData()
+        setupGetCurrentWeekSchedule(
+            testData,
+            currentWeekScheduleProvider = { Maybe.empty() })
+        weekSchedulePresenter.bindView(view)
+
+        weekSchedulePresenter.start()
+            .andTriggerActions()
+
+        verifyGetCurrentWeekSchedule(testData, expectedProcessCurrentWeekSchedule = false)
+    }
+
+    @Test
     fun `onScheduleClicked WILL navigate to reserve destination`() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(testData)
@@ -126,12 +139,13 @@ class WeekSchedulePresenterTest : BaseTest() {
 
     private fun verifyGetCurrentWeekSchedule(
         testData: TestData,
-        expectedGetCurrentWeekSchedule: Boolean = true
+        expectedGetCurrentWeekSchedule: Boolean = true,
+        expectedProcessCurrentWeekSchedule: Boolean = true
     ) {
         verify(getCurrentClubUseCase).invoke()
         if (expectedGetCurrentWeekSchedule) {
             verify(getCurrentWeekScheduleUseCase).invoke(testData.clubId)
-            verify(dateProvider).getDate()
+            if (expectedProcessCurrentWeekSchedule) verify(dateProvider).getDate()
         }
         verify(view).showProgress()
         verify(view).hideProgress()
@@ -141,11 +155,16 @@ class WeekSchedulePresenterTest : BaseTest() {
         testData: TestData,
         currentClubIdMaybeProvider: () -> Maybe<Int> = {
             Maybe.just(testData.clubId)
+        },
+        currentWeekScheduleProvider: () -> Maybe<List<SportsActivity>> = {
+            Maybe.just(testData.weekSchedule)
         }
     ) {
         given(getCurrentClubUseCase.invoke()).willReturn(currentClubIdMaybeProvider())
         given(dateProvider.getDate()).willReturn(testData.now)
-        given(getCurrentWeekScheduleUseCase.invoke(testData.clubId)).willReturn(Single.just(testData.weekSchedule))
+        given(getCurrentWeekScheduleUseCase.invoke(testData.clubId)).willReturn(
+            currentWeekScheduleProvider()
+        )
     }
 
     private data class TestData(

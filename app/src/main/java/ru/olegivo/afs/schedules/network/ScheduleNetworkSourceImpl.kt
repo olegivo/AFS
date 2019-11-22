@@ -8,6 +8,7 @@ import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.network.models.Schedules
+import ru.olegivo.afs.schedules.network.models.toData
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -25,17 +26,7 @@ class ScheduleNetworkSourceImpl @Inject constructor(
             .observeOn(computationScheduler)
             .map { schedules ->
                 schedules.schedule.map {
-                    DataSchedule(
-                        it.id,
-                        it.group.title,
-                        it.activity.title,
-                        it.datetime,
-                        it.length,
-                        it.room?.title,
-                        it.trainers.firstOrNull()?.title,
-                        it.preEntry,
-                        it.totalSlots
-                    ) // TODO: mapper
+                    it.toData(clubId)
                 }
             }
     }
