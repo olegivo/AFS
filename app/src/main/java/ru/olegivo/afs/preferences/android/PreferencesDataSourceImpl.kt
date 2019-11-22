@@ -20,6 +20,8 @@ class PreferencesDataSourceImpl @Inject constructor(
 
     override fun getInt(key: String): Maybe<Int> = getValueMaybe(key) { getInt(it, 0) }
 
+    override fun getLong(key: String): Maybe<Long> = getValueMaybe(key) { getLong(it, 0) }
+
     override fun getBoolean(key: String): Maybe<Boolean> =
         getValueMaybe(key) { this.getBoolean(it, false) }
 
@@ -38,6 +40,8 @@ class PreferencesDataSourceImpl @Inject constructor(
     override fun putString(key: String, value: String) = edit { putString(key, value) }
 
     override fun putInt(key: String, value: Int): Completable = edit { putInt(key, value) }
+
+    override fun putLong(key: String, value: Long): Completable = edit { putLong(key, value) }
 
     override fun putBoolean(key: String, value: Boolean): Completable =
         edit { putBoolean(key, value) }
