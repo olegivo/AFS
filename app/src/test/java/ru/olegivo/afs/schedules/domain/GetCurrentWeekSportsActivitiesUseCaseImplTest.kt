@@ -23,6 +23,7 @@ class GetCurrentWeekSportsActivitiesUseCaseImplTest : BaseTestOf<GetCurrentWeekS
 
     override fun createInstance() = GetCurrentWeekSportsActivitiesUseCaseImpl(
         scheduleRepository,
+        actualizeScheduleUseCase,
         favoritesRepository,
         schedulerRule.testScheduler
     )
@@ -30,6 +31,7 @@ class GetCurrentWeekSportsActivitiesUseCaseImplTest : BaseTestOf<GetCurrentWeekS
     //<editor-fold desc="mocks">
     private val scheduleRepository: ScheduleRepository = mock()
     private val favoritesRepository: FavoritesRepository = mock()
+    private val actualizeScheduleUseCase: ActualizeScheduleUseCase = mock()
 
     override fun getAllMocks() = arrayOf(
         scheduleRepository,
@@ -77,7 +79,7 @@ class GetCurrentWeekSportsActivitiesUseCaseImplTest : BaseTestOf<GetCurrentWeekS
         val clubId = Random.nextInt()
         val empty = Maybe.empty<List<Schedule>>()
             .doOnComplete {
-                given(scheduleRepository.actualizeSchedules(clubId))
+                given(actualizeScheduleUseCase(clubId))
                     .willReturn(Completable.complete())
                 given(scheduleRepository.getCurrentWeekSchedule(clubId))
                     .willReturn(Maybe.just(schedules))
@@ -108,7 +110,7 @@ class GetCurrentWeekSportsActivitiesUseCaseImplTest : BaseTestOf<GetCurrentWeekS
             }
 
         verify(scheduleRepository, times(2)).getCurrentWeekSchedule(clubId)
-        verify(scheduleRepository).actualizeSchedules(clubId)
+        verify(actualizeScheduleUseCase)(clubId)
         verify(scheduleRepository).getSlots(clubId, ids)
         verify(scheduleRepository).getCurrentWeekReservedScheduleIds()
         verify(favoritesRepository).getFavoriteFilters()

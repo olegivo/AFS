@@ -7,6 +7,8 @@ import io.reactivex.Single
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
+import ru.olegivo.afs.extensions.mapList
+import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
@@ -45,10 +47,14 @@ class ScheduleRepositoryImpl @Inject constructor(
             scheduleDbSource.getReservedScheduleIds(weekStart, nextWeekStart)
         }
 
-    override fun actualizeSchedules(clubId: Int): Completable =
+    override fun actualizeSchedules(clubId: Int): Single<List<Schedule>> =
         scheduleNetworkSource.getSchedule(clubId)
-            .flatMapCompletable {
+            .flatMap {
+                val schedules = it.toSingle()
+                    .observeOn(computationScheduler)
+                    .mapList { dataSchedule -> dataSchedule.toDomain() }
                 scheduleDbSource.putSchedules(it)
+                    .andThen(schedules)
             }
 
     private inline fun <T> withCurrentWeekInterval(block: (Date, Date) -> T): T {

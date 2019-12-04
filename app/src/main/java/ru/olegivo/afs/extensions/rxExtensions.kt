@@ -16,3 +16,6 @@ fun <T : Any> T?.toMaybe() =
 
 fun <T : Any> T.toSingle() =
     Single.defer<T> { Single.just(this) }
+
+fun <T : Any, R : Any> Single<List<T>>.mapList(itemSelector: (T) -> R) =
+    map { list -> list.map(itemSelector) }

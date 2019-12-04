@@ -15,6 +15,7 @@ import javax.inject.Named
 
 class GetCurrentWeekSportsActivitiesUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository,
+    private val actualizeSchedule: ActualizeScheduleUseCase,
     private val favoritesRepository: FavoritesRepository,
     @Named("computation") private val computationScheduler: Scheduler
 ) : GetCurrentWeekScheduleUseCase {
@@ -59,11 +60,10 @@ class GetCurrentWeekSportsActivitiesUseCaseImpl @Inject constructor(
     private fun getCurrentWeekSchedule(clubId: Int): Maybe<List<Schedule>> {
         return scheduleRepository.getCurrentWeekSchedule(clubId)
             .switchIfEmpty(Maybe.defer {
-                scheduleRepository.actualizeSchedules(clubId)
+                actualizeSchedule(clubId)
                     .andThen(scheduleRepository.getCurrentWeekSchedule(clubId))
             })
     }
-
 
     private fun getFavoritesScheduleIds(schedules: List<Schedule>): Single<List<Long>> {
         return favoritesRepository.getFavoriteFilters()

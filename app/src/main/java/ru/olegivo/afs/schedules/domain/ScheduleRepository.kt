@@ -11,5 +11,5 @@ interface ScheduleRepository {
     fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>>
     fun setScheduleReserved(schedule: Schedule): Completable
     fun getCurrentWeekReservedScheduleIds(): Single<List<Long>>
-    fun actualizeSchedules(clubId: Int): Completable
+    fun actualizeSchedules(clubId: Int): Single<List<Schedule>>
 }
