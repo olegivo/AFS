@@ -21,7 +21,8 @@ data class Schedule(
     // Предварительная запись
     val preEntry: Boolean,
     // Всего мест: 21
-    val totalSlots: Int?
+    val totalSlots: Int?,
+    val recordFrom: Date?
 ) {
     fun getTimeOfDay() = datetime.let {
         it.time - it.getDateWithoutTime().time

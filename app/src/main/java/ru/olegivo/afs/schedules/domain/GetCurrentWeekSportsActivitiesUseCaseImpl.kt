@@ -5,8 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.Singles
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
-import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
+import ru.olegivo.afs.favorites.domain.models.filterByFavorites
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
@@ -69,16 +68,8 @@ class GetCurrentWeekSportsActivitiesUseCaseImpl @Inject constructor(
         return favoritesRepository.getFavoriteFilters()
             .observeOn(computationScheduler)
             .map { favoriteFilters ->
-                schedules
-                    .filter { schedule ->
-                        applyFilters(schedule, favoriteFilters)
-                    }
+                schedules.filterByFavorites(favoriteFilters)
                     .map { it.id }
             }
     }
-
-    private fun applyFilters(schedule: Schedule, favoriteFilters: List<FavoriteFilter>): Boolean =
-        favoriteFilters.any { favoriteFilter ->
-            favoriteFilter == schedule.toFavoriteFilter()
-        }
 }

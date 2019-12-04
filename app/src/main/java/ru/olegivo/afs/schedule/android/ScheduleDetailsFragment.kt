@@ -164,11 +164,9 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
 
     @SuppressLint("ConstantLocale")
     companion object {
-        fun createInstance(sportsActivity: SportsActivity): ScheduleDetailsFragment {
+        fun createInstance(id: Long, clubId: Int): ScheduleDetailsFragment {
             return ScheduleDetailsFragment().apply {
-                arguments = with(sportsActivity.schedule) {
-                    Args(id, clubId).toBundle()
-                }
+                arguments = Args(id, clubId).toBundle()
             }
         }
 

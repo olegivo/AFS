@@ -2,8 +2,10 @@ package ru.olegivo.afs
 
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.observers.BaseTestConsumer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -18,13 +20,13 @@ abstract class BaseTest {
 
     @Before
     open fun setUp() {
-        if(mocks.isNotEmpty()) reset(*mocks)
+        if (mocks.isNotEmpty()) reset(*mocks)
         schedulerRule.testScheduler.triggerActions()
     }
 
     @After
     fun tearDown() {
-        if(mocks.isNotEmpty()) verifyNoMoreInteractions(*mocks)
+        if (mocks.isNotEmpty()) verifyNoMoreInteractions(*mocks)
     }
 
     fun <T> T.andTriggerActions(): T = also {
@@ -33,11 +35,23 @@ abstract class BaseTest {
 
     protected fun <T> Single<T>.assertResult(block: (T) -> Unit): Unit =
         test().andTriggerActions()
-            .getSingleValue()
-            .run(block)
+            .assertSuccess {
+                getSingleValue().run(block)
+            }
 
     protected fun <T> Maybe<T>.assertResult(block: (T) -> Unit): Unit =
         test().andTriggerActions()
-            .getSingleValue()
+            .assertSuccess {
+                getSingleValue().run(block)
+            }
+
+    protected fun Completable.assertSuccess(): Unit =
+        test().andTriggerActions()
+            .assertSuccess { }
+
+    private fun <T, U : BaseTestConsumer<T, U>> BaseTestConsumer<T, U>.assertSuccess(block: U.() -> Unit) =
+        this.andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
             .run(block)
 }

@@ -17,3 +17,13 @@ fun Schedule.toFavoriteFilter(): FavoriteFilter {
         timeOfDay = getTimeOfDay()
     )
 }
+
+fun Schedule.applyFilters(favoriteFilters: List<FavoriteFilter>): Boolean =
+    favoriteFilters.any { favoriteFilter ->
+        favoriteFilter == toFavoriteFilter()
+    }
+
+fun List<Schedule>.filterByFavorites(favoriteFilters: List<FavoriteFilter>) =
+    filter { schedule ->
+        schedule.applyFilters(favoriteFilters)
+    }

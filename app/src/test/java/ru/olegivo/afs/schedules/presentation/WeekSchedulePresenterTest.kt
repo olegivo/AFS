@@ -134,7 +134,7 @@ class WeekSchedulePresenterTest : BaseTest() {
 
         weekSchedulePresenter.onSportsActivityClicked(schedule)
 
-        verify(navigator).navigateTo(ReserveDestination(schedule))
+        verify(navigator).navigateTo(ReserveDestination(schedule,,))
     }
 
     private fun verifyGetCurrentWeekSchedule(

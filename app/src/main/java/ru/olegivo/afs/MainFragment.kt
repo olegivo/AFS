@@ -50,6 +50,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun onChooseClubClicked() {
+        setCurrentClub(375)
+            .subscribe()
         getClubs()
             .flatMap { clubs ->
                 getCurrentClub().toSingle(-1)

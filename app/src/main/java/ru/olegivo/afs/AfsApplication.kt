@@ -1,6 +1,8 @@
 package ru.olegivo.afs
 
 import android.app.Application
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import net.danlew.android.joda.JodaTimeAndroid
@@ -20,7 +22,16 @@ class AfsApplication : Application(), HasAndroidInjector {
         }
 
         JodaTimeAndroid.init(this)
-        DaggerAppComponent.factory().create(this).inject(this)
+        DaggerAppComponent.factory().create(this).let {
+            it.inject(this)
+
+            WorkManager.initialize(
+                this,
+                Configuration.Builder()
+                    .setWorkerFactory(it.workerFactory())
+                    .build()
+            )
+        }
     }
 
     override fun androidInjector() = androidInjector

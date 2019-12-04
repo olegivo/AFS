@@ -5,7 +5,9 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.observers.BaseTestConsumer
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
@@ -34,9 +36,7 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
             .willReturn(Completable.complete())
 
         instance.addFilter(favoriteFilter)
-            .test().andTriggerActions()
-            .assertNoErrors()
-            .assertComplete()
+            .assertSuccess()
 
         verify(favoritesDbSource).addFilter(favoriteFilter)
     }
@@ -49,9 +49,7 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
             .willReturn(Completable.complete())
 
         instance.removeFilter(favoriteFilter)
-            .test().andTriggerActions()
-            .assertNoErrors()
-            .assertComplete()
+            .assertSuccess()
 
         verify(favoritesDbSource).removeFilter(favoriteFilter)
     }
@@ -62,13 +60,10 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
 
         given(favoritesDbSource.getFavoriteFilters()).willReturn(Single.just(favoriteFilters))
 
-        val result = instance.getFavoriteFilters()
-            .test().andTriggerActions()
-            .assertNoErrors()
-            .assertComplete()
-            .values().single()
-
-        assertThat(result).isEqualTo(favoriteFilters)
+        instance.getFavoriteFilters()
+            .assertResult {
+                assertThat(it).isEqualTo(favoriteFilters)
+            }
 
         verify(favoritesDbSource).getFavoriteFilters()
     }
@@ -80,14 +75,21 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
         given(favoritesDbSource.exist(schedule.toFavoriteFilter()))
             .willReturn(Single.just(isFavorite))
 
-        val result = instance.isFavorite(schedule)
-            .test().andTriggerActions()
-            .assertNoErrors()
-            .assertComplete()
-            .values().single()
+        instance.isFavorite(schedule)
+            .assertResult {
+                assertThat(it).isEqualTo(isFavorite)
+            }
 
         verify(favoritesDbSource).exist(schedule.toFavoriteFilter())
-        assertThat(result).isEqualTo(isFavorite)
     }
 
+    @Test
+    fun `addReminderToRecord `() {
+        val schedule = createSchedule()
+
+        instance.addReminderToRecord(schedule)
+            .assertSuccess()
+
+
+    }
 }

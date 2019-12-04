@@ -17,5 +17,6 @@ fun createDataSchedule() =
         getRandomString(),
         getRandomString(),
         getRandomBoolean(),
-        getRandomInt()
+        getRandomInt(),
+
     )

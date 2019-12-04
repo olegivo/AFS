@@ -42,7 +42,12 @@ class WeekSchedulePresenter @Inject constructor(
     }
 
     override fun onSportsActivityClicked(sportsActivity: SportsActivity) {
-        navigator.navigateTo(ReserveDestination(sportsActivity))
+        navigator.navigateTo(
+            ReserveDestination(
+                sportsActivity.schedule.id,
+                sportsActivity.schedule.clubId
+            )
+        )
     }
 }
 

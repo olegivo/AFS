@@ -10,6 +10,7 @@ import ru.olegivo.afs.common.presentation.BrowserDestination
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
+import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
 import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
@@ -29,7 +30,8 @@ class ScheduleDetailsPresenter @Inject constructor(
     private val addToFavorites: AddToFavoritesUseCase,
     private val removeFromFavorites: RemoveFromFavoritesUseCase,
     @Named("main") private val mainScheduler: Scheduler,
-    private val navigator: Navigator
+    private val navigator: Navigator,
+    private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase
 ) :
     BasePresenter<ScheduleDetailsContract.View>(),
     ScheduleDetailsContract.Presenter {
@@ -116,6 +118,14 @@ class ScheduleDetailsPresenter @Inject constructor(
                 {
                     view?.showIsFavorite(!isFavorite)
                     this.sportsActivity = sportsActivity.copy(isFavorite = !isFavorite)
+                    if (!isFavorite) {
+                        planFavoriteRecordReminderUseCase(sportsActivity.schedule)
+                            .subscribeBy(onError = {
+                                onError(it, "Ошибка при планировании уведомления")
+                            })
+                            .addToComposite()
+                    }
+
                 },
                 { onError(it, errorMessage) }
             )
