@@ -65,7 +65,7 @@ data class Change(
     val room: Room,
     val silent: Boolean,
     val title: String,
-    val trainers: List<Trainer>,
+    val trainers: List<Trainer>?,
     val type: String
 )
 
