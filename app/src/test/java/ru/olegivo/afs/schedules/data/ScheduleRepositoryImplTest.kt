@@ -13,11 +13,13 @@ import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.helpers.capture
+import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.schedule.data.ReserveNetworkSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
+import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 import java.util.*
@@ -119,5 +121,36 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
         verify(scheduleNetworkSource).getSchedule(clubId)
         val actual = scheduleDbSource.capture { p: List<DataSchedule> -> putSchedules(p) }
         assertThat(actual).isEqualTo(schedules)
+    }
+
+    @Test
+    fun `getSchedule RETURNS data from dbSource`() {
+        val dataSchedule = createDataSchedule()
+        val schedule = dataSchedule.toDomain()
+        given(scheduleDbSource.getSchedule(schedule.id))
+            .willReturn(Single.just(dataSchedule))
+
+        val result = instance.getSchedule(schedule.id)
+            .test().andTriggerActions()
+            .values().single()
+
+        verify(scheduleDbSource).getSchedule(schedule.id)
+        assertThat(result).isEqualTo(schedule)
+    }
+
+    @Test
+    fun `isScheduleReserved RETURNS data from dbSource`() {
+        val scheduleId = getRandomLong()
+        val isScheduleReserved = getRandomBoolean()
+        given(scheduleDbSource.isScheduleReserved(scheduleId))
+            .willReturn(Single.just(isScheduleReserved))
+
+        val result = instance.isScheduleReserved(scheduleId)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        assertThat(result).isEqualTo(isScheduleReserved)
+        verify(scheduleDbSource).isScheduleReserved(scheduleId)
     }
 }

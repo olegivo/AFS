@@ -6,6 +6,7 @@ import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.favorites.db.modes.FavoriteFilterEntity
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 
 @Dao
 interface FavoriteDao {
@@ -17,4 +18,7 @@ interface FavoriteDao {
 
     @Query("delete from favoriteFilters where [group] = :group and activity = :activity and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay")
     fun removeFilter(group: String, activity: String, dayOfWeek: Int, timeOfDay: Long): Completable
+
+    @Query("select exists(select * from favoriteFilters where [group] = :group and activity = :activity and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay)")
+    fun exist(group: String, activity: String, dayOfWeek: Int, timeOfDay: Long): Single<Boolean>
 }

@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
+import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import javax.inject.Inject
 
 class FavoritesRepositoryImpl @Inject constructor(private val favoritesDbSource: FavoritesDbSource) :
@@ -18,4 +19,6 @@ class FavoritesRepositoryImpl @Inject constructor(private val favoritesDbSource:
     override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
         favoritesDbSource.removeFilter(favoriteFilter)
 
+    override fun isFavorite(schedule: Schedule): Single<Boolean> =
+        favoritesDbSource.exist(schedule.toFavoriteFilter())
 }

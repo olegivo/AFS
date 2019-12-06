@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import java.util.*
 
@@ -16,4 +17,7 @@ abstract class ScheduleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun putSchedules(schedules: List<ScheduleEntity>): Completable
+
+    @Query("select id, clubId, [group], activity, datetime, length, room, trainer, preEntry, totalSlots from schedules where id = :id")
+    abstract fun getSchedule(id: Long): Single<ScheduleEntity>
 }

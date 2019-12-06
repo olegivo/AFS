@@ -2,10 +2,15 @@ package ru.olegivo.afs.schedule.presentation
 
 import io.reactivex.Completable
 import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.rxkotlin.subscribeBy
+import org.jetbrains.annotations.TestOnly
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.BrowserDestination
 import ru.olegivo.afs.common.presentation.Navigator
+import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
+import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.SavedAgreementUseCase
@@ -18,6 +23,7 @@ import javax.inject.Named
 
 class ScheduleDetailsPresenter @Inject constructor(
     private val reserveUseCase: ReserveUseCase,
+    private val getSportsActivity: GetSportsActivityUseCase,
     private val savedReserveContactsUseCase: SavedReserveContactsUseCase,
     private val savedAgreementUseCase: SavedAgreementUseCase,
     private val addToFavorites: AddToFavoritesUseCase,
@@ -28,11 +34,26 @@ class ScheduleDetailsPresenter @Inject constructor(
     BasePresenter<ScheduleDetailsContract.View>(),
     ScheduleDetailsContract.Presenter {
 
+    private var sportsActivity: SportsActivity? = null
+    private var clubId: Int = 0
+    private var scheduleId: Long = 0
     private var isFavorite: Boolean = false
+
+    override fun init(scheduleId: Long, clubId: Int) {
+        this.scheduleId = scheduleId
+        this.clubId = clubId
+    }
+
+    @TestOnly
+    fun clear() {
+        scheduleId = 0
+        clubId = 0
+        sportsActivity = null
+    }
 
     override fun bindView(view: ScheduleDetailsContract.View) {
         super.bindView(view)
-        start(getSportsActivity())
+        start()
     }
 
     override fun unbindView() {
@@ -47,8 +68,7 @@ class ScheduleDetailsPresenter @Inject constructor(
         hasAcceptedAgreement: Boolean
     ) {
         val (fio, phone) = view!!.getReserveContacts()!!
-        val sportsActivity = getSportsActivity()
-        reserveUseCase.reserve(sportsActivity, fio, phone, hasAcceptedAgreement)
+        reserveUseCase.reserve(sportsActivity!!, fio, phone, hasAcceptedAgreement)
             .observeOn(mainScheduler)
             .subscribe(
                 { reserveResult ->
@@ -76,7 +96,7 @@ class ScheduleDetailsPresenter @Inject constructor(
     }
 
     override fun onFavoriteClick() {
-        val sportsActivity = getSportsActivity()
+        val sportsActivity = sportsActivity!!
 
         val action: Completable
         val errorMessage: String
@@ -93,24 +113,43 @@ class ScheduleDetailsPresenter @Inject constructor(
         action
             .observeOn(mainScheduler)
             .subscribe(
-                { view?.setIsFavorite(!isFavorite) },
+                {
+                    view?.showIsFavorite(!isFavorite)
+                    this.sportsActivity = sportsActivity.copy(isFavorite = !isFavorite)
+                },
                 { onError(it, errorMessage) }
             )
             .addToComposite()
     }
 
-    private fun getSportsActivity() =
-        this.view?.getSportsActivity()!! // TODO: create new Use Case and get it from there
+    private fun start() {
+        sportsActivity.toMaybe()
+            .switchIfEmpty(
+                Single.defer { getSportsActivity(clubId, scheduleId) }
+                    .doOnSuccess {
+                        sportsActivity = it
+                        isFavorite = it.isFavorite
+                    }
+            )
+            .observeOn(mainScheduler)
+            .subscribeBy(
+                onSuccess = { sportsActivity ->
+                    view?.showScheduleToReserve(sportsActivity)
+                    view?.showIsFavorite(isFavorite)
+                },
+                onError = {
+                    onError(it, "Ошибка при получении занятия")
+                }
+            )
+            .addToComposite()
 
-    private fun start(sportsActivity: SportsActivity) {
-        view?.showScheduleToReserve(sportsActivity)
-        isFavorite = sportsActivity.isFavorite
-        view?.setIsFavorite(isFavorite)
         savedReserveContactsUseCase.getReserveContacts()
             .observeOn(mainScheduler)
-            .subscribe(
-                { view?.setReserveContacts(it) },
-                { onError(it, "Ошибка при восстановлении контактов для записи на занятие") })
+            .subscribeBy(
+                onSuccess = { view?.setReserveContacts(it) },
+                onError = {
+                    onError(it, "Ошибка при восстановлении контактов для записи на занятие")
+                })
             .addToComposite()
 
         savedAgreementUseCase.isAgreementAccepted()

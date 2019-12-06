@@ -8,4 +8,5 @@ interface FavoritesDbSource {
     fun addFilter(favoriteFilter: FavoriteFilter): Completable
     fun getFavoriteFilters(): Single<List<FavoriteFilter>>
     fun removeFilter(favoriteFilter: FavoriteFilter): Completable
+    fun exist(favoriteFilter: FavoriteFilter): Single<Boolean>
 }

@@ -11,6 +11,17 @@ import ru.olegivo.afs.schedules.db.models.toDb
 
 class ScheduleDaoTest : AfsDaoTest<ScheduleDao>({ schedules }) {
     @Test
+    fun getSchedule_RETURNS_putted_entity() {
+        val entity = createDataSchedule().toDb()
+        dao.putSchedules(listOf(entity))
+            .andThen(dao.getSchedule(entity.id))
+            .test()
+            .checkSingleValue {
+                assertThat(it).isEqualTo(entity)
+            }
+    }
+
+    @Test
     fun getSchedules_RETURNS_putted_only_entities_inside_date_range_WHEN_putted_entities_inside_and_outside_of_date_range() {
         val clubId = getRandomInt()
         val schedules = { createDataSchedule().copy(clubId = clubId).toDb() }.repeat(10)

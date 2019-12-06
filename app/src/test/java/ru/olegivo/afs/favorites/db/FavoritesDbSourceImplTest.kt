@@ -13,8 +13,11 @@ import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.modes.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.modes.toDb
+import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.helpers.capture
+import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.repeat
+import ru.olegivo.afs.schedules.domain.models.createSchedule
 
 class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
 
@@ -64,5 +67,38 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
             .containsExactlyElementsOf(favoriteFilterEntities.map { it.activity })
 
         verify(favoriteDao).getFavoriteFilters()
+    }
+
+    @Test
+    fun `exist RETURNS data from favoriteDao`() {
+        val favoriteFilter = createSchedule().toFavoriteFilter()
+        val exist = getRandomBoolean()
+        with(favoriteFilter) {
+            given(
+                favoriteDao.exist(
+                    group = group,
+                    activity = activity,
+                    dayOfWeek = dayOfWeek,
+                    timeOfDay = timeOfDay
+                )
+            )
+                .willReturn(Single.just(exist))
+        }
+
+        val result = instance.exist(favoriteFilter)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
+            .values().single()
+
+        with(favoriteFilter) {
+            verify(favoriteDao).exist(
+                group = group,
+                activity = activity,
+                dayOfWeek = dayOfWeek,
+                timeOfDay = timeOfDay
+            )
+        }
+        assertThat(result).isEqualTo(exist)
     }
 }

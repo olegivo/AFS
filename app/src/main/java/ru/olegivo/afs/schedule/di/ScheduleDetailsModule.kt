@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import ru.olegivo.afs.schedule.data.ReserveNetworkSource
 import ru.olegivo.afs.schedule.data.ReserveRepositoryImpl
+import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
+import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCaseImpl
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCaseImpl
@@ -20,6 +22,9 @@ import ru.olegivo.afs.schedules.di.SchedulesModule
 abstract class ScheduleDetailsModule {
     @Binds
     abstract fun bindReservePresenter(impl: ScheduleDetailsPresenter): ScheduleDetailsContract.Presenter
+
+    @Binds
+    abstract fun bindGetSportsActivityUseCase(impl: GetSportsActivityUseCaseImpl): GetSportsActivityUseCase
 
     @Binds
     abstract fun bindReserveUseCase(impl: ReserveUseCaseImpl): ReserveUseCase

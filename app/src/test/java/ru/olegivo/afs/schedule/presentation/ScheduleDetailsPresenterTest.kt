@@ -15,6 +15,7 @@ import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
 import ru.olegivo.afs.helpers.getRandomString
+import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.SavedAgreementUseCase
@@ -28,6 +29,7 @@ import ru.olegivo.afs.schedules.domain.models.createSportsActivity
 class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presenter>() {
     override fun createInstance() = ScheduleDetailsPresenter(
         reserveUseCase,
+        getSportsActivityUseCase,
         savedReserveContactsUseCase,
         savedAgreementUseCase,
         addToFavoritesUseCase,
@@ -38,6 +40,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
     //<editor-fold desc="mocks">
     private val reserveUseCase: ReserveUseCase = mock()
+    private val getSportsActivityUseCase: GetSportsActivityUseCase = mock()
     private val savedReserveContactsUseCase: SavedReserveContactsUseCase = mock()
     private val savedAgreementUseCase: SavedAgreementUseCase = mock()
     private val addToFavoritesUseCase: AddToFavoritesUseCase = mock()
@@ -48,6 +51,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
     override fun getAllMocks() = arrayOf(
         reserveUseCase,
+        getSportsActivityUseCase,
         savedReserveContactsUseCase,
         savedAgreementUseCase,
         addToFavoritesUseCase,
@@ -59,6 +63,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
     override fun setUp() {
         given(savedAgreementUseCase.setAgreementAccepted()).willReturn(Completable.complete())
         instance.unbindView()
+        (instance as ScheduleDetailsPresenter).clear()
         super.setUp()
     }
 
@@ -148,7 +153,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onReserveClicked(true)
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showSuccessReserved()
@@ -169,7 +175,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onReserveClicked(true)
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showTryLater()
@@ -189,7 +196,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onReserveClicked(true)
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showTheTimeHasGone()
@@ -209,7 +217,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onReserveClicked(true)
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showHasNoSlotsAPriori()
@@ -229,7 +238,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onReserveClicked(true)
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showHasNoSlotsAPosteriori()
@@ -249,7 +259,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onReserveClicked(true)
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showAlreadyReserved()
@@ -269,7 +280,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onReserveClicked(false)
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, false)
         verify(view).showHaveToAcceptAgreement()
@@ -288,9 +300,10 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onFavoriteClick()
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(addToFavoritesUseCase).invoke(sportsActivity.schedule)
-        verify(view).setIsFavorite(true)
+        verify(view).showIsFavorite(true)
     }
 
     private fun bindView(
@@ -298,12 +311,19 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         reserveContacts: ReserveContacts? = null,
         isAgreementAccepted: Boolean = false
     ) {
-        given(view.getSportsActivity()).willReturn(sportsActivity)
+        given(
+            getSportsActivityUseCase.invoke(
+                sportsActivity.schedule.clubId,
+                sportsActivity.schedule.id
+            )
+        )
+            .willReturn(Single.just(sportsActivity))
         given(savedReserveContactsUseCase.getReserveContacts())
             .willReturn(reserveContacts.toMaybe())
         given(savedAgreementUseCase.isAgreementAccepted())
             .willReturn(isAgreementAccepted.toSingle())
 
+        instance.init(sportsActivity.schedule.id, sportsActivity.schedule.clubId)
         instance.bindView(view).andTriggerActions()
     }
 
@@ -321,9 +341,10 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         instance.onFavoriteClick()
             .andTriggerActions()
 
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(removeFromFavoritesUseCase).invoke(sportsActivity.schedule)
-        verify(view).setIsFavorite(false)
+        verify(view).showIsFavorite(false)
     }
 
     private fun verifyBindView(
@@ -331,9 +352,10 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         reserveContacts: ReserveContacts? = null,
         isAgreementAccepted: Boolean = false
     ) {
-        verify(view).getSportsActivity()
+        verify(getSportsActivityUseCase)
+            .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).showScheduleToReserve(sportsActivity)
-        verify(view).setIsFavorite(sportsActivity.isFavorite)
+        verify(view).showIsFavorite(sportsActivity.isFavorite)
         verify(savedReserveContactsUseCase).getReserveContacts()
         verify(savedAgreementUseCase).isAgreementAccepted()
         reserveContacts?.let { verify(view).setReserveContacts(it) }
@@ -342,7 +364,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verifyNoMoreInteractions(view)
         reset(view)
         // and restore some setup after reset:
-        given(view.getSportsActivity()).willReturn(sportsActivity)
+        //given(view.getSportsActivity()).willReturn(sportsActivity)
         given(view.getReserveContacts()).willReturn(reserveContacts)
     }
 }

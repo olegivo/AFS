@@ -57,6 +57,14 @@ class ScheduleRepositoryImpl @Inject constructor(
                     .andThen(schedules)
             }
 
+    override fun getSchedule(scheduleId: Long): Single<Schedule> =
+        scheduleDbSource.getSchedule(scheduleId)
+            .observeOn(computationScheduler)
+            .map { it.toDomain() }
+
+    override fun isScheduleReserved(scheduleId: Long): Single<Boolean> =
+        scheduleDbSource.isScheduleReserved(scheduleId)
+
     private inline fun <T> withCurrentWeekInterval(block: (Date, Date) -> T): T {
         val now = dateProvider.getDate()
         val weekStart = firstDayOfWeek(now)

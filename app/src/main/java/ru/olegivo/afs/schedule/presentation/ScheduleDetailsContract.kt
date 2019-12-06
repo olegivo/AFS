@@ -6,11 +6,9 @@ import ru.olegivo.afs.schedules.domain.models.SportsActivity
 
 interface ScheduleDetailsContract {
     interface Presenter : PresentationContract.Presenter<View> {
-        fun onReserveClicked(
-            hasAcceptedAgreement: Boolean
-        )
+        fun init(scheduleId: Long, clubId: Int)
+        fun onReserveClicked(hasAcceptedAgreement: Boolean)
         fun onFavoriteClick()
-
         fun onAgreementClicked()
     }
 
@@ -24,10 +22,9 @@ interface ScheduleDetailsContract {
         fun showNameAndPhoneShouldBeStated()
         fun setReserveContacts(reserveContacts: ReserveContacts)
         fun showAlreadyReserved()
-        fun setIsFavorite(isFavorite: Boolean)
+        fun showIsFavorite(isFavorite: Boolean)
         fun showHaveToAcceptAgreement()
         fun setAgreementAccepted()
-        fun getSportsActivity(): SportsActivity
         fun getReserveContacts(): ReserveContacts?
         fun isAgreementAccepted(): Boolean
     }

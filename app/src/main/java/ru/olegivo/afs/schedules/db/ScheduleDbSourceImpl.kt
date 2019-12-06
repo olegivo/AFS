@@ -49,4 +49,14 @@ class ScheduleDbSourceImpl @Inject constructor(
             .flatMapCompletable {
                 scheduleDao.putSchedules(it)
             }
+
+    override fun getSchedule(id: Long): Single<DataSchedule> =
+        scheduleDao.getSchedule(id)
+            .subscribeOn(ioScheduler)
+            .observeOn(computationScheduler)
+            .map { it.toData() }
+
+    override fun isScheduleReserved(scheduleId: Long): Single<Boolean> =
+        reserveDao.isScheduleReserved(scheduleId)
+            .subscribeOn(ioScheduler)
 }

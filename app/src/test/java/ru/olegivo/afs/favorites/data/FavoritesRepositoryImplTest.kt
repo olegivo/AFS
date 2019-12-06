@@ -10,7 +10,10 @@ import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
+import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
+import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.repeat
+import ru.olegivo.afs.schedules.domain.models.createSchedule
 
 class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
     override fun createInstance() = FavoritesRepositoryImpl(favoritesDbSource)
@@ -68,6 +71,23 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
         assertThat(result).isEqualTo(favoriteFilters)
 
         verify(favoritesDbSource).getFavoriteFilters()
+    }
+
+    @Test
+    fun `isFavorite RETURNS data from favoritesDbSource`() {
+        val schedule = createSchedule()
+        val isFavorite = getRandomBoolean()
+        given(favoritesDbSource.exist(schedule.toFavoriteFilter()))
+            .willReturn(Single.just(isFavorite))
+
+        val result = instance.isFavorite(schedule)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .assertComplete()
+            .values().single()
+
+        verify(favoritesDbSource).exist(schedule.toFavoriteFilter())
+        assertThat(result).isEqualTo(isFavorite)
     }
 
 }

@@ -28,6 +28,10 @@ class FavoritesDbSourceImpl @Inject constructor(
         with(favoriteFilter) { favoriteDao.removeFilter(group, activity, dayOfWeek, timeOfDay) }
             .subscribeOn(ioScheduler)
 
+    override fun exist(favoriteFilter: FavoriteFilter): Single<Boolean> =
+        with(favoriteFilter) { favoriteDao.exist(group, activity, dayOfWeek, timeOfDay) }
+            .subscribeOn(ioScheduler)
+
     override fun getFavoriteFilters(): Single<List<FavoriteFilter>> =
         favoriteDao.getFavoriteFilters()
             .subscribeOn(ioScheduler)

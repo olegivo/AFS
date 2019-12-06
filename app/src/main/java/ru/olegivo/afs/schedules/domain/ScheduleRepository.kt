@@ -12,4 +12,6 @@ interface ScheduleRepository {
     fun setScheduleReserved(schedule: Schedule): Completable
     fun getCurrentWeekReservedScheduleIds(): Single<List<Long>>
     fun actualizeSchedules(clubId: Int): Single<List<Schedule>>
+    fun getSchedule(scheduleId: Long): Single<Schedule>
+    fun isScheduleReserved(scheduleId: Long): Single<Boolean>
 }

@@ -12,4 +12,6 @@ interface ScheduleDbSource {
     fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>>
     fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<DataSchedule>>
     fun putSchedules(schedules: List<DataSchedule>): Completable
+    fun getSchedule(id: Long): Single<DataSchedule>
+    fun isScheduleReserved(scheduleId: Long): Single<Boolean>
 }

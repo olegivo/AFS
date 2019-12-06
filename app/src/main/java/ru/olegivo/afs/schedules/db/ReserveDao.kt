@@ -16,4 +16,7 @@ abstract class ReserveDao {
 
     @Query("select id from reservedSchedules where datetime >= :from and datetime < :until")
     abstract fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>>
+
+    @Query("select exists (select * from reservedSchedules where id = :scheduleId)")
+    abstract fun isScheduleReserved(scheduleId: Long): Single<Boolean>
 }

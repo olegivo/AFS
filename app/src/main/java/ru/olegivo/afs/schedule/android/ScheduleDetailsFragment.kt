@@ -21,7 +21,6 @@ import ru.olegivo.afs.R
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
-import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,6 +37,9 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
+        requireArguments().toArgs().also {
+            presenter.init(it.id, it.clubId)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,17 +62,14 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
 
     override fun isAgreementAccepted() = checkBoxAgreement.isChecked
 
-    override fun getSportsActivity() = requireArguments().toSportsActivity()
-
     override fun getReserveContacts() =
         ReserveContacts(
             fio = textInputLayoutFio.editText!!.text.toString(),
             phone = textInputLayoutPhone.editText!!.text.toString()
         )
 
-    override fun setIsFavorite(isFavorite: Boolean) { // TODO: need made and rename to showIsFavorite
+    override fun showIsFavorite(isFavorite: Boolean) {
         imageViewIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
-        requireArguments().putBoolean(Fields.isFavorite, isFavorite)
     }
 
     override fun onStart() {
@@ -167,7 +166,9 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
     companion object {
         fun createInstance(sportsActivity: SportsActivity): ScheduleDetailsFragment {
             return ScheduleDetailsFragment().apply {
-                arguments = sportsActivity.toBundle()
+                arguments = with(sportsActivity.schedule) {
+                    Args(id, clubId).toBundle()
+                }
             }
         }
 
@@ -179,78 +180,31 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
         }
 
     }
-}
 
-private object Fields {
-    const val id = "Schedule.id"
-    const val clubId = "Schedule.clubId"
-    const val availableSlots = "Schedule.availableSlots"
-    const val datetime = "Schedule.datetime"
-    const val totalSlots = "Schedule.totalSlots"
-    const val activity = "Schedule.activity"
-    const val group = "Schedule.group"
-    const val length = "Schedule.length"
-    const val preEntry = "Schedule.preEntry"
-    const val room = "Schedule.room"
-    const val trainer = "Schedule.trainer"
-    const val isReserved = "Schedule.isReserved"
-    const val isFavorite = "Schedule.isFavorite"
-
-}
-
-
-private fun SportsActivity.toBundle(): Bundle {
-    return Bundle().apply {
-        putLong(Fields.id, schedule.id)
-        putInt(Fields.clubId, schedule.clubId)
-        availableSlots?.let { putInt(Fields.availableSlots, it) }
-        schedule.totalSlots?.let { putInt(Fields.totalSlots, it) }
-        putLong(Fields.datetime, schedule.datetime.time)
-        putString(Fields.activity, schedule.activity)
-        putString(Fields.group, schedule.group)
-        putInt(Fields.length, schedule.length)
-        putBoolean(Fields.preEntry, schedule.preEntry)
-        schedule.room?.let { putString(Fields.room, it) }
-        schedule.trainer?.let { putString(Fields.trainer, it) }
-        putBoolean(Fields.isReserved, isReserved)
-        putBoolean(Fields.isFavorite, isFavorite)
+    data class Args(val id: Long, val clubId: Int) {
+        object Fields {
+            const val id = "Schedule.id"
+            const val clubId = "Schedule.clubId"
+        }
     }
 }
 
-private fun Bundle.toSportsActivity(): SportsActivity {
-    return SportsActivity(
-        schedule = Schedule(
-            id = requireLong(Fields.id),
-            clubId = requireInt(Fields.clubId),
-            totalSlots = getIntOrNull(Fields.totalSlots),
-            datetime = requireDate(Fields.datetime),
-            activity = requireString(Fields.activity),
-            group = requireString(Fields.group),
-            length = requireInt(Fields.length),
-            preEntry = requireBoolean(Fields.preEntry),
-            room = getStringOrNull(Fields.room),
-            trainer = getStringOrNull(Fields.trainer)
-        ),
-        availableSlots = getIntOrNull(Fields.availableSlots),
-        isReserved = requireBoolean(Fields.isReserved),
-        isFavorite = requireBoolean(Fields.isFavorite)
+private fun ScheduleDetailsFragment.Args.toBundle(): Bundle {
+    return Bundle().apply {
+        putLong(ScheduleDetailsFragment.Args.Fields.id, id)
+        putInt(ScheduleDetailsFragment.Args.Fields.clubId, clubId)
+    }
+}
+
+private fun Bundle.toArgs(): ScheduleDetailsFragment.Args {
+    return ScheduleDetailsFragment.Args(
+        id = requireLong(ScheduleDetailsFragment.Args.Fields.id),
+        clubId = requireInt(ScheduleDetailsFragment.Args.Fields.clubId)
     )
 }
 
-private fun Bundle.getIntOrNull(key: String): Int? = getOrNull(key) { getInt(it) }
-private fun Bundle.getStringOrNull(key: String): String? = getOrNull(key) { getString(it) }
 private fun Bundle.requireInt(key: String): Int = require(key) { getInt(it) }
 private fun Bundle.requireLong(key: String): Long = require(key) { getLong(it) }
-private fun Bundle.requireDate(key: String): Date = Date(requireLong(key))
-private fun Bundle.requireString(key: String): String = require(key) { getString(it)!! }
-private fun Bundle.requireBoolean(key: String): Boolean = require(key) { getBoolean(it) }
-
-private inline fun <T : Any> Bundle.getOrNull(key: String, getter: Bundle.(String) -> T): T? =
-    if (containsKey(key)) {
-        getter(key)
-    } else {
-        null
-    }
 
 private inline fun <T : Any> Bundle.require(key: String, getter: Bundle.(String) -> T): T =
     if (containsKey(key)) {
