@@ -22,17 +22,17 @@ class RxSchedulerRule : TestRule {
 
                 RxJavaPlugins.reset()
 
-                RxJavaPlugins.setComputationSchedulerHandler { scheduler -> testScheduler }
-                RxJavaPlugins.setInitComputationSchedulerHandler { scheduler -> testScheduler }
+                RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
+                RxJavaPlugins.setInitComputationSchedulerHandler { testScheduler }
 
-                RxJavaPlugins.setIoSchedulerHandler { scheduler -> testScheduler }
-                RxJavaPlugins.setInitIoSchedulerHandler { scheduler -> testScheduler }
+                RxJavaPlugins.setIoSchedulerHandler { testScheduler }
+                RxJavaPlugins.setInitIoSchedulerHandler { testScheduler }
 
-                RxJavaPlugins.setSingleSchedulerHandler { scheduler -> testScheduler }
-                RxJavaPlugins.setInitSingleSchedulerHandler { scheduler -> testScheduler }
+                RxJavaPlugins.setSingleSchedulerHandler { testScheduler }
+                RxJavaPlugins.setInitSingleSchedulerHandler { testScheduler }
 
-                RxJavaPlugins.setNewThreadSchedulerHandler { scheduler -> testScheduler }
-                RxJavaPlugins.setInitNewThreadSchedulerHandler { scheduler -> testScheduler }
+                RxJavaPlugins.setNewThreadSchedulerHandler { testScheduler }
+                RxJavaPlugins.setInitNewThreadSchedulerHandler { testScheduler }
 
                 base.evaluate()
 
