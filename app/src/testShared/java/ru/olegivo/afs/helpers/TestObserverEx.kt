@@ -8,3 +8,6 @@ fun <Input> TestObserver<Input>.getSingleValue(): Input {
         .single()
 }
 
+fun <T> TestObserver<T>.checkSingleValue(block: (T) -> Unit) {
+    block(values().single())
+}

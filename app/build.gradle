@@ -55,6 +55,15 @@ android.sourceSets {
     }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'androidx.arch.core'
+                && !details.requested.name.contains('core-runtime')) {
+            details.useVersion "2.0.1"
+        }
+    }
+}
+
 dependencies {
     def daggerVersion = "2.25.2"
     def javaxInjectVersion = '1'
@@ -120,8 +129,12 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
 
+    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
+
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
 
     androidTestImplementation "org.assertj:assertj-core:${assertJVersion}"
 }
