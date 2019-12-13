@@ -45,6 +45,16 @@ android {
     }
 }
 
+android.sourceSets {
+    test {
+        java.srcDirs += "$projectDir/src/testShared/java"
+    }
+
+    androidTest {
+        java.srcDirs += "$projectDir/src/testShared/java"
+    }
+}
+
 dependencies {
     def daggerVersion = "2.25.2"
     def javaxInjectVersion = '1'
