@@ -42,10 +42,10 @@ fun Date.get(field: Int) =
 
 fun getCalendar(date: Date = Date()) = date.toCalendar()
 
-fun Date.toCalendar() = Calendar.getInstance().apply { time = this@toCalendar }
+fun Date.toCalendar() = Calendar.getInstance(Locale.GERMANY).apply { time = this@toCalendar }
 
 fun Date.getDateWithoutTime(): Date {
-    val calendar = Calendar.getInstance()
+    val calendar = toCalendar()
     calendar.time = this
 
     calendar.set(Calendar.HOUR_OF_DAY, 0) // ! clear would not reset the hour of day !
@@ -98,8 +98,9 @@ fun tomorrow() = today().add(days = 1)
 
 fun firstDayOfWeek(date: Date = today()): Date =
     // get today and clear time of day
-    date.toCalendar().apply {
-        // get start of this week in milliseconds
-        set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
-    }.time
+    date.getDateWithoutTime()
+        .toCalendar().apply {
+            // get start of this week in milliseconds
+            set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+        }.time
 
