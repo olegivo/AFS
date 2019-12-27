@@ -13,7 +13,7 @@ data class Schedule(
     val change: Change?,
     val commercial: Boolean,
     val datetime: Date,
-    val endDate: Date,
+    val endDate: Date?,
     val firstFree: Boolean,
     val group: Group,
     val id: Long,
@@ -43,5 +43,6 @@ fun Schedule.toData(clubId: Int) =
         trainer = trainers.firstOrNull()?.title,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = beginDate
+        recordFrom = beginDate,
+        recordTo = endDate
     )

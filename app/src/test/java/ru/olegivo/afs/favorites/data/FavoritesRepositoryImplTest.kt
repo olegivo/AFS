@@ -7,7 +7,6 @@ import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
@@ -84,12 +83,14 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
     }
 
     @Test
-    fun `addReminderToRecord `() {
+    fun `addReminderToRecord PASSES data to favoritesDbSource`() {
         val schedule = createSchedule()
+        given(favoritesDbSource.addReminderToRecord(schedule))
+            .willReturn { Completable.complete() }
 
         instance.addReminderToRecord(schedule)
             .assertSuccess()
 
-
+        verify(favoritesDbSource).addReminderToRecord(schedule)
     }
 }

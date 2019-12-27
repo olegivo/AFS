@@ -57,6 +57,12 @@ class ScheduleRepositoryImpl @Inject constructor(
                     .andThen(schedules)
             }
 
+    override fun getSchedules(ids: List<Long>): Single<List<Schedule>> {
+        return scheduleDbSource.getSchedules(ids)
+            .observeOn(computationScheduler)
+            .mapList { it.toDomain() }
+    }
+
     override fun getSchedule(scheduleId: Long): Single<Schedule> =
         scheduleDbSource.getSchedule(scheduleId)
             .observeOn(computationScheduler)

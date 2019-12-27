@@ -14,4 +14,5 @@ interface ScheduleRepository {
     fun actualizeSchedules(clubId: Int): Single<List<Schedule>>
     fun getSchedule(scheduleId: Long): Single<Schedule>
     fun isScheduleReserved(scheduleId: Long): Single<Boolean>
+    fun getSchedules(ids: List<Long>): Single<List<Schedule>>
 }

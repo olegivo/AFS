@@ -12,12 +12,20 @@ import java.util.*
 
 @Dao
 abstract class ScheduleDao {
-    @Query("select id, clubId, [group], activity, datetime, length, room, trainer, preEntry, totalSlots, recordFrom from schedules where datetime >= :from and datetime < :until and clubId = :clubId")
+    @Query("select $scheduleFields from schedules where datetime >= :from and datetime < :until and clubId = :clubId")
     abstract fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<ScheduleEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun putSchedules(schedules: List<ScheduleEntity>): Completable
 
-    @Query("select id, clubId, [group], activity, datetime, length, room, trainer, preEntry, totalSlots, recordFrom from schedules where id = :id")
+    @Query("select $scheduleFields from schedules where id = :id")
     abstract fun getSchedule(id: Long): Single<ScheduleEntity>
+
+    @Query("select $scheduleFields from schedules where id in (:ids)")
+    abstract fun getSchedules(ids: List<Long>): Single<List<ScheduleEntity>>
+
+    companion object {
+        private const val scheduleFields =
+            "id, clubId, [group], activity, datetime, length, room, trainer, preEntry, totalSlots, recordFrom, recordTo"
+    }
 }

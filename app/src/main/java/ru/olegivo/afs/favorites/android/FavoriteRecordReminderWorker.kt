@@ -13,24 +13,26 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import io.reactivex.Scheduler
+import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.MainActivity
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.android.worker.ChildWorkerFactory
+import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.favorites.domain.FavoritesRepository
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Named
 
 class FavoriteRecordReminderWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted private val params: WorkerParameters,
-    @Named("io") private val ioScheduler: Scheduler,
-    private val scheduleRepository: ScheduleRepository // TODO: use case
+    private val scheduleRepository: ScheduleRepository, // TODO: use case
+    private val favoritesRepository: FavoritesRepository, // TODO: use case
+    private val dateProvider: DateProvider
 ) : RxWorker(appContext, params) {
 
     @AssistedInject.Factory
@@ -38,18 +40,34 @@ class FavoriteRecordReminderWorker @AssistedInject constructor(
 
     override fun createWork(): Single<Result> =
         params.inputData.toSingle()
-            .flatMap { data ->
-                //TODO: params.inputData.isAfterRebootMode()
-                val scheduleId = data.getScheduleId()
-                scheduleRepository.getSchedule(scheduleId)
-                    .subscribeOn(ioScheduler)
-                    .flatMap { schedule ->
-                        Single.fromCallable {
-                            showNotification(appContext, schedule)
-                            Result.success()
+            .flatMapCompletable { process(it) }
+            .andThen(Single.just(Result.success()))
+
+    private fun process(data: Data): Completable =
+        if (data.isAfterRebootMode()) {
+            favoritesRepository.getActiveRecordReminderSchedules(dateProvider.getDate())
+                .flatMap {
+                    scheduleRepository.getSchedules(it)
+                }
+                .flatMapCompletable { schedules ->
+
+                    Completable.concat(
+                        schedules.map {
+                            showNotification(appContext, it)
+                                .doOnError { throwable ->
+                                    throwable.printStackTrace() /*TODO: log error*/
+                                }
+                                .onErrorComplete()
                         }
-                    }
-            }
+                    )
+                }
+        } else {
+            val scheduleId = data.getScheduleId()
+            scheduleRepository.getSchedule(scheduleId)
+                .flatMapCompletable { schedule ->
+                    showNotification(appContext, schedule)
+                }
+        }
 
     private fun getPendingIntent(context: Context, schedule: Schedule): PendingIntent {
         // TODO: если заполнены личные данные для записи и принято соглашение, можно сразу записывать и показывать уведомление о результатах записи
@@ -59,39 +77,40 @@ class FavoriteRecordReminderWorker @AssistedInject constructor(
         )
     }
 
-    private fun showNotification(context: Context, schedule: Schedule) {
-        val pendingIntent = getPendingIntent(appContext, schedule)
+    private fun showNotification(context: Context, schedule: Schedule): Completable =
+        Completable.fromCallable {
+            val pendingIntent = getPendingIntent(appContext, schedule)
 
-        createNotificationChannel(context)
+            createNotificationChannel(context)
 
-        val builder = NotificationCompat.Builder(context, FAVORITE_RECORD_REMINDER_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_check_box_black_24dp)
-            .setSubText("Запись на занятие")
-            .setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText(
-                        StringBuilder()
-                            .appendln("Занятие: ${schedule.activity}")
-                            .appendln("Группа: ${schedule.group}")
-                            .appendln("Начало: ${hoursMinutesFormat.format(schedule.datetime)}")
-                    )
-                    .setBigContentTitle("Записаться на занятие?")
-            )
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .addAction(R.drawable.ic_event_black_24dp, "Записаться", pendingIntent)
-            //.addAction(R.drawable.ic_cancel_black_24dp, "Отмена", pendingIntent) TODO: отменить напоминание (чтобы после перезагрузки напоминание об этом занятии не всплыло снова)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(false)
+            val builder = NotificationCompat.Builder(context, FAVORITE_RECORD_REMINDER_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_check_box_black_24dp)
+                .setSubText("Запись на занятие")
+                .setStyle(
+                    NotificationCompat.BigTextStyle()
+                        .bigText(
+                            StringBuilder()
+                                .appendln("Занятие: ${schedule.activity}")
+                                .appendln("Группа: ${schedule.group}")
+                                .appendln("Начало: ${hoursMinutesFormat.format(schedule.datetime)}")
+                        )
+                        .setBigContentTitle("Записаться на занятие?")
+                )
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(R.drawable.ic_event_black_24dp, "Записаться", pendingIntent)
+                //.addAction(R.drawable.ic_cancel_black_24dp, "Отмена", pendingIntent) TODO: отменить напоминание (чтобы после перезагрузки напоминание об этом занятии не всплыло снова)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(false)
 
-        with(NotificationManagerCompat.from(context)) {
-            // notificationId is a unique int for each notification that you must define
-            notify(
-                1,
-                builder.build()
-            )//TODO уникальный айдишник уведомления (для данного занятия может быть несколько разных уведомлений, нужно иметь возможность отменить каждое отдельно)
+            with(NotificationManagerCompat.from(context)) {
+                // notificationId is a unique int for each notification that you must define
+                notify(
+                    1,
+                    builder.build()
+                )//TODO уникальный айдишник уведомления (для данного занятия может быть несколько разных уведомлений, нужно иметь возможность отменить каждое отдельно)
+            }
         }
-    }
 
     private fun createNotificationChannel(context: Context) {
         // Create the NotificationChannel, but only on API 26+ because
@@ -133,7 +152,7 @@ class FavoriteRecordReminderWorker @AssistedInject constructor(
         fun createInputData(recordReminderParameters: FavoriteRecordReminderParameters) =
             workDataOf("SCHEDULE_ID" to recordReminderParameters.scheduleId)
 
-        fun createInputDataWithAfterRebootMode() = workDataOf("SCHEDULE_ID" to true)
+        fun createInputDataWithAfterRebootMode() = workDataOf("AFTER_REBOOT_MODE" to true)
 
         fun Data.getScheduleId() = getLong("SCHEDULE_ID", 0)
         fun Data.isAfterRebootMode() = getBoolean("AFTER_REBOOT_MODE", false)

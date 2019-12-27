@@ -23,7 +23,8 @@ data class ScheduleEntity(
     val trainer: String?,
     val preEntry: Boolean,
     val totalSlots: Int?,
-    val recordFrom: Date?
+    val recordFrom: Date?,
+    val recordTo: Date?
 )
 
 fun ScheduleEntity.toData() =
@@ -38,7 +39,8 @@ fun ScheduleEntity.toData() =
         trainer = trainer,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = recordFrom
+        recordFrom = recordFrom,
+        recordTo = recordTo
     )
 
 fun DataSchedule.toDb(): ScheduleEntity =
@@ -53,5 +55,6 @@ fun DataSchedule.toDb(): ScheduleEntity =
         trainer = trainer,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = recordFrom
+        recordFrom = recordFrom,
+        recordTo = recordTo
     )

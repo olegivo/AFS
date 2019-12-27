@@ -34,6 +34,12 @@
                 android:exported="false"
                 />
 
+        <receiver android:name=".favorites.android.FavoritesRebootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <provider
                 android:name="androidx.work.impl.WorkManagerInitializer"
                 android:authorities="${applicationId}.workmanager-init"

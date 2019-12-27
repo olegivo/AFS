@@ -21,7 +21,8 @@ data class DataSchedule(
     val preEntry: Boolean,
     // Всего мест: 21
     val totalSlots: Int?,
-    val recordFrom: Date?
+    val recordFrom: Date?,
+    val recordTo: Date?
 )
 
 fun DataSchedule.toDomain(): Schedule {
@@ -36,6 +37,7 @@ fun DataSchedule.toDomain(): Schedule {
         trainer = trainer,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = recordFrom
+        recordFrom = recordFrom,
+        recordTo = recordTo
     )
 }

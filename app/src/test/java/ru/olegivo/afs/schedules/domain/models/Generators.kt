@@ -36,7 +36,8 @@ fun createSchedule(
         trainer = getRandomString(),
         preEntry = getRandomBoolean(),
         totalSlots = totalSlots ?: getRandomInt(),
-        recordFrom =
+        recordFrom = getRandomDate(),
+        recordTo = getRandomDate()
     )
 
 fun createReserveContacts() =

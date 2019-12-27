@@ -125,17 +125,23 @@ class WeekSchedulePresenterTest : BaseTest() {
         weekSchedulePresenter.start()
             .andTriggerActions()
 
-        val shownSchedules = view.capture { param: List<SportsActivity> -> showSchedule(param) }
+        val shownSportActivities =
+            view.capture { param: List<SportsActivity> -> showSchedule(param) }
         verifyGetCurrentWeekSchedule(testData)
 
         verifyNoMoreInteractions(view)
         reset(view)
 
-        val schedule = shownSchedules.random()
+        val sportsActivity = shownSportActivities.random()
 
-        weekSchedulePresenter.onSportsActivityClicked(schedule)
+        weekSchedulePresenter.onSportsActivityClicked(sportsActivity)
 
-        verify(navigator).navigateTo(ReserveDestination(schedule,,))
+        verify(navigator).navigateTo(
+            ReserveDestination(
+                sportsActivity.schedule.id,
+                sportsActivity.schedule.clubId
+            )
+        )
     }
 
     private fun verifyGetCurrentWeekSchedule(

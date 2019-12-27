@@ -8,15 +8,16 @@ import ru.olegivo.afs.helpers.getRandomString
 
 fun createDataSchedule() =
     DataSchedule(
-        getRandomLong(),
-        getRandomInt(),
-        getRandomString(),
-        getRandomString(),
-        getRandomDate(),
-        getRandomInt(),
-        getRandomString(),
-        getRandomString(),
-        getRandomBoolean(),
-        getRandomInt(),
-
+        id = getRandomLong(),
+        clubId = getRandomInt(),
+        group = getRandomString(),
+        activity = getRandomString(),
+        datetime = getRandomDate(),
+        length = getRandomInt(),
+        room = getRandomString(),
+        trainer = getRandomString(),
+        preEntry = getRandomBoolean(),
+        totalSlots = getRandomInt(),
+        recordFrom = getRandomDate(),
+        recordTo = getRandomDate()
     )

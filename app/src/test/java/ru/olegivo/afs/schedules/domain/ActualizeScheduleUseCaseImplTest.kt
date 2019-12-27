@@ -9,10 +9,10 @@ import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
+import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
 import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.randomSubList
-import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 
 class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() {
@@ -46,7 +46,7 @@ class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() 
         val favoriteSchedules = schedules.randomSubList()
         val favoriteFilters = favoriteSchedules.map { it.toFavoriteFilter() }
         favoriteSchedules.forEach {
-            given(favoritesRepository.addReminderToRecord(it)).willReturn { Completable.complete() }
+            given(planFavoriteRecordReminderUseCase.invoke(it)).willReturn { Completable.complete() }
         }
 
         given(favoritesRepository.getFavoriteFilters()).willReturn { Single.just(favoriteFilters) }
@@ -58,7 +58,6 @@ class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() 
         verify(favoritesRepository).getFavoriteFilters()
         favoriteSchedules.forEach {
             verify(planFavoriteRecordReminderUseCase).invoke(it)
-            verify(favoritesRepository).addReminderToRecord(it)
         }
     }
 }

@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.schedules.data.ScheduleDbSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
@@ -41,10 +42,16 @@ class ScheduleDbSourceImpl @Inject constructor(
                 }
             }
 
+    override fun getSchedules(ids: List<Long>): Single<List<DataSchedule>> =
+        scheduleDao.getSchedules(ids)
+            .subscribeOn(ioScheduler)
+            .observeOn(computationScheduler)
+            .mapList { it.toData() }
+
     override fun putSchedules(schedules: List<DataSchedule>): Completable =
         schedules.toSingle()
             .subscribeOn(computationScheduler)
-            .map { list -> list.map { it.toDb() } }
+            .mapList { it.toDb() }
             .observeOn(ioScheduler)
             .flatMapCompletable {
                 scheduleDao.putSchedules(it)

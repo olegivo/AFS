@@ -15,6 +15,7 @@ import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
+import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
@@ -36,7 +37,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         addToFavoritesUseCase,
         removeFromFavoritesUseCase,
         schedulerRule.testScheduler,
-        navigator
+        navigator,
+        planFavoriteRecordReminderUseCase
     )
 
     //<editor-fold desc="mocks">
@@ -47,6 +49,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
     private val addToFavoritesUseCase: AddToFavoritesUseCase = mock()
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase = mock()
     private val navigator: Navigator = mock()
+    private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase = mock()
 
     private val view: ScheduleDetailsContract.View = mock()
 
@@ -57,6 +60,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         savedAgreementUseCase,
         addToFavoritesUseCase,
         removeFromFavoritesUseCase,
+        planFavoriteRecordReminderUseCase,
         view
     )
     //</editor-fold>
@@ -297,6 +301,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
         given(addToFavoritesUseCase.invoke(sportsActivity.schedule))
             .willReturn { Completable.complete() }
+        given(planFavoriteRecordReminderUseCase.invoke(sportsActivity.schedule))
+            .willReturn { Completable.complete() }
 
         instance.onFavoriteClick()
             .andTriggerActions()
@@ -304,6 +310,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verify(getSportsActivityUseCase)
             .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(addToFavoritesUseCase).invoke(sportsActivity.schedule)
+        verify(planFavoriteRecordReminderUseCase).invoke(sportsActivity.schedule)
         verify(view).showIsFavorite(true)
     }
 

@@ -5,10 +5,14 @@ import ru.olegivo.afs.schedules.domain.models.Schedule
 import javax.inject.Inject
 
 class PlanFavoriteRecordReminderUseCaseImpl @Inject constructor(
+    private val favoritesRepository: FavoritesRepository,
     private val favoriteAlarmPlanner: FavoriteAlarmPlanner
 ) : PlanFavoriteRecordReminderUseCase {
 
     override fun invoke(schedule: Schedule): Completable =
-        favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)
+        favoritesRepository.addReminderToRecord(schedule)
+            .andThen(Completable.defer {
+                favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)
+            })
 
 }
