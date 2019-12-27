@@ -7,6 +7,7 @@ interface ScheduleContract {
     interface Presenter : PresentationContract.Presenter<View> {
         fun start()
         fun onSportsActivityClicked(sportsActivity: SportsActivity)
+        fun actualizeSchedule()
     }
 
     interface View : PresentationContract.View, PresentationContract.ErrorDisplay,

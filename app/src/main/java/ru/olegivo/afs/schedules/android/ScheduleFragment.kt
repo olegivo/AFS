@@ -10,6 +10,7 @@ import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Scheduler
 import kotlinx.android.synthetic.main.fragment_schedule.progressBar
 import kotlinx.android.synthetic.main.fragment_schedule.schedule_recycler_view
+import kotlinx.android.synthetic.main.fragment_schedule.swipeRefresh
 import ru.olegivo.afs.R
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
@@ -40,6 +41,15 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule), ScheduleContract.
         super.onViewCreated(view, savedInstanceState)
         schedule_recycler_view.layoutManager = LinearLayoutManager(requireContext())
         schedule_recycler_view.adapter = sportsActivitiesAdapter
+        swipeRefresh.setColorSchemeResources(
+            android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light
+        )
+        swipeRefresh.setOnRefreshListener {
+            presenter.actualizeSchedule()
+        }
     }
 
     override fun onStart() {
@@ -62,10 +72,10 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule), ScheduleContract.
     }
 
     override fun showProgress() {
-        progressBar.visibility = View.VISIBLE
+        swipeRefresh.isRefreshing = true
     }
 
     override fun hideProgress() {
-        progressBar.visibility = View.GONE
+        swipeRefresh.isRefreshing = false
     }
 }
