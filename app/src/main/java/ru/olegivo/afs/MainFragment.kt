@@ -6,18 +6,25 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.Completable
 import io.reactivex.Scheduler
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_main.activity_main_choose_club_button
+import kotlinx.android.synthetic.main.fragment_main.activity_main_drop_db_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_reserve_button
+import kotlinx.android.synthetic.main.fragment_main.activity_main_set_default_club_button
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.models.Club
+import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
+
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
@@ -29,9 +36,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     lateinit var setCurrentClub: SetCurrentClubUseCase
     @Inject
     lateinit var navigator: Navigator
+    @Inject
+    lateinit var afsDatabase: AfsDatabase
 
     @field:[Inject Named("main")]
     lateinit var mainScheduler: Scheduler
+
+    @field:[Inject Named("io")]
+    lateinit var ioScheduler: Scheduler
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -47,11 +59,36 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         activity_main_reserve_button.setOnClickListener {
             onReserveClicked()
         }
+        activity_main_set_default_club_button.setOnClickListener {
+            onSetDefaultClubClicked()
+        }
+        activity_main_drop_db_button.setOnClickListener {
+            onDropDbBClicked()
+        }
+    }
+
+    private fun onDropDbBClicked() {
+        Completable.fromCallable {
+            afsDatabase.openHelper.close()
+            deleteDatabaseFile(requireContext(), afsDatabase.openHelper.databaseName)
+        }.subscribeOn(ioScheduler)
+            .observeOn(mainScheduler)
+            .subscribeBy(
+                onComplete = { showMessage("БД удалена") },
+                onError = ::onError
+            )
+    }
+
+    private fun onSetDefaultClubClicked() {
+        setCurrentClub(375)
+            .observeOn(mainScheduler)
+            .subscribeBy(
+                onComplete = { showMessage("Выбран клуб по умолчанию") },
+                onError = ::onError
+            )
     }
 
     private fun onChooseClubClicked() {
-        setCurrentClub(375)
-            .subscribe()
         getClubs()
             .flatMap { clubs ->
                 getCurrentClub().toSingle(-1)
@@ -96,7 +133,37 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun onError(t: Throwable) {
-        Toast.makeText(requireContext(), "Error \n${t.message}", Toast.LENGTH_LONG).show()
+        showMessage("Error \n${t.message}")
     }
 
+    private fun showMessage(message: String?) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun deleteDatabaseFile(
+        context: Context,
+        databaseName: String
+    ): Boolean {
+        val databases = File(context.applicationInfo.dataDir + "/databases")
+        val db = File(databases, databaseName)
+        if (db.exists()) {
+            if (db.delete()) {
+                println("$databaseName database deleted")
+            } else {
+                println("Failed to delete $databaseName database")
+                return false
+            }
+        }
+        val journal = File(databases, "$databaseName-journal")
+        if (journal.exists()) {
+            if (journal.delete()) {
+                println("$databaseName database journal deleted")
+            } else {
+                println("Failed to delete $databaseName database journal")
+                return false
+            }
+        }
+
+        return true
+    }
 }

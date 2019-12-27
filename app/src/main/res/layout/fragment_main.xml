@@ -4,7 +4,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".MainActivity"
+        >
 
     <Button
             android:id="@+id/activity_main_choose_club_button"
@@ -14,7 +15,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
     <Button
             android:id="@+id/activity_main_reserve_button"
@@ -23,6 +25,29 @@
             android:text="@string/activity_main_reserve_button_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_main_choose_club_button" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_choose_club_button"
+            />
+
+    <Button
+            android:id="@+id/activity_main_set_default_club_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Выбрать дефолтный клуб"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_reserve_button"
+            />
+
+    <Button
+            android:id="@+id/activity_main_drop_db_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Удалить БД"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_set_default_club_button"
+            />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
