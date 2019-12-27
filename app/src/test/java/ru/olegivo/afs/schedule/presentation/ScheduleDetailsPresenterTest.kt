@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test
@@ -61,7 +62,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
     //</editor-fold>
 
     override fun setUp() {
-        given(savedAgreementUseCase.setAgreementAccepted()).willReturn(Completable.complete())
+        given(savedAgreementUseCase.setAgreementAccepted()).willReturn { Completable.complete() }
         instance.unbindView()
         (instance as ScheduleDetailsPresenter).clear()
         super.setUp()
@@ -106,9 +107,9 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verifyBindView(sportsActivity)
 
         given(savedReserveContactsUseCase.saveReserveContacts(any()))
-            .willReturn(Completable.complete())
+            .willReturn { Completable.complete() }
         given(savedAgreementUseCase.setAgreementAccepted())
-            .willReturn(Completable.complete())
+            .willReturn { Completable.complete() }
 
         instance.unbindView().andTriggerActions()
 
@@ -124,12 +125,12 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verifyBindView(sportsActivity)
 
         val reserveContacts = createReserveContacts()
-        given(view.getReserveContacts()).willReturn(reserveContacts)
+        given(view.getReserveContacts()).willReturn { reserveContacts }
         given(savedReserveContactsUseCase.saveReserveContacts(reserveContacts))
-            .willReturn(Completable.complete())
+            .willReturn { Completable.complete() }
         given(savedAgreementUseCase.setAgreementAccepted())
-            .willReturn(Completable.complete())
-        given(view.isAgreementAccepted()).willReturn(true)
+            .willReturn { Completable.complete() }
+        given(view.isAgreementAccepted()).willReturn { true }
 
         instance.unbindView().andTriggerActions()
 
@@ -148,7 +149,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
-            .willReturn(Single.just(ReserveResult.Success))
+            .willReturn { Single.just(ReserveResult.Success) }
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -170,7 +171,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         val (fio, phone) = reserveContacts
         val exception = RuntimeException(getRandomString())
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
-            .willReturn(Single.error(exception))
+            .willReturn { Single.error(exception) }
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -191,7 +192,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
-            .willReturn(Single.just(ReserveResult.TheTimeHasGone))
+            .willReturn { Single.just(ReserveResult.TheTimeHasGone) }
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -212,7 +213,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
-            .willReturn(Single.just(ReserveResult.NoSlots.APriori))
+            .willReturn { Single.just(ReserveResult.NoSlots.APriori) }
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -233,7 +234,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
-            .willReturn(Single.just(ReserveResult.NoSlots.APosteriori))
+            .willReturn { Single.just(ReserveResult.NoSlots.APosteriori) }
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -254,7 +255,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
-            .willReturn(Single.just(ReserveResult.AlreadyReserved))
+            .willReturn { Single.just(ReserveResult.AlreadyReserved) }
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -275,7 +276,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, false))
-            .willReturn(Single.just(ReserveResult.HaveToAcceptAgreement))
+            .willReturn { Single.just(ReserveResult.HaveToAcceptAgreement) }
 
         instance.onReserveClicked(false)
             .andTriggerActions()
@@ -295,7 +296,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verifyBindView(sportsActivity, reserveContacts)
 
         given(addToFavoritesUseCase.invoke(sportsActivity.schedule))
-            .willReturn(Completable.complete())
+            .willReturn { Completable.complete() }
 
         instance.onFavoriteClick()
             .andTriggerActions()
@@ -317,11 +318,11 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
                 sportsActivity.schedule.id
             )
         )
-            .willReturn(Single.just(sportsActivity))
+            .willReturn { Single.just(sportsActivity) }
         given(savedReserveContactsUseCase.getReserveContacts())
-            .willReturn(reserveContacts.toMaybe())
+            .willReturn { reserveContacts.toMaybe() }
         given(savedAgreementUseCase.isAgreementAccepted())
-            .willReturn(isAgreementAccepted.toSingle())
+            .willReturn { isAgreementAccepted.toSingle() }
 
         instance.init(sportsActivity.schedule.id, sportsActivity.schedule.clubId)
         instance.bindView(view).andTriggerActions()
@@ -336,7 +337,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         verifyBindView(sportsActivity, reserveContacts)
 
         given(removeFromFavoritesUseCase.invoke(sportsActivity.schedule))
-            .willReturn(Completable.complete())
+            .willReturn { Completable.complete() }
 
         instance.onFavoriteClick()
             .andTriggerActions()
@@ -365,6 +366,6 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         reset(view)
         // and restore some setup after reset:
         //given(view.getSportsActivity()).willReturn(sportsActivity)
-        given(view.getReserveContacts()).willReturn(reserveContacts)
+        given(view.getReserveContacts()).willReturn { reserveContacts }
     }
 }

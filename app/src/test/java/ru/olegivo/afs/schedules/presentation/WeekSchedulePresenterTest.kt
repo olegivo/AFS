@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Maybe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -160,11 +161,10 @@ class WeekSchedulePresenterTest : BaseTest() {
             Maybe.just(testData.weekSchedule)
         }
     ) {
-        given(getCurrentClubUseCase.invoke()).willReturn(currentClubIdMaybeProvider())
-        given(dateProvider.getDate()).willReturn(testData.now)
-        given(getCurrentWeekScheduleUseCase.invoke(testData.clubId)).willReturn(
-            currentWeekScheduleProvider()
-        )
+        given(getCurrentClubUseCase.invoke()).willReturn { currentClubIdMaybeProvider() }
+        given(dateProvider.getDate()).willReturn { testData.now }
+        given(getCurrentWeekScheduleUseCase.invoke(testData.clubId))
+            .willReturn { currentWeekScheduleProvider() }
     }
 
     private data class TestData(

@@ -3,9 +3,9 @@ package ru.olegivo.afs.favorites.data
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.observers.BaseTestConsumer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
 import org.junit.Test
@@ -33,7 +33,7 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
         val favoriteFilter = createFavoriteFilter()
 
         given(favoritesDbSource.addFilter(favoriteFilter))
-            .willReturn(Completable.complete())
+            .willReturn { Completable.complete() }
 
         instance.addFilter(favoriteFilter)
             .assertSuccess()
@@ -46,7 +46,7 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
         val favoriteFilter = createFavoriteFilter()
 
         given(favoritesDbSource.removeFilter(favoriteFilter))
-            .willReturn(Completable.complete())
+            .willReturn { Completable.complete() }
 
         instance.removeFilter(favoriteFilter)
             .assertSuccess()
@@ -58,7 +58,7 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
     fun `getFavoritesScheduleIds RETURNS data from favoritesDbSource`() {
         val favoriteFilters = { createFavoriteFilter() }.repeat(10)
 
-        given(favoritesDbSource.getFavoriteFilters()).willReturn(Single.just(favoriteFilters))
+        given(favoritesDbSource.getFavoriteFilters()).willReturn { Single.just(favoriteFilters) }
 
         instance.getFavoriteFilters()
             .assertResult {
@@ -73,7 +73,7 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
         val schedule = createSchedule()
         val isFavorite = getRandomBoolean()
         given(favoritesDbSource.exist(schedule.toFavoriteFilter()))
-            .willReturn(Single.just(isFavorite))
+            .willReturn { Single.just(isFavorite) }
 
         instance.isFavorite(schedule)
             .assertResult {

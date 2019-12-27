@@ -3,6 +3,7 @@ package ru.olegivo.afs.schedules.domain
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test
@@ -40,15 +41,15 @@ class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() 
         val clubId = getRandomInt()
         val schedules = listOf(createSchedule())
         given(scheduleRepository.actualizeSchedules(clubId))
-            .willReturn(Single.just(schedules))
+            .willReturn { Single.just(schedules) }
 
         val favoriteSchedules = schedules.randomSubList()
         val favoriteFilters = favoriteSchedules.map { it.toFavoriteFilter() }
         favoriteSchedules.forEach {
-            given(favoritesRepository.addReminderToRecord(it)).willReturn(Completable.complete())
+            given(favoritesRepository.addReminderToRecord(it)).willReturn { Completable.complete() }
         }
 
-        given(favoritesRepository.getFavoriteFilters()).willReturn(Single.just(favoriteFilters))
+        given(favoritesRepository.getFavoriteFilters()).willReturn { Single.just(favoriteFilters) }
 
         instance.invoke(clubId)
             .assertSuccess()
