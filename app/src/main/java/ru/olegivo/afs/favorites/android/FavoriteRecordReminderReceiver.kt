@@ -7,21 +7,26 @@ import android.content.Intent
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import dagger.android.AndroidInjection
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
+import javax.inject.Inject
 
 class FavoriteRecordReminderReceiver : BroadcastReceiver() {
 
+    @Inject
+    lateinit var workManager: WorkManager
+
     override fun onReceive(context: Context, intent: Intent) {
+        AndroidInjection.inject(this, context)
 
         if (intent.action == ACTION_PLAN) {
-            WorkManager.getInstance(context)
-                .enqueueUniqueWork(
-                    FavoriteRecordReminderWorker.TAG,
-                    ExistingWorkPolicy.APPEND,
-                    OneTimeWorkRequestBuilder<FavoriteRecordReminderWorker>()
-                        .setInputData(FavoriteRecordReminderWorker.createInputData(intent.getExtraFavoriteRecordReminderParameters()))
-                        .build()
-                )
+            workManager.enqueueUniqueWork(
+                FavoriteRecordReminderWorker.TAG,
+                ExistingWorkPolicy.APPEND,
+                OneTimeWorkRequestBuilder<FavoriteRecordReminderWorker>()
+                    .setInputData(FavoriteRecordReminderWorker.createInputData(intent.getExtraFavoriteRecordReminderParameters()))
+                    .build()
+            )
 
         }
     }

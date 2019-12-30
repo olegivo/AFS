@@ -16,6 +16,7 @@ import javax.inject.Singleton
         AppAssistedInjectModule::class,
         AppModule::class,
         ActivityBuilderModule::class,
+        BroadcastReceiverModule::class,
         WorkerBindingModule::class
     ]
 )

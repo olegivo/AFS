@@ -11,6 +11,7 @@ import ru.olegivo.afs.auth.di.AuthModule
 import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.DateProviderImpl
+import ru.olegivo.afs.favorites.android.FavoriteRecordReminderReceiver
 import ru.olegivo.afs.preferences.di.PreferencesModule
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedule.di.ScheduleDetailsModule
@@ -62,4 +63,11 @@ abstract class ActivityBuilderModule {
     @ContributesAndroidInjector(modules = [FragmentBuilderModule::class])
     abstract fun bindMainActivity(): MainActivity
 
+}
+
+@Module
+abstract class BroadcastReceiverModule {
+
+    @ContributesAndroidInjector
+    abstract fun contributesMyTestReceiver(): FavoriteRecordReminderReceiver
 }
