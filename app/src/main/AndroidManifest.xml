@@ -34,6 +34,12 @@
                 android:exported="false"
                 />
 
+        <receiver
+                android:name=".favorites.android.SportsActivityReserveReceiver"
+                android:enabled="true"
+                android:exported="false"
+                />
+
         <receiver android:name=".favorites.android.FavoritesRebootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

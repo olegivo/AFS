@@ -22,10 +22,142 @@ class ScheduleReminderNotifierImpl @Inject constructor(
     @Named("application") private val context: Context
 ) :
     ScheduleReminderNotifier {
-    override fun showNotification(schedule: Schedule): Completable =
-        Completable.fromCallable {
-            val pendingIntent = getPendingIntent(context, schedule)
 
+    override fun showNotificationToShowDetails(schedule: Schedule): Completable =
+        showNotification(
+            notificationTitle = "Записаться на занятие?",
+            notificationText = {
+                schedule.description {
+                    common()
+                }
+            },
+            notificationBuilderAction = {
+                val reservePendingIntent = getSportsActivityDetailsPendingIntent(context, schedule)
+                setContentIntent(reservePendingIntent)
+                addAction(R.drawable.ic_event_black_24dp, "Записаться", reservePendingIntent)
+            },
+            notificationId = 1
+        )
+
+    override fun showNotificationToReserve(schedule: Schedule, fio: String, phone: String) =
+        showNotification(
+            notificationTitle = "Записаться на занятие?",
+            notificationText = {
+                schedule.description {
+                    common()
+                    appendln("ФИО: $fio")
+                    appendln("Телефон: $phone")
+                }
+            },
+            notificationBuilderAction = {
+                val reservePendingIntent = getReservePendingIntent(context, schedule, fio, phone)
+                val sportsActivityDetailsPendingIntent =
+                    getSportsActivityDetailsPendingIntent(context, schedule)
+
+                setContentIntent(reservePendingIntent)
+                addAction(R.drawable.ic_event_black_24dp, "Записаться", reservePendingIntent)
+                addAction(
+                    R.drawable.ic_edit_black_24dp,
+                    "Записаться с другими контактныеми данными",
+                    sportsActivityDetailsPendingIntent
+                )
+            },
+            notificationId = 1
+        )
+
+    override fun showAlreadyReserved(schedule: Schedule): Completable = showNotification(
+        notificationTitle = "Вы уже записывались на занятие",
+        notificationText = {
+            schedule.description {
+                appendln("Вы уже записывались на это занятие:")
+                common()
+            }
+        },
+        notificationBuilderAction = {},
+        notificationId = 2
+    )
+
+    override fun showHasNoSlotsAPosteriori(schedule: Schedule): Completable = showNotification(
+        notificationTitle = "Вы не записаны на занятие",
+        notificationText = {
+            schedule.description {
+                appendln("Не осталось свободных мест. Места закончились до того, как вы отправили запрос.")
+                common()
+            }
+        },
+        notificationBuilderAction = {},
+        notificationId = 2
+    )
+
+    override fun showHasNoSlotsAPriori(schedule: Schedule): Completable = showNotification(
+        notificationTitle = "Вы не записаны на занятие",
+        notificationText = {
+            schedule.description {
+                appendln("\"Не осталось свободных мест")
+                common()
+            }
+        },
+        notificationBuilderAction = {},
+        notificationId = 2
+    )
+
+    override fun showTheTimeHasGone(schedule: Schedule): Completable = showNotification(
+        notificationTitle = "Вы не записаны на занятие",
+        notificationText = {
+            schedule.description {
+                appendln("Вы не можете записаться на занятие, т.к. время начала уже прошло")
+                common()
+            }
+        },
+        notificationBuilderAction = {},
+        notificationId = 2
+    )
+
+    override fun showSuccessReserved(schedule: Schedule): Completable = showNotification(
+        notificationTitle = "Вы записаны на занятие",
+        notificationText = {
+            schedule.description {
+                appendln("")
+                common()
+            }
+        },
+        notificationBuilderAction = {},
+        notificationId = 2
+    )
+
+    private fun Schedule.description(block: ScheduleDescriptor.() -> Unit): StringBuilder =
+        ScheduleDescriptor(this)
+            .apply(block)
+            .getDescription()
+
+    private class ScheduleDescriptor(private val schedule: Schedule) {
+        private val stringBuilder = StringBuilder()
+
+        fun common() {
+            activity()
+            group()
+            startTime()
+            date()
+        }
+
+        fun activity() = appendln("Занятие: ${schedule.activity}")
+        fun group() = appendln("Группа: ${schedule.group}")
+        fun startTime() = appendln("Начало: ${timeFormat.format(schedule.datetime)}")
+        fun date() = appendln("Дата: ${timeFormat.format(schedule.datetime)}")
+
+        fun appendln(string: String) = stringBuilder.appendln(string)
+
+
+        fun getDescription(): StringBuilder = stringBuilder
+    }
+
+    private fun showNotification(
+        notificationTitle: String,
+        notificationText: () -> CharSequence,
+        notificationBuilderAction: NotificationCompat.Builder.() -> Unit,
+        notificationId: Int
+    ): Completable {
+        return Completable.fromCallable {
             createNotificationChannel(context)
 
             val builder = NotificationCompat.Builder(
@@ -36,29 +168,24 @@ class ScheduleReminderNotifierImpl @Inject constructor(
                 .setSubText("Запись на занятие")
                 .setStyle(
                     NotificationCompat.BigTextStyle()
-                        .bigText(
-                            StringBuilder()
-                                .appendln("Занятие: ${schedule.activity}")
-                                .appendln("Группа: ${schedule.group}")
-                                .appendln("Начало: ${hoursMinutesFormat.format(schedule.datetime)}")
-                        )
-                        .setBigContentTitle("Записаться на занятие?")
+                        .bigText(notificationText())
+                        .setBigContentTitle(notificationTitle)
                 )
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .addAction(R.drawable.ic_event_black_24dp, "Записаться", pendingIntent)
                 //.addAction(R.drawable.ic_cancel_black_24dp, "Отмена", pendingIntent) TODO: отменить напоминание (чтобы после перезагрузки напоминание об этом занятии не всплыло снова)
-                .setContentIntent(pendingIntent)
                 .setAutoCancel(false)
+                .apply(notificationBuilderAction)
 
             with(NotificationManagerCompat.from(context)) {
                 // notificationId is a unique int for each notification that you must define
                 notify(
-                    1,
+                    notificationId,
                     builder.build()
                 )//TODO уникальный айдишник уведомления (для данного занятия может быть несколько разных уведомлений, нужно иметь возможность отменить каждое отдельно)
             }
         }
+    }
 
     private fun createNotificationChannel(context: Context) {
         // Create the NotificationChannel, but only on API 26+ because
@@ -84,11 +211,28 @@ class ScheduleReminderNotifierImpl @Inject constructor(
         }
     }
 
-    private fun getPendingIntent(context: Context, schedule: Schedule): PendingIntent {
-        // TODO: если заполнены личные данные для записи и принято соглашение, можно сразу записывать и показывать уведомление о результатах записи
+    private fun getSportsActivityDetailsPendingIntent(
+        context: Context,
+        schedule: Schedule
+    ): PendingIntent {
         return MainActivity.createIntent(
             context,
             FavoriteRecordReminderParameters(schedule.id, schedule.clubId)
+        )
+    }
+
+    private fun getReservePendingIntent(
+        context: Context,
+        schedule: Schedule,
+        fio: String,
+        phone: String
+    ): PendingIntent {
+        return SportsActivityReserveReceiver.createIntent(
+            context,
+            schedule.clubId,
+            schedule.id,
+            fio,
+            phone
         )
     }
 
@@ -96,11 +240,19 @@ class ScheduleReminderNotifierImpl @Inject constructor(
         private const val FAVORITE_RECORD_REMINDER_CHANNEL_ID: String =
             "FAVORITE_RECORD_REMINDER_CHANNEL"
 
-        private const val FORMAT = "HH:mm"
+        private const val FORMAT_TIME = "HH:mm"
+        private const val FORMAT_DATE = "dd.MM.yyyy"
 
-        private val hoursMinutesFormat: SimpleDateFormat by lazy {
+        private val locale = Locale.getDefault()
+
+        private val timeFormat: SimpleDateFormat by lazy {
             // TODO: copy paste
-            SimpleDateFormat(FORMAT, Locale.getDefault())
+            SimpleDateFormat(FORMAT_TIME, locale)
+        }
+
+        private val dateFormat: SimpleDateFormat by lazy {
+            // TODO: copy paste
+            SimpleDateFormat(FORMAT_DATE, locale)
         }
 
     }

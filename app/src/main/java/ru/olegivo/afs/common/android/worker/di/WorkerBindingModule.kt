@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import ru.olegivo.afs.common.android.worker.ChildWorkerFactory
 import ru.olegivo.afs.favorites.android.FavoriteRecordReminderWorker
+import ru.olegivo.afs.favorites.android.SportsActivityReserveWorker
 import ru.olegivo.afs.schedule.di.ScheduleDetailsModule
 import ru.olegivo.afs.schedules.android.ActualizeSchedulesWorker
 import javax.inject.Named
@@ -23,6 +24,11 @@ interface WorkerBindingModule {
     @IntoMap
     @WorkerKey(FavoriteRecordReminderWorker::class)
     fun bindFavoriteRecordReminderWorker(factory: FavoriteRecordReminderWorker.Factory): ChildWorkerFactory
+
+    @Binds
+    @IntoMap
+    @WorkerKey(SportsActivityReserveWorker::class)
+    fun bindSportsActivityReserveWorker(factory: SportsActivityReserveWorker.Factory): ChildWorkerFactory
 
     @Binds
     @IntoMap

@@ -1,15 +1,21 @@
 package ru.olegivo.afs.favorites.domain
 
 import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Single
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
+import ru.olegivo.afs.schedules.domain.models.Schedule
+import timber.log.Timber
 import javax.inject.Inject
 
 class RestoreAllActiveRecordRemindersUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository,
     private val favoritesRepository: FavoritesRepository,
     private val dateProvider: DateProvider,
-    private val scheduleReminderNotifier: ScheduleReminderNotifier
+    private val scheduleReminderNotifier: ScheduleReminderNotifier,
+    private val reserveRepository: ReserveRepository
 ) : RestoreAllActiveRecordRemindersUseCase {
 
     override fun invoke(): Completable =
@@ -18,14 +24,41 @@ class RestoreAllActiveRecordRemindersUseCaseImpl @Inject constructor(
                 scheduleRepository.getSchedules(it)
             }
             .flatMapCompletable { schedules ->
-                Completable.concat(
-                    schedules.map {
-                        scheduleReminderNotifier.showNotification(it)
-                            .doOnError { throwable ->
-                                throwable.printStackTrace() /*TODO: log error*/
+                val actionSingle = reserveRepository.isAgreementAccepted()
+                    .flatMapMaybe { isAgreementAccepted ->
+                        val acceptedReserveContactsMaybe = if (!isAgreementAccepted) {
+                            Maybe.empty()
+                        } else {
+                            reserveRepository.getReserveContacts()
+                        }
+                        acceptedReserveContactsMaybe
+                            .map { reserveContacts ->
+                                { s: Schedule ->
+                                    scheduleReminderNotifier.showNotificationToReserve(
+                                        s,
+                                        reserveContacts.fio,
+                                        reserveContacts.phone
+                                    )
+                                }
                             }
-                            .onErrorComplete()
                     }
-                )
+                    .switchIfEmpty(
+                        Single.just(scheduleReminderNotifier::showNotificationToShowDetails)
+                    )
+
+                actionSingle.flatMapCompletable { action ->
+                    Completable.concat(
+                        schedules.map {
+                            action(it)
+                                .doOnError { throwable ->
+                                    Timber.e(
+                                        throwable,
+                                        "Ошибка при попытке формирования уведомления для записи на занятие"
+                                    )
+                                }
+                                .onErrorComplete()
+                        }
+                    )
+                }
             }
 }

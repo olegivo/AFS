@@ -20,11 +20,14 @@ class FavoriteRecordReminderReceiver : BroadcastReceiver() {
         AndroidInjection.inject(this, context)
 
         if (intent.action == ACTION_PLAN) {
+            val recordReminderParameters = intent.getExtraFavoriteRecordReminderParameters()
             workManager.enqueueUniqueWork(
                 FavoriteRecordReminderWorker.TAG,
                 ExistingWorkPolicy.APPEND,
                 OneTimeWorkRequestBuilder<FavoriteRecordReminderWorker>()
-                    .setInputData(FavoriteRecordReminderWorker.createInputData(intent.getExtraFavoriteRecordReminderParameters()))
+                    .setInputData(FavoriteRecordReminderWorker.createInputData(
+                        recordReminderParameters
+                    ))
                     .build()
             )
 
@@ -42,7 +45,7 @@ class FavoriteRecordReminderReceiver : BroadcastReceiver() {
                 .setAction(ACTION_PLAN)
                 .putFavoriteRecordReminderParameters(recordReminderParameters)
                 .let { intent ->
-                    PendingIntent.getBroadcast(context, 0, intent, 0)
+                    PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
                 }
     }
 }
