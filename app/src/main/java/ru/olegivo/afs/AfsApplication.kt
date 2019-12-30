@@ -21,6 +21,8 @@ class AfsApplication : Application(), HasAndroidInjector {
             Timber.plant(Timber.DebugTree())
         }
 
+        UncaughtException.setup()
+
         JodaTimeAndroid.init(this)
         DaggerAppComponent.factory().create(this).let {
             it.inject(this)
