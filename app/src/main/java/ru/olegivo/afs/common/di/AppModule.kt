@@ -46,7 +46,7 @@ abstract class AppModule {
 @Module
 abstract class FragmentBuilderModule {
 
-    @ContributesAndroidInjector(modules = [ClubsModule::class])
+    @ContributesAndroidInjector(modules = [ClubsModule::class, ScheduleDetailsModule::class])
     abstract fun bindMainFragment(): MainFragment
 
     @ContributesAndroidInjector(modules = [SchedulesModule::class])

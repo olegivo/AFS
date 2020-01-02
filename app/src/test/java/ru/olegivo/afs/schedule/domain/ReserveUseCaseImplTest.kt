@@ -236,7 +236,7 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
     }
 
     @Test
-    fun `reserve returns ReserveResult-Success WHEN the time hasn't gone, has available slots, isReserved = false`() {
+    fun `reserve returns ReserveResult-Success WHEN the time hasn't gone, has available slots, isReserved = false, real reserve`() {
         val now = Date()
         given(dateProvider.getDate()).willReturn { now }
         val sportsActivity = createSportsActivity(
@@ -256,6 +256,8 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             .willReturn { Single.just(1) }
         val reserve =
             Reserve(fio, phone, sportsActivity.schedule.id, sportsActivity.schedule.clubId)
+        given(reserveRepository.isStubReserve())
+            .willReturn { Single.just(false) }
         given(reserveRepository.reserve(reserve))
             .willReturn { Completable.complete() }
         given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn { Completable.complete() }
@@ -272,7 +274,51 @@ class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
             sportsActivity.schedule.clubId,
             sportsActivity.schedule.id
         )
+        verify(reserveRepository).isStubReserve()
         verify(reserveRepository).reserve(reserve)
+        verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
+    }
+
+    @Test
+    fun `reserve returns ReserveResult-Success WHEN the time hasn't gone, has available slots, isReserved = false, stub reserve`() {
+        val now = Date()
+        given(dateProvider.getDate()).willReturn { now }
+        val sportsActivity = createSportsActivity(
+            totalSlots = 21,
+            availableSlots = 1,
+            datetime = now.add(minutes = 1),
+            isReserved = false
+        )
+        val fio = getRandomString()
+        val phone = getRandomString()
+        given(
+            reserveRepository.getAvailableSlots(
+                sportsActivity.schedule.clubId,
+                sportsActivity.schedule.id
+            )
+        )
+            .willReturn { Single.just(1) }
+        val reserve =
+            Reserve(fio, phone, sportsActivity.schedule.id, sportsActivity.schedule.clubId)
+        given(reserveRepository.isStubReserve())
+            .willReturn { Single.just(true) }
+        given(reserveRepository.reserve(reserve))
+            .willReturn { Completable.complete() }
+        given(scheduleRepository.setScheduleReserved(sportsActivity.schedule)).willReturn { Completable.complete() }
+
+        val result = instance.reserve(sportsActivity, fio, phone, true)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        assertThat(result).isEqualTo(ReserveResult.Success)
+
+        verify(dateProvider).getDate()
+        verify(reserveRepository).getAvailableSlots(
+            sportsActivity.schedule.clubId,
+            sportsActivity.schedule.id
+        )
+        verify(reserveRepository).isStubReserve()
         verify(scheduleRepository).setScheduleReserved(sportsActivity.schedule)
     }
 }

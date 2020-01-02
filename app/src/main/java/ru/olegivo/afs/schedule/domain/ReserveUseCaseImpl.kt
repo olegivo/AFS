@@ -1,5 +1,6 @@
 package ru.olegivo.afs.schedule.domain
 
+import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.extensions.andThen
@@ -37,13 +38,20 @@ class ReserveUseCaseImpl @Inject constructor(
                     if (availableSlots == 0) {
                         Single.just(ReserveResult.NoSlots.APosteriori)
                     } else {
-                        val reserve = Reserve(
-                            fio,
-                            phone,
-                            sportsActivity.schedule.id,
-                            sportsActivity.schedule.clubId
-                        )
-                        reserveRepository.reserve(reserve)
+                        reserveRepository.isStubReserve()
+                            .flatMapCompletable { isStubReserve ->
+                                if (isStubReserve) {
+                                    Completable.complete()
+                                } else {
+                                    val reserve = Reserve(
+                                        fio,
+                                        phone,
+                                        sportsActivity.schedule.id,
+                                        sportsActivity.schedule.clubId
+                                    )
+                                    reserveRepository.reserve(reserve)
+                                }
+                            }
                             .andThen(Single.just(ReserveResult.Success))
                             .andThen { scheduleRepository.setScheduleReserved(sportsActivity.schedule) }
                     }

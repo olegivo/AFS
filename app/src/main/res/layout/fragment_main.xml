@@ -7,47 +7,55 @@
         tools:context=".MainActivity"
         >
 
-    <Button
-            android:id="@+id/activity_main_choose_club_button"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/activity_main_choose_club_button_text"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-    <Button
-            android:id="@+id/activity_main_reserve_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_main_reserve_button_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_main_choose_club_button"
-            />
+            >
 
-    <Button
-            android:id="@+id/activity_main_set_default_club_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Выбрать дефолтный клуб"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_main_reserve_button"
-            />
+        <Button
+                android:id="@+id/activity_main_drop_db_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Удалить БД"
+                />
 
-    <Button
-            android:id="@+id/activity_main_drop_db_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Удалить БД"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_main_set_default_club_button"
-            />
+        <Button
+                android:id="@+id/activity_main_choose_club_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_choose_club_button_text"
+                />
+
+        <Button
+                android:id="@+id/activity_main_set_default_club_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Выбрать дефолтный клуб"
+                />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/activity_main_is_stub_reserve_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:text="Fake reserve"
+                />
+
+        <Button
+                android:id="@+id/activity_main_reserve_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_reserve_button_text"
+                />
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

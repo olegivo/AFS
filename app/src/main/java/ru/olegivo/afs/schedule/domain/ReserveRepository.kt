@@ -13,4 +13,6 @@ interface ReserveRepository {
     fun getReserveContacts(): Maybe<ReserveContacts>
     fun isAgreementAccepted(): Single<Boolean>
     fun setAgreementAccepted(): Completable
+    fun isStubReserve(): Single<Boolean>
+    fun setStubReserve(isStubReserve: Boolean): Completable
 }

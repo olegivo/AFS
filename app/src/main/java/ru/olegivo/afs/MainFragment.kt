@@ -3,6 +3,7 @@ package ru.olegivo.afs
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import dagger.android.support.AndroidSupportInjection
@@ -11,6 +12,7 @@ import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_main.activity_main_choose_club_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_drop_db_button
+import kotlinx.android.synthetic.main.fragment_main.activity_main_is_stub_reserve_check_box
 import kotlinx.android.synthetic.main.fragment_main.activity_main_reserve_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_set_default_club_button
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
@@ -20,6 +22,7 @@ import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.presentation.Navigator
+import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import java.io.File
 import javax.inject.Inject
@@ -35,6 +38,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     @Inject
     lateinit var setCurrentClub: SetCurrentClubUseCase
     @Inject
+    lateinit var reserveRepository: ReserveRepository
+    @Inject
     lateinit var navigator: Navigator
     @Inject
     lateinit var afsDatabase: AfsDatabase
@@ -44,6 +49,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     @field:[Inject Named("io")]
     lateinit var ioScheduler: Scheduler
+
+    private val onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _, isChecked ->
+        reserveRepository.setStubReserve(isChecked)
+            .observeOn(mainScheduler)
+            .doOnSubscribe { activity_main_is_stub_reserve_check_box.isEnabled = false }
+            .doFinally { activity_main_is_stub_reserve_check_box.isEnabled = true }
+            .subscribeBy(
+                onError = ::onError
+            )
+    }
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -65,6 +80,30 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         activity_main_drop_db_button.setOnClickListener {
             onDropDbBClicked()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        reserveRepository.isStubReserve()
+            .observeOn(mainScheduler)
+            .doOnSubscribe {
+                activity_main_is_stub_reserve_check_box.isEnabled = false
+                activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(null)
+            }
+            .doFinally {
+                activity_main_is_stub_reserve_check_box.isEnabled = true
+                activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(
+                    onCheckedChangeListener
+                )
+            }
+            .subscribeBy(
+                onSuccess = { isStubReserve ->
+                    if (activity_main_is_stub_reserve_check_box.isChecked != isStubReserve) {
+                        activity_main_is_stub_reserve_check_box.isChecked = isStubReserve
+                    }
+                },
+                onError = ::onError
+            )
     }
 
     private fun onDropDbBClicked() {

@@ -44,9 +44,18 @@ class ReserveRepositoryImpl @Inject constructor(
         return preferencesDataSource.putBoolean(IsAgreementAccepted, true)
     }
 
+    override fun isStubReserve(): Single<Boolean> =
+        preferencesDataSource.getBoolean(IsStubReserve)
+            .switchIfEmpty(Single.just(false))
+
+    override fun setStubReserve(isStubReserve: Boolean): Completable {
+        return preferencesDataSource.putBoolean(IsStubReserve, isStubReserve)
+    }
+
     companion object {
         internal const val Fio = "ReserveContacts.fio"
         internal const val Phone = "ReserveContacts.phone"
         internal const val IsAgreementAccepted = "PersonalDataAgreement.isAccepted"
+        internal const val IsStubReserve = "Reservation.isStubReserve"
     }
 }
