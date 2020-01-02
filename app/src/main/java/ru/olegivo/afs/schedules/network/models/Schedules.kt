@@ -62,7 +62,7 @@ data class Change(
     val level: Int?,
     val note: String?,
     val publishDatetime: String,
-    val room: Room,
+    val room: Room?,
     val silent: Boolean,
     val title: String,
     val trainers: List<Trainer>?,
