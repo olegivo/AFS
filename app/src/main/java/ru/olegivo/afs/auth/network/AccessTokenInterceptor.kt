@@ -55,7 +55,7 @@ class AccessTokenInterceptor @Inject constructor(
         originalRequest: Request
     ): Response {
         val hasUnauthorizedError = onUnauthorizedError != null &&
-                response.code() == HTTP_CODE_UNAUTHORIZED /*&&
+                response.code == HTTP_CODE_UNAUTHORIZED /*&&
                     originalRequest.url().encodedPathSegments().all { !it.equals("logout", ignoreCase = true) }*/
         return if (hasUnauthorizedError) {
             onUnauthorizedError!!.invoke()

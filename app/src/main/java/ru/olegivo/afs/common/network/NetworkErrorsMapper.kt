@@ -38,7 +38,7 @@ class NetworkErrorsMapper @Inject constructor(private val moshi: Moshi) {
     }
 
     fun <T> mapErrorBody(error: HttpException, type: Class<T>) =
-        error.response().errorBody()
+        error.response()?.errorBody()
             ?.let { errorBody ->
                 errorBody.use {
                     moshi.adapter<T>(type)
