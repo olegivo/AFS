@@ -14,9 +14,9 @@ data class DataSchedule(
     val datetime: Date,
     val length: Int,
     // Игровой зал.
-    val room: String?,
+    // TODO: later: val room: String?,
     // Инструкторы - Цхададзе Алекси
-    val trainer: String?,
+    // TODO: later: val trainer: String?,
     // Предварительная запись
     val preEntry: Boolean,
     // Всего мест: 21
@@ -33,8 +33,8 @@ fun DataSchedule.toDomain(): Schedule {
         activity = activity,
         datetime = datetime,
         length = length,
-        room = room,
-        trainer = trainer,
+        // TODO: later: room = room,
+        // TODO: later: trainer = trainer,
         preEntry = preEntry,
         totalSlots = totalSlots,
         recordFrom = recordFrom,

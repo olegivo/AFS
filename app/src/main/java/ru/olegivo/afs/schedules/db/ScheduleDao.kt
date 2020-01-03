@@ -26,6 +26,6 @@ abstract class ScheduleDao {
 
     companion object {
         private const val scheduleFields =
-            "id, clubId, [group], activity, datetime, length, room, trainer, preEntry, totalSlots, recordFrom, recordTo"
+            "id, clubId, [group], activity, datetime, length, preEntry, totalSlots, recordFrom, recordTo" // TODO: later: room, trainer,
     }
 }

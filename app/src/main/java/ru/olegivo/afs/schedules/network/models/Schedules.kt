@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Schedules(
-    val club: Club,
+    // TODO: later val club: Club,
     val dateSince: String,
     val dateTo: String,
     val entryEnabled: Boolean,
