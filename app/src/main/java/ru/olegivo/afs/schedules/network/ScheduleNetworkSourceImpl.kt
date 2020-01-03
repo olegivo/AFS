@@ -4,6 +4,7 @@ import android.net.Uri
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.extensions.parallelMap
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Slot
@@ -23,12 +24,7 @@ class ScheduleNetworkSourceImpl @Inject constructor(
 
     override fun getSchedule(clubId: Int): Single<List<DataSchedule>> {
         return getSchedules(clubId)
-            .observeOn(computationScheduler)
-            .map { schedules ->
-                schedules.schedule.map {
-                    it.toData(clubId)
-                }
-            }
+            .parallelMap(computationScheduler, { it.schedule }, { it.toData(clubId) })
     }
 
     override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> {

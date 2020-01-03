@@ -7,7 +7,7 @@ import io.reactivex.Single
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
-import ru.olegivo.afs.extensions.mapList
+import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
@@ -30,12 +30,7 @@ class ScheduleRepositoryImpl @Inject constructor(
     override fun getCurrentWeekSchedule(clubId: Int): Maybe<List<Schedule>> =
         withCurrentWeekInterval { weekStart, nextWeekStart ->
             scheduleDbSource.getSchedules(clubId, weekStart, nextWeekStart)
-                .observeOn(computationScheduler)
-                .map { schedules ->
-                    schedules.map {
-                        it.toDomain()
-                    }
-                }
+                .parallelMapList(computationScheduler) { it.toDomain() }
         }
 
     override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> =
@@ -49,18 +44,16 @@ class ScheduleRepositoryImpl @Inject constructor(
 
     override fun actualizeSchedules(clubId: Int): Single<List<Schedule>> =
         scheduleNetworkSource.getSchedule(clubId)
-            .flatMap {
-                val schedules = it.toSingle()
-                    .observeOn(computationScheduler)
-                    .mapList { dataSchedule -> dataSchedule.toDomain() }
-                scheduleDbSource.putSchedules(it)
+            .flatMap { list ->
+                val schedules = list.toSingle()
+                    .parallelMapList(computationScheduler) { it.toDomain() }
+                scheduleDbSource.putSchedules(list)
                     .andThen(schedules)
             }
 
     override fun getSchedules(ids: List<Long>): Single<List<Schedule>> {
         return scheduleDbSource.getSchedules(ids)
-            .observeOn(computationScheduler)
-            .mapList { it.toDomain() }
+            .parallelMapList(computationScheduler) { it.toDomain() }
     }
 
     override fun getSchedule(scheduleId: Long): Single<Schedule> =
