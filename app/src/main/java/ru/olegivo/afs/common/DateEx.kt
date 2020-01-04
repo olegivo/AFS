@@ -13,7 +13,7 @@ fun Date.add(
     seconds: Int? = null,
     milliseconds: Int? = null
 ): Date =
-    getCalendar(this).add(years, months, days, hours, minutes, seconds, milliseconds).time
+    toCalendar().add(years, months, days, hours, minutes, seconds, milliseconds).time
 
 fun Calendar.add(
     years: Int? = null,
@@ -35,12 +35,10 @@ fun Calendar.add(
     }
 
 fun Date.hasCurrentYear(): Boolean =
-    getCalendar().get(Calendar.YEAR) == getCalendar(this).get(Calendar.YEAR)
+    Date().toCalendar().get(Calendar.YEAR) == this.toCalendar().get(Calendar.YEAR)
 
 fun Date.get(field: Int) =
-    getCalendar().get(field)
-
-fun getCalendar(date: Date = Date()) = date.toCalendar()
+    toCalendar().get(field)
 
 fun Date.toCalendar() = Calendar.getInstance(Locale.GERMANY).apply { time = this@toCalendar }
 
@@ -56,8 +54,8 @@ fun Date.getDateWithoutTime(): Date {
 }
 
 fun Date.equalsWithoutTime(date: Date): Boolean {
-    val thisDate = getCalendar(this)
-    val anotherDate = getCalendar(date)
+    val thisDate = toCalendar()
+    val anotherDate = date.toCalendar()
     return thisDate.get(Calendar.YEAR) == anotherDate.get(Calendar.YEAR) &&
             thisDate.get(Calendar.MONTH) == anotherDate.get(Calendar.MONTH) &&
             thisDate.get(Calendar.DAY_OF_YEAR) == anotherDate.get(Calendar.DAY_OF_YEAR)
