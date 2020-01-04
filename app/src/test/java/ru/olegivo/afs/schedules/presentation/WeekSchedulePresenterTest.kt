@@ -2,43 +2,35 @@ package ru.olegivo.afs.schedules.presentation
 
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Maybe
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import ru.olegivo.afs.BaseTest
+import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
-import ru.olegivo.afs.common.getDateWithoutTime
 import ru.olegivo.afs.common.presentation.Navigator
-import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomString
-import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
-import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCase
-import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import ru.olegivo.afs.schedules.domain.models.createSportsActivity
-import java.util.*
+import kotlin.random.Random
 
 
-class WeekSchedulePresenterTest : BaseTest() {
+class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
+
+    override fun createInstance(): WeekScheduleContract.Presenter = weekWeekSchedulePresenter
 
     //<editor-fold desc="mocks">
     private val getCurrentClubUseCase: GetCurrentClubUseCase = mock()
-    private val getCurrentWeekScheduleUseCase: GetCurrentWeekScheduleUseCase = mock()
     private val actualizeScheduleUseCase: ActualizeScheduleUseCase = mock()
     private val view: WeekScheduleContract.View = mock()
     private val dateProvider: DateProvider = mock()
     private val navigator: Navigator = mock()
 
     override fun getAllMocks() = arrayOf(
-        getCurrentWeekScheduleUseCase,
+        getCurrentClubUseCase,
         actualizeScheduleUseCase,
         view,
         dateProvider,
@@ -46,36 +38,31 @@ class WeekSchedulePresenterTest : BaseTest() {
     )
     //</editor-fold>
 
-    private val weekWeekSchedulePresenter: WeekScheduleContract.Presenter = WeekSchedulePresenter(
+    private val weekWeekSchedulePresenter = WeekSchedulePresenter(
         getCurrentClubUseCase,
-        getCurrentWeekScheduleUseCase,
         actualizeScheduleUseCase,
         dateProvider,
         navigator,
         schedulerRule.testScheduler
     )
 
+    override fun setUp() {
+        super.setUp()
+        weekWeekSchedulePresenter.clear()
+    }
+
     @Test
-    fun `start shows current day schedule with preEntry = true WHEN no errors, has current club, has schedule`() {
+    fun `start SHOWS current day WHEN no errors, has current club`() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(testData)
         weekWeekSchedulePresenter.bindView(view)
-
-        weekWeekSchedulePresenter.start()
             .andTriggerActions()
-
-        val shownSchedules = view.capture { param: List<SportsActivity> -> showSchedule(param) }
-        val today = testData.now.getDateWithoutTime()
-        val todaySchedules =
-            testData.weekSchedule.filter { it.schedule.preEntry && it.schedule.datetime.getDateWithoutTime() == today }
-
-        assertThat(shownSchedules).containsExactlyElementsOf(todaySchedules)
 
         verifyGetCurrentWeekSchedule(testData)
     }
 
     @Test
-    fun `start shows error WHEN has error`() {
+    fun `start SHOWS error WHEN has error`() {
         val testData = TestData()
         val message = getRandomString()
         val exception = RuntimeException(message)
@@ -83,8 +70,6 @@ class WeekSchedulePresenterTest : BaseTest() {
             testData,
             currentClubIdMaybeProvider = { Maybe.error(exception) })
         weekWeekSchedulePresenter.bindView(view)
-
-        weekWeekSchedulePresenter.start()
             .andTriggerActions()
 
         verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
@@ -98,64 +83,19 @@ class WeekSchedulePresenterTest : BaseTest() {
             testData,
             currentClubIdMaybeProvider = { Maybe.empty() })
         weekWeekSchedulePresenter.bindView(view)
-
-        weekWeekSchedulePresenter.start()
             .andTriggerActions()
 
         verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
     }
 
-    @Test
-    fun `start do nothing WHEN has no schedule`() {
-        val testData = TestData()
-        setupGetCurrentWeekSchedule(
-            testData,
-            currentWeekScheduleProvider = { Maybe.empty() })
-        weekWeekSchedulePresenter.bindView(view)
-
-        weekWeekSchedulePresenter.start()
-            .andTriggerActions()
-
-        verifyGetCurrentWeekSchedule(testData, expectedProcessCurrentWeekSchedule = false)
-    }
-
-    @Test
-    fun `onScheduleClicked WILL navigate to reserve destination`() {
-        val testData = TestData()
-        setupGetCurrentWeekSchedule(testData)
-        weekWeekSchedulePresenter.bindView(view)
-
-        weekWeekSchedulePresenter.start()
-            .andTriggerActions()
-
-        val shownSportActivities =
-            view.capture { param: List<SportsActivity> -> showSchedule(param) }
-        verifyGetCurrentWeekSchedule(testData)
-
-        verifyNoMoreInteractions(view)
-        reset(view)
-
-        val sportsActivity = shownSportActivities.random()
-
-        weekWeekSchedulePresenter.onSportsActivityClicked(sportsActivity)
-
-        verify(navigator).navigateTo(
-            ReserveDestination(
-                sportsActivity.schedule.id,
-                sportsActivity.schedule.clubId
-            )
-        )
-    }
-
     private fun verifyGetCurrentWeekSchedule(
         testData: TestData,
-        expectedGetCurrentWeekSchedule: Boolean = true,
-        expectedProcessCurrentWeekSchedule: Boolean = true
+        expectedGetCurrentWeekSchedule: Boolean = true
     ) {
+        verify(dateProvider).getDate()
         verify(getCurrentClubUseCase).invoke()
         if (expectedGetCurrentWeekSchedule) {
-            verify(getCurrentWeekScheduleUseCase).invoke(testData.clubId)
-            if (expectedProcessCurrentWeekSchedule) verify(dateProvider).getDate()
+            verify(view).onReady(testData.initialPosition)
         }
         verify(view).showProgress()
         verify(view).hideProgress()
@@ -165,28 +105,15 @@ class WeekSchedulePresenterTest : BaseTest() {
         testData: TestData,
         currentClubIdMaybeProvider: () -> Maybe<Int> = {
             Maybe.just(testData.clubId)
-        },
-        currentWeekScheduleProvider: () -> Maybe<List<SportsActivity>> = {
-            Maybe.just(testData.weekSchedule)
         }
     ) {
         given(getCurrentClubUseCase.invoke()).willReturn { currentClubIdMaybeProvider() }
         given(dateProvider.getDate()).willReturn { testData.now }
-        given(getCurrentWeekScheduleUseCase.invoke(testData.clubId))
-            .willReturn { currentWeekScheduleProvider() }
     }
 
-    private data class TestData(
-        val clubId: Int = getRandomInt(),
-        val now: Date = Date()
-    ) {
-        val today = now.getDateWithoutTime()
-        val firstDayOfWeek = firstDayOfWeek(today)
-        val weekSchedule = (0..6).flatMap { dayOfWeek ->
-            val scheduleDate = firstDayOfWeek.add(days = dayOfWeek)
-            (1..23).map { hoursOfDay ->
-                createSportsActivity(datetime = scheduleDate.add(hours = hoursOfDay))
-            }
-        }
+    private class TestData(val clubId: Int = getRandomInt()) {
+        val firstDayOfWeek = firstDayOfWeek()
+        val initialPosition: Int = Random.nextInt(0, 7)
+        val now = firstDayOfWeek.add(days = initialPosition, hours = Random.nextInt(0, 23))
     }
 }

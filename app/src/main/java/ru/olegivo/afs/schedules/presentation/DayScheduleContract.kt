@@ -2,19 +2,19 @@ package ru.olegivo.afs.schedules.presentation
 
 import ru.olegivo.afs.common.presentation.PresentationContract
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import ru.olegivo.afs.schedules.presentation.models.Day
+import java.util.*
 
-interface WeekScheduleContract {
+interface DayScheduleContract {
     interface Presenter : PresentationContract.Presenter<View> {
         fun onSportsActivityClicked(sportsActivity: SportsActivity)
         fun actualizeSchedule()
-        fun getClubId(): Int
-        fun getDay(position: Int): Day
-        fun onDayChanged(position: Int)
     }
 
     interface View : PresentationContract.View, PresentationContract.ErrorDisplay,
         PresentationContract.ViewWithProgress {
-        fun onReady(position: Int)
+        val day: Date
+        val clubId: Int
+
+        fun showSchedule(sportsActivities: List<SportsActivity>)
     }
 }

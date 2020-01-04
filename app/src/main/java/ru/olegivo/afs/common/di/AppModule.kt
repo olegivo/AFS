@@ -16,8 +16,11 @@ import ru.olegivo.afs.favorites.android.SportsActivityReserveReceiver
 import ru.olegivo.afs.preferences.di.PreferencesModule
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedule.di.ScheduleDetailsModule
+import ru.olegivo.afs.schedules.android.DayScheduleFragment
 import ru.olegivo.afs.schedules.android.WeekScheduleFragment
+import ru.olegivo.afs.schedules.di.ScheduleScope
 import ru.olegivo.afs.schedules.di.SchedulesModule
+import ru.olegivo.afs.schedules.di.WeekScheduleModule
 import javax.inject.Named
 
 @Module(
@@ -50,9 +53,12 @@ abstract class FragmentBuilderModule {
     @ContributesAndroidInjector(modules = [ClubsModule::class, ScheduleDetailsModule::class])
     abstract fun bindMainFragment(): MainFragment
 
-    @ContributesAndroidInjector(modules = [SchedulesModule::class])
+    @ScheduleScope
+    @ContributesAndroidInjector(modules = [WeekScheduleModule::class])
     abstract fun bindWeekScheduleFragment(): WeekScheduleFragment
 
+    @ContributesAndroidInjector(modules = [SchedulesModule::class])
+    abstract fun bindDayScheduleFragment(): DayScheduleFragment
 
     @ContributesAndroidInjector(modules = [ScheduleDetailsModule::class])
     abstract fun bindReserveFragment(): ScheduleDetailsFragment

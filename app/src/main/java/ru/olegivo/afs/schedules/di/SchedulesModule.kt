@@ -14,10 +14,13 @@ import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCaseImpl
 import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCase
 import ru.olegivo.afs.schedules.domain.GetCurrentWeekSportsActivitiesUseCaseImpl
+import ru.olegivo.afs.schedules.domain.GetDaySportsActivitiesUseCase
+import ru.olegivo.afs.schedules.domain.GetDaySportsActivitiesUseCaseImpl
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
-import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
-import ru.olegivo.afs.schedules.presentation.WeekSchedulePresenter
+import ru.olegivo.afs.schedules.presentation.DayScheduleContract
+import ru.olegivo.afs.schedules.presentation.DaySchedulePresenter
+import javax.inject.Scope
 
 @Module(
     includes = [
@@ -28,10 +31,13 @@ import ru.olegivo.afs.schedules.presentation.WeekSchedulePresenter
 )
 abstract class SchedulesModule {
     @Binds
-    abstract fun bindWeekSchedulePresenter(impl: WeekSchedulePresenter): WeekScheduleContract.Presenter
+    abstract fun bindDaySchedulePresenter(impl: DaySchedulePresenter): DayScheduleContract.Presenter
 
     @Binds
     abstract fun bindGetCurrentWeekScheduleUseCase(impl: GetCurrentWeekSportsActivitiesUseCaseImpl): GetCurrentWeekScheduleUseCase
+
+    @Binds
+    abstract fun bindGetDaySportsActivitiesUseCase(impl: GetDaySportsActivitiesUseCaseImpl): GetDaySportsActivitiesUseCase
 
     @Binds
     abstract fun bindActualizeScheduleUseCase(impl: ActualizeScheduleUseCaseImpl): ActualizeScheduleUseCase
@@ -45,6 +51,7 @@ abstract class SchedulesModule {
     @Binds
     abstract fun bindReserveDbSource(impl: ScheduleDbSourceImpl): ScheduleDbSource
 
+
     @Module
     object ProvidesModule {
         @Provides
@@ -54,3 +61,7 @@ abstract class SchedulesModule {
         fun provideScheduleDao(afsDatabase: AfsDatabase) = afsDatabase.schedules
     }
 }
+
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ScheduleScope

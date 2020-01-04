@@ -33,13 +33,24 @@ class ScheduleRepositoryImpl @Inject constructor(
                 .parallelMapList(computationScheduler) { it.toDomain() }
         }
 
+    override fun getDaySchedule(clubId: Int, day: Date): Maybe<List<Schedule>> =
+        withDayInterval(day) { dayStart, nextDayStart ->
+            scheduleDbSource.getSchedules(clubId, dayStart, nextDayStart)
+                .parallelMapList(computationScheduler) { it.toDomain() }
+        }
+
+
     override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> =
         scheduleNetworkSource.getSlots(clubId, ids)
-
 
     override fun getCurrentWeekReservedScheduleIds(): Single<List<Long>> =
         withCurrentWeekInterval { weekStart, nextWeekStart ->
             scheduleDbSource.getReservedScheduleIds(weekStart, nextWeekStart)
+        }
+
+    override fun getDayReservedScheduleIds(day: Date): Single<List<Long>> =
+        withDayInterval(day) { dayStart, nextDayStart ->
+            scheduleDbSource.getReservedScheduleIds(dayStart, nextDayStart)
         }
 
     override fun actualizeSchedules(clubId: Int): Single<List<Schedule>> =
@@ -69,5 +80,9 @@ class ScheduleRepositoryImpl @Inject constructor(
         val weekStart = firstDayOfWeek(now)
         val nextWeekStart = weekStart.add(days = 7)
         return block(weekStart, nextWeekStart)
+    }
+
+    private inline fun <T> withDayInterval(day: Date, block: (Date, Date) -> T): T {
+        return block(day, day.add(days = 1))
     }
 }

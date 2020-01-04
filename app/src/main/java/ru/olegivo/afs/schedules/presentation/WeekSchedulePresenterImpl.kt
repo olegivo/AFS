@@ -1,23 +1,25 @@
 package ru.olegivo.afs.schedules.presentation
 
-import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
+import org.jetbrains.annotations.TestOnly
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
+import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
-import ru.olegivo.afs.common.getDateWithoutTime
+import ru.olegivo.afs.common.firstDayOfWeek
+import ru.olegivo.afs.common.get
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
-import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCase
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
+import ru.olegivo.afs.schedules.presentation.models.Day
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
 class WeekSchedulePresenter @Inject constructor(
     private val getCurrentClub: GetCurrentClubUseCase,
-    private val getCurrentWeekSchedule: GetCurrentWeekScheduleUseCase,
     private val actualizeSchedule: ActualizeScheduleUseCase,
     private val dateProvider: DateProvider,
     private val navigator: Navigator,
@@ -25,27 +27,37 @@ class WeekSchedulePresenter @Inject constructor(
 ) : BasePresenter<WeekScheduleContract.View>(),
     WeekScheduleContract.Presenter {
 
+    private var clubId = 0
+    private var currentDay: Int = -1
+    private lateinit var days: List<Day>
+
     override fun bindView(view: WeekScheduleContract.View) {
         super.bindView(view)
-        start()
+        if (clubId == 0) {
+            start()
+        } else {
+            showResult()
+        }
     }
 
     override fun actualizeSchedule() {
-        getCurrentClub()
-            .flatMap { clubId ->
-                actualizeSchedule.invoke(clubId)
-                    .andThen(Maybe.defer {
-                        getCurrentWeekSchedule(clubId)
-                    })
-            }
+        actualizeSchedule.invoke(clubId)
             .observeOn(mainScheduler)
             .doOnSubscribe { view?.showProgress() }
             .doFinally { view?.hideProgress() }
             .subscribeBy(
-                onSuccess = this::showResult,
+                onComplete = this::showResult,
                 onError = this::showError
             )
             .addToComposite()
+    }
+
+    override fun getClubId(): Int = clubId
+
+    override fun getDay(position: Int): Day = days[position]
+
+    override fun onDayChanged(position: Int) {
+        currentDay = position
     }
 
     override fun onSportsActivityClicked(sportsActivity: SportsActivity) {
@@ -57,16 +69,43 @@ class WeekSchedulePresenter @Inject constructor(
         )
     }
 
+    @TestOnly
+    internal fun clear() {
+        clubId = 0
+        currentDay = -1
+    }
+
     private fun start() {
-        getCurrentClub()
-            .flatMap { clubId ->
-                getCurrentWeekSchedule(clubId)
+        val now = dateProvider.getDate()
+        currentDay = now.get(Calendar.DAY_OF_WEEK) - 2
+        days = firstDayOfWeek(now)
+            .let { firstDayOfWeek ->
+                (0..6).map {
+                    val weekDay = firstDayOfWeek.add(days = it)
+                    Day(
+                        caption = when (it) {
+                            0 -> "ПН"
+                            1 -> "ВТ"
+                            2 -> "СР"
+                            3 -> "ЧТ"
+                            4 -> "ПТ"
+                            5 -> "СБ"
+                            6 -> "ВС"
+                            else -> TODO("unknown day of week")
+                        },
+                        date = weekDay
+                    )
+                }
             }
+
+        getCurrentClub()
+            .doOnSuccess { clubId = it }
+            .map { Unit }
             .observeOn(mainScheduler)
             .doOnSubscribe { view?.showProgress() }
             .doFinally { view?.hideProgress() }
             .subscribeBy(
-                onSuccess = this::showResult,
+                onSuccess = { showResult() },
                 onError = this::showError
             )
             .addToComposite()
@@ -76,9 +115,8 @@ class WeekSchedulePresenter @Inject constructor(
         onError(it, it.message ?: "Unknown error")
     }
 
-    private fun showResult(sportsActivity: List<SportsActivity>) {
-        val today = dateProvider.getDate().getDateWithoutTime()
-        view?.showSchedule(sportsActivity.filter { it.schedule.preEntry && it.schedule.datetime.getDateWithoutTime() == today })
+    private fun showResult() {
+        view?.onReady(currentDay)
     }
 }
 
