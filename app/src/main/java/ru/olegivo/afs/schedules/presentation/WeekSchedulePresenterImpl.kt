@@ -22,8 +22,8 @@ class WeekSchedulePresenter @Inject constructor(
     private val dateProvider: DateProvider,
     private val navigator: Navigator,
     @Named("main") private val mainScheduler: Scheduler
-) : BasePresenter<ScheduleContract.View>(),
-    ScheduleContract.Presenter {
+) : BasePresenter<WeekScheduleContract.View>(),
+    WeekScheduleContract.Presenter {
 
     override fun start() {
         getCurrentClub()

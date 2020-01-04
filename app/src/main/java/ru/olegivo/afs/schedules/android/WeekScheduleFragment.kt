@@ -8,22 +8,21 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Scheduler
-import kotlinx.android.synthetic.main.fragment_schedule.progressBar
 import kotlinx.android.synthetic.main.fragment_schedule.schedule_recycler_view
 import kotlinx.android.synthetic.main.fragment_schedule.swipeRefresh
 import ru.olegivo.afs.R
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import ru.olegivo.afs.schedules.presentation.ScheduleContract
+import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
 import javax.inject.Inject
 import javax.inject.Named
 
-class ScheduleFragment : Fragment(R.layout.fragment_schedule), ScheduleContract.View {
+class WeekScheduleFragment : Fragment(R.layout.fragment_schedule), WeekScheduleContract.View {
     @Inject
     lateinit var getCurrentClub: GetCurrentClubUseCase
 
     @Inject
-    lateinit var presenter: ScheduleContract.Presenter
+    lateinit var presenter: WeekScheduleContract.Presenter
 
     @field:[Inject Named("main")]
     lateinit var mainScheduler: Scheduler

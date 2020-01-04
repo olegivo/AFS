@@ -16,7 +16,7 @@ import ru.olegivo.afs.schedules.domain.GetCurrentWeekScheduleUseCase
 import ru.olegivo.afs.schedules.domain.GetCurrentWeekSportsActivitiesUseCaseImpl
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
-import ru.olegivo.afs.schedules.presentation.ScheduleContract
+import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
 import ru.olegivo.afs.schedules.presentation.WeekSchedulePresenter
 
 @Module(
@@ -28,7 +28,7 @@ import ru.olegivo.afs.schedules.presentation.WeekSchedulePresenter
 )
 abstract class SchedulesModule {
     @Binds
-    abstract fun bindSchedulePresenter(impl: WeekSchedulePresenter): ScheduleContract.Presenter
+    abstract fun bindWeekSchedulePresenter(impl: WeekSchedulePresenter): WeekScheduleContract.Presenter
 
     @Binds
     abstract fun bindGetCurrentWeekScheduleUseCase(impl: GetCurrentWeekSportsActivitiesUseCaseImpl): GetCurrentWeekScheduleUseCase

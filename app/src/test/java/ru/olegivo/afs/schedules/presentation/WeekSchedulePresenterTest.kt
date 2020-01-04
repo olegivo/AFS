@@ -33,7 +33,7 @@ class WeekSchedulePresenterTest : BaseTest() {
     private val getCurrentClubUseCase: GetCurrentClubUseCase = mock()
     private val getCurrentWeekScheduleUseCase: GetCurrentWeekScheduleUseCase = mock()
     private val actualizeScheduleUseCase: ActualizeScheduleUseCase = mock()
-    private val view: ScheduleContract.View = mock()
+    private val view: WeekScheduleContract.View = mock()
     private val dateProvider: DateProvider = mock()
     private val navigator: Navigator = mock()
 
@@ -46,7 +46,7 @@ class WeekSchedulePresenterTest : BaseTest() {
     )
     //</editor-fold>
 
-    private val weekSchedulePresenter: ScheduleContract.Presenter = WeekSchedulePresenter(
+    private val weekWeekSchedulePresenter: WeekScheduleContract.Presenter = WeekSchedulePresenter(
         getCurrentClubUseCase,
         getCurrentWeekScheduleUseCase,
         actualizeScheduleUseCase,
@@ -59,9 +59,9 @@ class WeekSchedulePresenterTest : BaseTest() {
     fun `start shows current day schedule with preEntry = true WHEN no errors, has current club, has schedule`() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(testData)
-        weekSchedulePresenter.bindView(view)
+        weekWeekSchedulePresenter.bindView(view)
 
-        weekSchedulePresenter.start()
+        weekWeekSchedulePresenter.start()
             .andTriggerActions()
 
         val shownSchedules = view.capture { param: List<SportsActivity> -> showSchedule(param) }
@@ -82,9 +82,9 @@ class WeekSchedulePresenterTest : BaseTest() {
         setupGetCurrentWeekSchedule(
             testData,
             currentClubIdMaybeProvider = { Maybe.error(exception) })
-        weekSchedulePresenter.bindView(view)
+        weekWeekSchedulePresenter.bindView(view)
 
-        weekSchedulePresenter.start()
+        weekWeekSchedulePresenter.start()
             .andTriggerActions()
 
         verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
@@ -97,9 +97,9 @@ class WeekSchedulePresenterTest : BaseTest() {
         setupGetCurrentWeekSchedule(
             testData,
             currentClubIdMaybeProvider = { Maybe.empty() })
-        weekSchedulePresenter.bindView(view)
+        weekWeekSchedulePresenter.bindView(view)
 
-        weekSchedulePresenter.start()
+        weekWeekSchedulePresenter.start()
             .andTriggerActions()
 
         verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
@@ -111,9 +111,9 @@ class WeekSchedulePresenterTest : BaseTest() {
         setupGetCurrentWeekSchedule(
             testData,
             currentWeekScheduleProvider = { Maybe.empty() })
-        weekSchedulePresenter.bindView(view)
+        weekWeekSchedulePresenter.bindView(view)
 
-        weekSchedulePresenter.start()
+        weekWeekSchedulePresenter.start()
             .andTriggerActions()
 
         verifyGetCurrentWeekSchedule(testData, expectedProcessCurrentWeekSchedule = false)
@@ -123,9 +123,9 @@ class WeekSchedulePresenterTest : BaseTest() {
     fun `onScheduleClicked WILL navigate to reserve destination`() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(testData)
-        weekSchedulePresenter.bindView(view)
+        weekWeekSchedulePresenter.bindView(view)
 
-        weekSchedulePresenter.start()
+        weekWeekSchedulePresenter.start()
             .andTriggerActions()
 
         val shownSportActivities =
@@ -137,7 +137,7 @@ class WeekSchedulePresenterTest : BaseTest() {
 
         val sportsActivity = shownSportActivities.random()
 
-        weekSchedulePresenter.onSportsActivityClicked(sportsActivity)
+        weekWeekSchedulePresenter.onSportsActivityClicked(sportsActivity)
 
         verify(navigator).navigateTo(
             ReserveDestination(
