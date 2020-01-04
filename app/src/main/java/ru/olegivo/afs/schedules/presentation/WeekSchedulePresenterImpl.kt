@@ -25,19 +25,9 @@ class WeekSchedulePresenter @Inject constructor(
 ) : BasePresenter<WeekScheduleContract.View>(),
     WeekScheduleContract.Presenter {
 
-    override fun start() {
-        getCurrentClub()
-            .flatMap { clubId ->
-                getCurrentWeekSchedule(clubId)
-            }
-            .observeOn(mainScheduler)
-            .doOnSubscribe { view?.showProgress() }
-            .doFinally { view?.hideProgress() }
-            .subscribeBy(
-                onSuccess = this::showResult,
-                onError = this::showError
-            )
-            .addToComposite()
+    override fun bindView(view: WeekScheduleContract.View) {
+        super.bindView(view)
+        start()
     }
 
     override fun actualizeSchedule() {
@@ -65,6 +55,21 @@ class WeekSchedulePresenter @Inject constructor(
                 sportsActivity.schedule.clubId
             )
         )
+    }
+
+    private fun start() {
+        getCurrentClub()
+            .flatMap { clubId ->
+                getCurrentWeekSchedule(clubId)
+            }
+            .observeOn(mainScheduler)
+            .doOnSubscribe { view?.showProgress() }
+            .doFinally { view?.hideProgress() }
+            .subscribeBy(
+                onSuccess = this::showResult,
+                onError = this::showError
+            )
+            .addToComposite()
     }
 
     private fun showError(it: Throwable) {

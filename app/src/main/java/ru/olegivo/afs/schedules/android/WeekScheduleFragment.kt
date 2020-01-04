@@ -54,7 +54,6 @@ class WeekScheduleFragment : Fragment(R.layout.fragment_schedule), WeekScheduleC
     override fun onStart() {
         super.onStart()
         presenter.bindView(this)
-        presenter.start()
     }
 
     override fun onStop() {
