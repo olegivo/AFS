@@ -6,6 +6,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.observers.BaseTestConsumer
+import io.reactivex.schedulers.TestScheduler
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -15,6 +16,7 @@ abstract class BaseTest {
     @Rule
     @JvmField
     val schedulerRule = RxSchedulerRule()
+    protected val testScheduler: TestScheduler get() = schedulerRule.testScheduler
     private val mocks: Array<Any> by lazy { getAllMocks() }
     protected abstract fun getAllMocks(): Array<Any>
 
