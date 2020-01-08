@@ -19,8 +19,10 @@ fun Schedule.toFavoriteFilter(): FavoriteFilter {
 }
 
 fun Schedule.applyFilters(favoriteFilters: List<FavoriteFilter>): Boolean =
-    favoriteFilters.any { favoriteFilter ->
-        favoriteFilter == toFavoriteFilter()
+    toFavoriteFilter().let { thisScheduleFilter ->
+        favoriteFilters.any { favoriteFilter ->
+            favoriteFilter == thisScheduleFilter
+        }
     }
 
 fun List<Schedule>.filterByFavorites(favoriteFilters: List<FavoriteFilter>) =
