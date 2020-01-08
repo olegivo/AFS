@@ -2,6 +2,7 @@ package ru.olegivo.afs.favorites.domain
 
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
@@ -10,6 +11,7 @@ import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
@@ -26,7 +28,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
             favoritesRepository,
             dateProvider,
             scheduleReminderNotifier,
-            reserveRepository
+            reserveRepository,
+            errorReporter
         )
 
     //<editor-fold desc="mocks">
@@ -35,6 +38,7 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
     private val reserveRepository: ReserveRepository = mock()
     private val dateProvider: DateProvider = mock()
     private val scheduleReminderNotifier: ScheduleReminderNotifier = mock()
+    private val errorReporter: ErrorReporter = mock()
 
     override fun getAllMocks() =
         arrayOf(
@@ -42,7 +46,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
             favoritesRepository,
             reserveRepository,
             dateProvider,
-            scheduleReminderNotifier
+            scheduleReminderNotifier,
+            errorReporter
         )
     //</editor-fold>
 
@@ -182,5 +187,10 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
         schedules.forEach {
             verify(scheduleReminderNotifier).showNotificationToShowDetails(it)
         }
+        verify(errorReporter, times(schedules.count()))
+            .reportError(
+                exception,
+                "Ошибка при попытке формирования уведомления для записи на занятие"
+            )
     }
 }

@@ -10,6 +10,7 @@ import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.common.android.worker.ChildWorkerFactory
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.domain.RestoreAllActiveRecordRemindersUseCase
 import ru.olegivo.afs.favorites.domain.ShowRecordReminderUseCase
@@ -19,7 +20,8 @@ class FavoriteRecordReminderWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted private val params: WorkerParameters,
     private val restoreAllActiveRecordReminders: RestoreAllActiveRecordRemindersUseCase,
-    private val showRecordReminder: ShowRecordReminderUseCase
+    private val showRecordReminder: ShowRecordReminderUseCase,
+    private val errorReporter: ErrorReporter
 ) : RxWorker(appContext, params) {
 
     @AssistedInject.Factory
@@ -33,9 +35,18 @@ class FavoriteRecordReminderWorker @AssistedInject constructor(
     private fun process(data: Data): Completable =
         if (data.isAfterRebootMode()) {
             restoreAllActiveRecordReminders()
+                .doOnError {
+                    errorReporter.reportError(it, "Ошибка при попытке восстановить")
+                }
         } else {
             val scheduleId = data.getScheduleId()
             showRecordReminder(scheduleId)
+                .doOnError {
+                    errorReporter.reportError(
+                        it,
+                        "Ошибка при попытке показать уведомление о необходимости записи на занятие"
+                    )
+                }
         }
 
 

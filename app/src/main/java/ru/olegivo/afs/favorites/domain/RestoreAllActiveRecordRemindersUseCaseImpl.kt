@@ -4,10 +4,10 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import timber.log.Timber
 import javax.inject.Inject
 
 class RestoreAllActiveRecordRemindersUseCaseImpl @Inject constructor(
@@ -15,7 +15,8 @@ class RestoreAllActiveRecordRemindersUseCaseImpl @Inject constructor(
     private val favoritesRepository: FavoritesRepository,
     private val dateProvider: DateProvider,
     private val scheduleReminderNotifier: ScheduleReminderNotifier,
-    private val reserveRepository: ReserveRepository
+    private val reserveRepository: ReserveRepository,
+    private val errorReporter: ErrorReporter
 ) : RestoreAllActiveRecordRemindersUseCase {
 
     override fun invoke(): Completable =
@@ -51,7 +52,7 @@ class RestoreAllActiveRecordRemindersUseCaseImpl @Inject constructor(
                         schedules.map {
                             action(it)
                                 .doOnError { throwable ->
-                                    Timber.e(
+                                    errorReporter.reportError(
                                         throwable,
                                         "Ошибка при попытке формирования уведомления для записи на занятие"
                                     )

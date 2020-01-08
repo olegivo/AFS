@@ -6,6 +6,7 @@ import org.jetbrains.annotations.TestOnly
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.common.get
 import ru.olegivo.afs.common.presentation.BasePresenter
@@ -23,8 +24,9 @@ class WeekSchedulePresenter @Inject constructor(
     private val actualizeSchedule: ActualizeScheduleUseCase,
     private val dateProvider: DateProvider,
     private val navigator: Navigator,
-    @Named("main") private val mainScheduler: Scheduler
-) : BasePresenter<WeekScheduleContract.View>(),
+    @Named("main") private val mainScheduler: Scheduler,
+    errorReporter: ErrorReporter
+) : BasePresenter<WeekScheduleContract.View>(errorReporter),
     WeekScheduleContract.Presenter {
 
     private var clubId = 0
@@ -38,18 +40,6 @@ class WeekSchedulePresenter @Inject constructor(
         } else {
             showResult()
         }
-    }
-
-    override fun actualizeSchedule() {
-        actualizeSchedule.invoke(clubId)
-            .observeOn(mainScheduler)
-            .doOnSubscribe { view?.showProgress() }
-            .doFinally { view?.hideProgress() }
-            .subscribeBy(
-                onComplete = this::showResult,
-                onError = this::showError
-            )
-            .addToComposite()
     }
 
     override fun getClubId(): Int = clubId
@@ -106,13 +96,11 @@ class WeekSchedulePresenter @Inject constructor(
             .doFinally { view?.hideProgress() }
             .subscribeBy(
                 onSuccess = { showResult() },
-                onError = this::showError
+                onError = {
+                    onError(it, "Ошибка при получении текущего клуба")
+                }
             )
             .addToComposite()
-    }
-
-    private fun showError(it: Throwable) {
-        onError(it, it.message ?: "Unknown error")
     }
 
     private fun showResult() {

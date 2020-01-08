@@ -5,6 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import org.jetbrains.annotations.TestOnly
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.BrowserDestination
 import ru.olegivo.afs.common.presentation.Navigator
@@ -31,9 +32,10 @@ class ScheduleDetailsPresenter @Inject constructor(
     private val removeFromFavorites: RemoveFromFavoritesUseCase,
     @Named("main") private val mainScheduler: Scheduler,
     private val navigator: Navigator,
-    private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase
+    private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase,
+    errorReporter: ErrorReporter
 ) :
-    BasePresenter<ScheduleDetailsContract.View>(),
+    BasePresenter<ScheduleDetailsContract.View>(errorReporter),
     ScheduleDetailsContract.Presenter {
 
     private var sportsActivity: SportsActivity? = null
@@ -85,7 +87,6 @@ class ScheduleDetailsPresenter @Inject constructor(
                     }
                 },
                 { t ->
-                    t.printStackTrace()
                     view?.showTryLater()
                     onError(t, "Ошибка при попытке записи на занятие")
                 }

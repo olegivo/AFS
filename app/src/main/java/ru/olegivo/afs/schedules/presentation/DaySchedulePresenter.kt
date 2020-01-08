@@ -1,8 +1,8 @@
 package ru.olegivo.afs.schedules.presentation
 
-import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
@@ -17,8 +17,9 @@ class DaySchedulePresenter @Inject constructor(
     private val getDaySportsActivities: GetDaySportsActivitiesUseCase,
     private val actualizeSchedule: ActualizeScheduleUseCase,
     private val navigator: Navigator,
-    @Named("main") private val mainScheduler: Scheduler
-) : BasePresenter<DayScheduleContract.View>(),
+    @Named("main") private val mainScheduler: Scheduler,
+    errorReporter: ErrorReporter
+) : BasePresenter<DayScheduleContract.View>(errorReporter),
     DayScheduleContract.Presenter {
 
     override fun bindView(view: DayScheduleContract.View) {
@@ -28,15 +29,16 @@ class DaySchedulePresenter @Inject constructor(
 
     override fun actualizeSchedule() {
         actualizeSchedule.invoke(view!!.clubId)
-            .andThen(Maybe.defer {
-                getDaySportsActivities(view!!.clubId, view!!.day)
-            })
             .observeOn(mainScheduler)
             .doOnSubscribe { view?.showProgress() }
             .doFinally { view?.hideProgress() }
             .subscribeBy(
-                onSuccess = this::showResult,
-                onError = this::showError
+                onComplete = {
+                    view?.let { start(it.clubId, it.day) }
+                },
+                onError = {
+                    onError(it, "Ошибка при актуализации расписания")
+                }
             )
             .addToComposite()
     }
@@ -57,13 +59,11 @@ class DaySchedulePresenter @Inject constructor(
             .doFinally { view?.hideProgress() }
             .subscribeBy(
                 onSuccess = this::showResult,
-                onError = this::showError
+                onError = {
+                    onError(it, "Ошибка при получении расписания занятий на день")
+                }
             )
             .addToComposite()
-    }
-
-    private fun showError(it: Throwable) {
-        onError(it, it.message ?: "Unknown error")
     }
 
     private fun showResult(sportsActivity: List<SportsActivity>) {

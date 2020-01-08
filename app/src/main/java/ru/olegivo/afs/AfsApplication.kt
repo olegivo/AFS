@@ -7,10 +7,14 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import io.fabric.sdk.android.Fabric
 import net.danlew.android.joda.JodaTimeAndroid
 import ru.olegivo.afs.common.di.DaggerAppComponent
+import ru.olegivo.afs.common.errors.CrashlyticsTree
 import ru.olegivo.afs.schedules.android.ActualizeSchedulesWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -31,7 +35,14 @@ class AfsApplication : Application(), HasAndroidInjector {
             Timber.plant(Timber.DebugTree())
         }
 
+        Timber.plant(CrashlyticsTree())
+
         UncaughtException.setup()
+
+        val crashlyticsKit = Crashlytics.Builder()
+            .core(CrashlyticsCore.Builder()/*.disabled(BuildConfig.DEBUG)*/.build())
+            .build()
+        Fabric.with(this, crashlyticsKit)
 
         JodaTimeAndroid.init(this)
         DaggerAppComponent.factory().create(this).let {

@@ -11,6 +11,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.extensions.toSingle
@@ -38,7 +39,8 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         removeFromFavoritesUseCase,
         schedulerRule.testScheduler,
         navigator,
-        planFavoriteRecordReminderUseCase
+        planFavoriteRecordReminderUseCase,
+        errorReporter
     )
 
     //<editor-fold desc="mocks">
@@ -50,6 +52,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase = mock()
     private val navigator: Navigator = mock()
     private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase = mock()
+    private val errorReporter: ErrorReporter = mock()
 
     private val view: ScheduleDetailsContract.View = mock()
 
@@ -61,6 +64,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
         addToFavoritesUseCase,
         removeFromFavoritesUseCase,
         planFavoriteRecordReminderUseCase,
+        errorReporter,
         view
     )
     //</editor-fold>
@@ -184,6 +188,7 @@ class ScheduleDetailsPresenterTest : BaseTestOf<ScheduleDetailsContract.Presente
             .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
+        verify(errorReporter).reportError(exception, "Ошибка при попытке записи на занятие")
         verify(view).showTryLater()
     }
 

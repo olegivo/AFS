@@ -10,10 +10,10 @@ import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import kotlin.random.Random
 
@@ -28,13 +28,15 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
     private val view: WeekScheduleContract.View = mock()
     private val dateProvider: DateProvider = mock()
     private val navigator: Navigator = mock()
+    private val errorReporter: ErrorReporter = mock()
 
     override fun getAllMocks() = arrayOf(
         getCurrentClubUseCase,
         actualizeScheduleUseCase,
         view,
         dateProvider,
-        navigator
+        navigator,
+        errorReporter
     )
     //</editor-fold>
 
@@ -43,7 +45,8 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
         actualizeScheduleUseCase,
         dateProvider,
         navigator,
-        schedulerRule.testScheduler
+        schedulerRule.testScheduler,
+        errorReporter
     )
 
     override fun setUp() {
@@ -54,54 +57,55 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
     @Test
     fun `start SHOWS current day WHEN no errors, has current club`() {
         val testData = TestData()
-        setupGetCurrentWeekSchedule(testData)
-        weekWeekSchedulePresenter.bindView(view)
+        setupGetCurrentClub(testData)
+        instance.bindView(view)
             .andTriggerActions()
 
-        verifyGetCurrentWeekSchedule(testData)
+        verifyGetCurrentClub(testData)
     }
 
     @Test
     fun `start SHOWS error WHEN has error`() {
         val testData = TestData()
-        val message = getRandomString()
-        val exception = RuntimeException(message)
-        setupGetCurrentWeekSchedule(
+        val message = "Ошибка при получении текущего клуба"
+        val exception = RuntimeException()
+        setupGetCurrentClub(
             testData,
             currentClubIdMaybeProvider = { Maybe.error(exception) })
-        weekWeekSchedulePresenter.bindView(view)
+        instance.bindView(view)
             .andTriggerActions()
 
-        verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
+        verifyGetCurrentClub(testData, expectedWeekDaysReady = false)
         verify(view).showErrorMessage(message)
+        verify(errorReporter).reportError(exception, message)
     }
 
     @Test
     fun `start do nothing WHEN has no current clubId`() {
         val testData = TestData()
-        setupGetCurrentWeekSchedule(
+        setupGetCurrentClub(
             testData,
             currentClubIdMaybeProvider = { Maybe.empty() })
-        weekWeekSchedulePresenter.bindView(view)
+        instance.bindView(view)
             .andTriggerActions()
 
-        verifyGetCurrentWeekSchedule(testData, expectedGetCurrentWeekSchedule = false)
+        verifyGetCurrentClub(testData, expectedWeekDaysReady = false)
     }
 
-    private fun verifyGetCurrentWeekSchedule(
+    private fun verifyGetCurrentClub(
         testData: TestData,
-        expectedGetCurrentWeekSchedule: Boolean = true
+        expectedWeekDaysReady: Boolean = true
     ) {
         verify(dateProvider).getDate()
         verify(getCurrentClubUseCase).invoke()
-        if (expectedGetCurrentWeekSchedule) {
+        if (expectedWeekDaysReady) {
             verify(view).onReady(testData.initialPosition)
         }
         verify(view).showProgress()
         verify(view).hideProgress()
     }
 
-    private fun setupGetCurrentWeekSchedule(
+    private fun setupGetCurrentClub(
         testData: TestData,
         currentClubIdMaybeProvider: () -> Maybe<Int> = {
             Maybe.just(testData.clubId)

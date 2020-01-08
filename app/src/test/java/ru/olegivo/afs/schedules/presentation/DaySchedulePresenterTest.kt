@@ -11,6 +11,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.common.add
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.helpers.capture
@@ -31,7 +32,8 @@ class DaySchedulePresenterTest : BaseTestOf<DayScheduleContract.Presenter>() {
         getDaySportsActivitiesUseCase,
         actualizeScheduleUseCase,
         navigator,
-        testScheduler
+        testScheduler,
+        errorReporter
     )
 
     //<editor-fold desc="mocks">
@@ -39,12 +41,14 @@ class DaySchedulePresenterTest : BaseTestOf<DayScheduleContract.Presenter>() {
     private val actualizeScheduleUseCase: ActualizeScheduleUseCase = mock()
     private val view: DayScheduleContract.View = mock()
     private val navigator: Navigator = mock()
+    private val errorReporter: ErrorReporter = mock()
 
     override fun getAllMocks() = arrayOf(
         getDaySportsActivitiesUseCase,
         actualizeScheduleUseCase,
         view,
-        navigator
+        navigator,
+        errorReporter
     )
     //</editor-fold>
 
@@ -66,8 +70,7 @@ class DaySchedulePresenterTest : BaseTestOf<DayScheduleContract.Presenter>() {
     @Test
     fun `start shows error WHEN has error`() {
         val testData = TestData()
-        val message = getRandomString()
-        val exception = RuntimeException(message)
+        val exception = RuntimeException()
         setupGetCurrentWeekSchedule(
             testData,
             dayScheduleProvider = { Maybe.error(exception) }
@@ -76,7 +79,8 @@ class DaySchedulePresenterTest : BaseTestOf<DayScheduleContract.Presenter>() {
             .andTriggerActions()
 
         verifyGetDaySchedule(testData, expectedGetCurrentWeekSchedule = true)
-        verify(view).showErrorMessage(message)
+        verify(view).showErrorMessage("Ошибка при получении расписания занятий на день")
+        verify(errorReporter).reportError(exception, "Ошибка при получении расписания занятий на день")
     }
 
     @Test

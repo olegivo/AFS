@@ -7,7 +7,6 @@ import ru.olegivo.afs.schedules.presentation.models.Day
 interface WeekScheduleContract {
     interface Presenter : PresentationContract.Presenter<View> {
         fun onSportsActivityClicked(sportsActivity: SportsActivity)
-        fun actualizeSchedule()
         fun getClubId(): Int
         fun getDay(position: Int): Day
         fun onDayChanged(position: Int)
