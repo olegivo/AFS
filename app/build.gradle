@@ -148,7 +148,7 @@ dependencies {
     def jUnitVersion = '4.13'
     def mockitoVersion = '3.2.4'
     def moshiVersion = "1.9.2"
-    def mockitoKotlinVersion = '2.1.0'
+    def mockitoKotlinVersion = '2.2.0'
     def recyclerViewVersion = "1.1.0"
     def retrofitVersion = "2.7.1"
     def roomVersion = "2.2.3"
