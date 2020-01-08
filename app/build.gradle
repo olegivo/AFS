@@ -184,6 +184,8 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
 
+    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation "com.squareup.moshi:moshi:${moshiVersion}"
