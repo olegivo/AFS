@@ -45,13 +45,14 @@ class SportsActivitiesAdapter(context: Context, private val onItemClick: (Sports
                 textViewSlots.visibility = View.GONE
             }
 
-            if (item.isFavorite) {
-                listOf(
-                    textViewSlots,
-                    textViewGroup,
-                    textViewActivity,
-                    textViewDuty
-                ).forEach { it.setTypeface(it.typeface, Typeface.BOLD) }
+            listOf(
+                textViewSlots,
+                textViewGroup,
+                textViewActivity,
+                textViewDuty
+            ).forEach {
+                val style = if (item.isFavorite) Typeface.BOLD else Typeface.NORMAL
+                it.setTypeface(it.typeface, style)
             }
 
             setOnClickListener { onItemClick(item) }
