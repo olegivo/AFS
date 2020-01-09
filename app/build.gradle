@@ -48,9 +48,16 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
-                        "room.incremental": "true"
+                        "room.incremental": "true",
+                        "room.schemaLocation": "$projectDir/schemas".toString()
                 ]
             }
+        }
+
+        // used by Room, to test migrations
+        sourceSets {
+            androidTest.assets.srcDirs +=
+                    files("$projectDir/schemas".toString())
         }
     }
     buildTypes {
@@ -221,6 +228,7 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
 
     androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
+    androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -17,7 +17,7 @@ class DbModule {
     fun providesAfsDatabase(@Named("application") context: Context): AfsDatabase {
         return Room
             .databaseBuilder(context, AfsDatabase::class.java, BuildConfig.DB_NAME)
-            .fallbackToDestructiveMigration()
+            .addMigrations(*(AfsDatabase.getMigrations()))
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
             .build()
     }
