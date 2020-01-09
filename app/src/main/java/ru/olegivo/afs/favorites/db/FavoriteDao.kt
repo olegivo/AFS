@@ -15,14 +15,14 @@ interface FavoriteDao {
     @Insert
     fun addFilter(favoriteFilterEntity: FavoriteFilterEntity): Completable
 
-    @Query("select id, [group], activity, dayOfWeek, timeOfDay from favoriteFilters")
+    @Query("select id, groupId, activityId, dayOfWeek, timeOfDay from favoriteFilters")
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
 
-    @Query("delete from favoriteFilters where [group] = :group and activity = :activity and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay")
-    fun removeFilter(group: String, activity: String, dayOfWeek: Int, timeOfDay: Long): Completable
+    @Query("delete from favoriteFilters where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay")
+    fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, timeOfDay: Long): Completable
 
-    @Query("select exists(select * from favoriteFilters where [group] = :group and activity = :activity and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay)")
-    fun exist(group: String, activity: String, dayOfWeek: Int, timeOfDay: Long): Single<Boolean>
+    @Query("select exists(select * from favoriteFilters where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay)")
+    fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, timeOfDay: Long): Single<Boolean>
 
     @Query("select scheduleId from recordReminderSchedules where dateFrom <= :moment and :moment <= dateUntil")
     fun getActiveRecordReminderScheduleIds(moment: Date): Single<List<Long>>

@@ -28,11 +28,11 @@ class FavoritesDbSourceImpl @Inject constructor(
             }
 
     override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
-        with(favoriteFilter) { favoriteDao.removeFilter(group, activity, dayOfWeek, timeOfDay) }
+        with(favoriteFilter) { favoriteDao.removeFilter(groupId, activityId, dayOfWeek, timeOfDay) }
             .subscribeOn(ioScheduler)
 
     override fun exist(favoriteFilter: FavoriteFilter): Single<Boolean> =
-        with(favoriteFilter) { favoriteDao.exist(group, activity, dayOfWeek, timeOfDay) }
+        with(favoriteFilter) { favoriteDao.exist(groupId, activityId, dayOfWeek, timeOfDay) }
             .subscribeOn(ioScheduler)
 
     override fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>> {

@@ -48,7 +48,7 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
 
         val favoriteFilterEntity =
             favoriteDao.capture { param: FavoriteFilterEntity -> addFilter(param) }
-        assertThat(favoriteFilterEntity.activity).isEqualTo(favoriteFilter.activity)
+        assertThat(favoriteFilterEntity.activityId).isEqualTo(favoriteFilter.activityId)
     }
 
     @Test
@@ -63,8 +63,8 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
             .assertComplete()
             .values().single()
 
-        assertThat(result).extracting<String> { it.activity }
-            .containsExactlyElementsOf(favoriteFilterEntities.map { it.activity })
+        assertThat(result).extracting<Int> { it.activityId }
+            .containsExactlyElementsOf(favoriteFilterEntities.map { it.activityId })
 
         verify(favoriteDao).getFavoriteFilters()
     }
@@ -76,8 +76,8 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
         with(favoriteFilter) {
             given(
                 favoriteDao.exist(
-                    group = group,
-                    activity = activity,
+                    groupId = groupId,
+                    activityId = activityId,
                     dayOfWeek = dayOfWeek,
                     timeOfDay = timeOfDay
                 )
@@ -93,8 +93,8 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
 
         with(favoriteFilter) {
             verify(favoriteDao).exist(
-                group = group,
-                activity = activity,
+                groupId = groupId,
+                activityId = activityId,
                 dayOfWeek = dayOfWeek,
                 timeOfDay = timeOfDay
             )

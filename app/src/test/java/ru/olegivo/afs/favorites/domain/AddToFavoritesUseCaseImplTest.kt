@@ -6,11 +6,9 @@ import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Completable
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
-import ru.olegivo.afs.common.get
 import ru.olegivo.afs.common.getDateWithoutTime
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.createSchedule
-import java.util.*
 
 class AddToFavoritesUseCaseImplTest : BaseTestOf<AddToFavoritesUseCase>() {
     override fun createInstance() = AddToFavoritesUseCaseImpl(favoritesRepository)
@@ -28,8 +26,8 @@ class AddToFavoritesUseCaseImplTest : BaseTestOf<AddToFavoritesUseCase>() {
     fun `invoke ADDS favorites filter`() {
         val schedule = createSchedule()
         val expectedFilter = FavoriteFilter(
-            group = schedule.group,
-            activity = schedule.activity,
+            groupId = schedule.groupId,
+            activityId = schedule.activityId,
             dayOfWeek = schedule.getDayOfWeek(),
             timeOfDay = schedule.datetime.let {
                 it.time - it.getDateWithoutTime().time

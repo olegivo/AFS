@@ -8,23 +8,23 @@ import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 data class FavoriteFilterEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val group: String,
-    val activity: String,
+    val groupId: Int,
+    val activityId: Int,
     val dayOfWeek: Int,
     val timeOfDay: Long
 )
 
 fun FavoriteFilter.toDb() = FavoriteFilterEntity(
-    group = group,
-    activity = activity,
+    groupId = groupId,
+    activityId = activityId,
     dayOfWeek = dayOfWeek,
     timeOfDay = timeOfDay
 )
 
 fun FavoriteFilterEntity.toDomain() =
     FavoriteFilter(
-        group = group,
-        activity = activity,
+        groupId =groupId,
+        activityId = activityId,
         dayOfWeek = dayOfWeek,
         timeOfDay = timeOfDay
     )

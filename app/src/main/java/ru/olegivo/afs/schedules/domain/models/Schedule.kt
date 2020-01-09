@@ -8,19 +8,21 @@ data class Schedule(
     val id: Long,
     val clubId: Int,
     // Направление - Игровые виды спорта
-    val group: String,
+    val groupId: Int,
     // Занятие - Волейбол клиенты
-    val activity: String,
+    val group: String,
     // 08:30 - 10:00
-    val datetime: Date,
-    val length: Int,
+    val activityId: Int,
+    val activity: String,
     // Игровой зал.
     // TODO: later: val room: String?,
     // Инструкторы - Цхададзе Алекси
     // TODO: later: val trainer: String?,
     // Предварительная запись
-    val preEntry: Boolean,
+    val datetime: Date,
     // Всего мест: 21
+    val length: Int,
+    val preEntry: Boolean,
     val totalSlots: Int?,
     val recordFrom: Date?,
     val recordTo: Date?
