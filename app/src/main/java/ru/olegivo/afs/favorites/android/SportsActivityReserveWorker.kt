@@ -14,6 +14,7 @@ import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
 import ru.olegivo.afs.schedules.domain.models.Schedule
+import timber.log.Timber
 
 class SportsActivityReserveWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
@@ -27,10 +28,13 @@ class SportsActivityReserveWorker @AssistedInject constructor(
     interface Factory : ChildWorkerFactory
 
     override fun createWork(): Single<Result> =
-        params.inputData
-            .getSportsActivityReserveParameters().toSingle()
+        params.inputData.toSingle()
+            .map { it.getSportsActivityReserveParameters() }
             .flatMapCompletable { process(it) }
             .andThen(Single.just(Result.success()))
+            .doOnSubscribe { Timber.d("Begin reserve") }
+            .doOnSuccess { Timber.d("Reserve successful") }
+            .doOnError { Timber.e(it, "Reserve failed") }
 
     private fun process(reserveParameters: SportsActivityReserveParameters): Completable =
         with(reserveParameters) {
