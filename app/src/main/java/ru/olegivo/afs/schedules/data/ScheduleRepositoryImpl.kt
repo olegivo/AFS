@@ -9,6 +9,7 @@ import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
@@ -30,15 +31,14 @@ class ScheduleRepositoryImpl @Inject constructor(
     override fun getCurrentWeekSchedule(clubId: Int): Maybe<List<Schedule>> =
         withCurrentWeekInterval { weekStart, nextWeekStart ->
             scheduleDbSource.getSchedules(clubId, weekStart, nextWeekStart)
-                .parallelMapList(computationScheduler) { it.toDomain() }
+                .toDomain()
         }
 
     override fun getDaySchedule(clubId: Int, day: Date): Maybe<List<Schedule>> =
         withDayInterval(day) { dayStart, nextDayStart ->
             scheduleDbSource.getSchedules(clubId, dayStart, nextDayStart)
-                .parallelMapList(computationScheduler) { it.toDomain() }
+                .toDomain()
         }
-
 
     override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> =
         scheduleNetworkSource.getSlots(clubId, ids)
@@ -56,15 +56,13 @@ class ScheduleRepositoryImpl @Inject constructor(
     override fun actualizeSchedules(clubId: Int): Single<List<Schedule>> =
         scheduleNetworkSource.getSchedule(clubId)
             .flatMap { list ->
-                val schedules = list.toSingle()
-                    .parallelMapList(computationScheduler) { it.toDomain() }
+                val schedules = list.toSingle().toDomain()
                 scheduleDbSource.putSchedules(list)
                     .andThen(schedules)
             }
 
     override fun getSchedules(ids: List<Long>): Single<List<Schedule>> {
-        return scheduleDbSource.getSchedules(ids)
-            .parallelMapList(computationScheduler) { it.toDomain() }
+        return scheduleDbSource.getSchedules(ids).toDomain()
     }
 
     override fun getSchedule(scheduleId: Long): Single<Schedule> =
@@ -74,6 +72,12 @@ class ScheduleRepositoryImpl @Inject constructor(
 
     override fun isScheduleReserved(scheduleId: Long): Single<Boolean> =
         scheduleDbSource.isScheduleReserved(scheduleId)
+
+    private fun Single<List<DataSchedule>>.toDomain() =
+        parallelMapList(computationScheduler) { it.toDomain() }
+
+    private fun Maybe<List<DataSchedule>>.toDomain() =
+        parallelMapList(computationScheduler) { it.toDomain() }
 
     private inline fun <T> withCurrentWeekInterval(block: (Date, Date) -> T): T {
         val now = dateProvider.getDate()
