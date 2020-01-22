@@ -9,6 +9,7 @@ import ru.olegivo.afs.favorites.db.modes.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.modes.RecordReminderScheduleEntity
 import ru.olegivo.afs.schedules.db.ReserveDao
 import ru.olegivo.afs.schedules.db.ScheduleDao
+import ru.olegivo.afs.schedules.db.models.DictionaryEntry
 import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 
@@ -16,6 +17,7 @@ import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 @Database(
     entities = [
         ScheduleEntity::class,
+        DictionaryEntry::class,
         ReservedSchedule::class,
         FavoriteFilterEntity::class,
         RecordReminderScheduleEntity::class

@@ -7,6 +7,7 @@ import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import ru.olegivo.afs.schedules.db.models.DictionaryEntry
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import java.util.*
 
@@ -23,6 +24,9 @@ abstract class ScheduleDao {
 
     @Query("select $scheduleFields from schedules where id in (:ids)")
     abstract fun getSchedules(ids: List<Long>): Single<List<ScheduleEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun putDictionary(list: List<DictionaryEntry>): Completable
 
     companion object {
         private const val scheduleFields =
