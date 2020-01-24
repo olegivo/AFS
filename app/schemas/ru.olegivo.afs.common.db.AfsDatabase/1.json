@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f7fd80a21e1640df7a74b083c9984c15",
+    "identityHash": "7cb57b0dcdf85bd97c6f2cfd7cf9ee52",
     "entities": [
       {
         "tableName": "schedules",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `clubId` INTEGER NOT NULL, `groupId` INTEGER NOT NULL, `group` TEXT NOT NULL, `activityId` INTEGER NOT NULL, `activity` TEXT NOT NULL, `datetime` INTEGER NOT NULL, `length` INTEGER NOT NULL, `preEntry` INTEGER NOT NULL, `totalSlots` INTEGER, `recordFrom` INTEGER, `recordTo` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `clubId` INTEGER NOT NULL, `groupId` INTEGER NOT NULL, `activityId` INTEGER NOT NULL, `datetime` INTEGER NOT NULL, `length` INTEGER NOT NULL, `preEntry` INTEGER NOT NULL, `totalSlots` INTEGER, `recordFrom` INTEGER, `recordTo` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -27,21 +27,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "group",
-            "columnName": "group",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
             "fieldPath": "activityId",
             "columnName": "activityId",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "activity",
-            "columnName": "activity",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -98,6 +86,39 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_schedules_datetime_clubId` ON `${TABLE_NAME}` (`datetime`, `clubId`)"
           }
         ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "dictionary",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dictionaryId` INTEGER NOT NULL, `key` INTEGER NOT NULL, `value` TEXT NOT NULL, PRIMARY KEY(`dictionaryId`, `key`))",
+        "fields": [
+          {
+            "fieldPath": "dictionaryId",
+            "columnName": "dictionaryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "dictionaryId",
+            "key"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
         "foreignKeys": []
       },
       {
@@ -206,7 +227,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f7fd80a21e1640df7a74b083c9984c15')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7cb57b0dcdf85bd97c6f2cfd7cf9ee52')"
     ]
   }
 }

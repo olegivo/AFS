@@ -10,7 +10,10 @@ data class DictionaryEntry(val dictionaryId: Int, val key: Int, val value: Strin
 
 inline class DictionaryKind(val value: Int) {
     companion object {
-        val Group = DictionaryKind(1)
-        val Activity = DictionaryKind(1)
+        const val GROUP_ID = 1
+        const val ACTIVITY_ID = 2
+
+        val Group = DictionaryKind(GROUP_ID)
+        val Activity = DictionaryKind(ACTIVITY_ID)
     }
 }
