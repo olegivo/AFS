@@ -52,10 +52,7 @@ fun <I, T, R> Maybe<I>.parallelMap(
         flattenSelector(it).let { iterable ->
             if (iterable.any()) {
                 Flowable.fromIterable(iterable)
-                    .parallel()
-                    .runOn(scheduler)
-                    .map(mapper)
-                    .sequential()
+                    .parallelMap(scheduler, mapper)
                     .toList()
                     .toMaybe()
             } else {
@@ -68,3 +65,9 @@ fun <T, R> Maybe<List<T>>.parallelMapList(
     scheduler: Scheduler,
     mapper: (T) -> R
 ): Maybe<List<R>> = parallelMap(scheduler, { it }, mapper)
+
+fun <T, R> Flowable<T>.parallelMap(scheduler: Scheduler, mapper: (T) -> R): Flowable<R> =
+    parallel()
+        .runOn(scheduler)
+        .map(mapper)
+        .sequential()
