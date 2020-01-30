@@ -148,7 +148,7 @@ dependencyUpdates {
 }
 
 dependencies {
-    def assertJVersion = '3.14.0'
+    def assertJVersion = '3.15.0'
     def daggerVersion = "2.25.4"
     def daggerAssistVersion = "0.5.2"
     def javaxInjectVersion = '1'
