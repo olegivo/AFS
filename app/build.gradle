@@ -149,7 +149,7 @@ dependencyUpdates {
 
 dependencies {
     def assertJVersion = '3.15.0'
-    def daggerVersion = "2.25.4"
+    def daggerVersion = "2.26"
     def daggerAssistVersion = "0.5.2"
     def javaxInjectVersion = '1'
     def jUnitVersion = '4.13'
