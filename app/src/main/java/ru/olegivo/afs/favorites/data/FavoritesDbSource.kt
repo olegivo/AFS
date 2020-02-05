@@ -13,4 +13,5 @@ interface FavoritesDbSource {
     fun exist(favoriteFilter: FavoriteFilter): Single<Boolean>
     fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>>
     fun addReminderToRecord(schedule: Schedule): Completable
+    fun hasPlannedReminderToRecord(schedule: Schedule): Single<Boolean>
 }

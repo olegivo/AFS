@@ -93,4 +93,20 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
 
         verify(favoritesDbSource).addReminderToRecord(schedule)
     }
+
+    @Test
+    fun `hasPlannedReminderToRecord RETURNS data from favoritesDbSource`() {
+        val schedule = createSchedule()
+        val hasReminder = getRandomBoolean()
+
+        given(favoritesDbSource.hasPlannedReminderToRecord(schedule))
+            .willReturn { Single.just(hasReminder) }
+
+        instance.hasPlannedReminderToRecord(schedule)
+            .assertResult {
+                assertThat(it).isEqualTo(hasReminder)
+            }
+
+        verify(favoritesDbSource).hasPlannedReminderToRecord(schedule)
+    }
 }

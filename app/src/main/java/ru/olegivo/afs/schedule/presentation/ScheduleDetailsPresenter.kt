@@ -121,6 +121,7 @@ class ScheduleDetailsPresenter @Inject constructor(
                     this.sportsActivity = sportsActivity.copy(isFavorite = !isFavorite)
                     if (!isFavorite) {
                         planFavoriteRecordReminderUseCase(sportsActivity.schedule)
+                            .observeOn(mainScheduler)
                             .subscribeBy(onError = {
                                 onError(it, "Ошибка при планировании уведомления")
                             })

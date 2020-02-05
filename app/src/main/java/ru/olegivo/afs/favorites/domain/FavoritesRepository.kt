@@ -13,4 +13,5 @@ interface FavoritesRepository {
     fun isFavorite(schedule: Schedule): Single<Boolean>
     fun addReminderToRecord(schedule: Schedule): Completable
     fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>>
+    fun hasPlannedReminderToRecord(schedule: Schedule): Single<Boolean>
 }

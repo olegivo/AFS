@@ -29,4 +29,7 @@ interface FavoriteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) // TODO: remove old reminders?
     fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity): Completable
+
+    @Query("select exists(select * from recordReminderSchedules where scheduleId = :scheduleId)")
+    fun hasPlannedReminderToRecord(scheduleId: Long): Single<Boolean>
 }

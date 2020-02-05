@@ -3,6 +3,7 @@ package ru.olegivo.afs.favorites.db
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
@@ -100,5 +101,20 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
             )
         }
         assertThat(result).isEqualTo(exist)
+    }
+
+    @Test
+    fun `hasPlannedReminderToRecord RETURNS data from favoriteDao`() {
+        val schedule = createSchedule()
+        val hasPlannedReminderToRecord = getRandomBoolean()
+        given { favoriteDao.hasPlannedReminderToRecord(schedule.id) }
+            .willReturn { Single.just(hasPlannedReminderToRecord) }
+
+        instance.hasPlannedReminderToRecord(schedule)
+            .assertResult {
+                assertThat(it).isEqualTo(hasPlannedReminderToRecord)
+            }
+
+        verify(favoriteDao).hasPlannedReminderToRecord(schedule.id)
     }
 }

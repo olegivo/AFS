@@ -17,10 +17,17 @@ class PlanFavoriteRecordReminderUseCaseImpl @Inject constructor(
             .flatMapCompletable { now ->
                 val threshold = schedule.recordTo ?: schedule.datetime
                 if (threshold > now) {
-                    favoritesRepository.addReminderToRecord(schedule)
-                        .andThen(Completable.defer {
-                            favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)
-                        })
+                    favoritesRepository.hasPlannedReminderToRecord(schedule)
+                        .flatMapCompletable { hasPlannedReminderToRecord ->
+                            if (hasPlannedReminderToRecord) {
+                                Completable.complete()
+                            } else {
+                                favoritesRepository.addReminderToRecord(schedule)
+                                    .andThen(Completable.defer {
+                                        favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)
+                                    })
+                            }
+                        }
                 } else {
                     Completable.complete()
                 }

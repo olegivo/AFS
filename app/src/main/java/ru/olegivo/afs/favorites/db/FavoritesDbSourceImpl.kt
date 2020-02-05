@@ -35,20 +35,22 @@ class FavoritesDbSourceImpl @Inject constructor(
         with(favoriteFilter) { favoriteDao.exist(groupId, activityId, dayOfWeek, timeOfDay) }
             .subscribeOn(ioScheduler)
 
-    override fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>> {
-        return favoriteDao.getActiveRecordReminderScheduleIds(moment)
+    override fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>> =
+        favoriteDao.getActiveRecordReminderScheduleIds(moment)
             .subscribeOn(ioScheduler)
-    }
 
-    override fun addReminderToRecord(schedule: Schedule): Completable {
-        return favoriteDao.addReminderToRecord(
+    override fun hasPlannedReminderToRecord(schedule: Schedule): Single<Boolean> =
+        favoriteDao.hasPlannedReminderToRecord(schedule.id)
+            .subscribeOn(ioScheduler)
+
+    override fun addReminderToRecord(schedule: Schedule): Completable =
+        favoriteDao.addReminderToRecord(
             RecordReminderScheduleEntity(
                 schedule.id,
                 schedule.recordFrom!!,
                 schedule.recordTo!!
             )
         ).subscribeOn(ioScheduler)
-    }
 
     override fun getFavoriteFilters(): Single<List<FavoriteFilter>> =
         favoriteDao.getFavoriteFilters()

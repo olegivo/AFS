@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
+import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.common.add
@@ -31,7 +32,7 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
     )
 
     @Test
-    fun `invoke PLANS reminder WHEN recordTo not passed`() {
+    fun `invoke PLANS reminder WHEN recordTo not passed, reminder was not planned`() {
         val recordTo = Date()
         val schedule = createSchedule().copy(recordTo = recordTo)
         val now = recordTo.add(hours = -1)
@@ -41,17 +42,20 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
             .willReturn { Completable.complete() }
         given { favoriteAlarmPlanner.planFavoriteRecordReminder(schedule) }
             .willReturn { Completable.complete() }
+        given { favoritesRepository.hasPlannedReminderToRecord(schedule) }
+            .willReturn { Single.just(false) }
 
         instance.invoke(schedule)
             .assertSuccess()
 
         verify(dateProvider).getDate()
+        verify(favoritesRepository).hasPlannedReminderToRecord(schedule)
         verify(favoritesRepository).addReminderToRecord(schedule)
         verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
     }
 
     @Test
-    fun `invoke PLANS reminder WHEN recordTo not specified and start time not passed`() {
+    fun `invoke PLANS reminder WHEN recordTo not specified, start time not passed, reminder was not planned`() {
         val datetime = Date()
         val schedule = createSchedule().copy(recordTo = null, datetime = datetime)
         val now = datetime.add(hours = -1)
@@ -61,13 +65,33 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
             .willReturn { Completable.complete() }
         given { favoriteAlarmPlanner.planFavoriteRecordReminder(schedule) }
             .willReturn { Completable.complete() }
+        given { favoritesRepository.hasPlannedReminderToRecord(schedule) }
+            .willReturn { Single.just(false) }
 
         instance.invoke(schedule)
             .assertSuccess()
 
         verify(dateProvider).getDate()
+        verify(favoritesRepository).hasPlannedReminderToRecord(schedule)
         verify(favoritesRepository).addReminderToRecord(schedule)
         verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
+    }
+
+    @Test
+    fun `invoke DOES nothing WHEN recordTo not specified, start time not passed, reminder already planned`() {
+        val datetime = Date()
+        val schedule = createSchedule().copy(recordTo = null, datetime = datetime)
+        val now = datetime.add(hours = -1)
+
+        given { dateProvider.getDate() }.willReturn { now }
+        given { favoritesRepository.hasPlannedReminderToRecord(schedule) }
+            .willReturn { Single.just(true) }
+
+        instance.invoke(schedule)
+            .assertSuccess()
+
+        verify(dateProvider).getDate()
+        verify(favoritesRepository).hasPlannedReminderToRecord(schedule)
     }
 
     @Test

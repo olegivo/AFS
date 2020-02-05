@@ -21,13 +21,14 @@ class FavoritesRepositoryImpl @Inject constructor(private val favoritesDbSource:
     override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
         favoritesDbSource.removeFilter(favoriteFilter)
 
-    override fun addReminderToRecord(schedule: Schedule): Completable {
-        return favoritesDbSource.addReminderToRecord(schedule)
-    }
+    override fun addReminderToRecord(schedule: Schedule): Completable =
+        favoritesDbSource.addReminderToRecord(schedule)
 
-    override fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>> {
-        return favoritesDbSource.getActiveRecordReminderSchedules(moment)
-    }
+    override fun hasPlannedReminderToRecord(schedule: Schedule): Single<Boolean> =
+        favoritesDbSource.hasPlannedReminderToRecord(schedule)
+
+    override fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>> =
+        favoritesDbSource.getActiveRecordReminderSchedules(moment)
 
     override fun isFavorite(schedule: Schedule): Single<Boolean> =
         favoritesDbSource.exist(schedule.toFavoriteFilter())
