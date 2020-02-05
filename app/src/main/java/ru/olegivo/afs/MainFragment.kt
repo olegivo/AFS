@@ -109,7 +109,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun onDropDbBClicked() {
         Completable.fromCallable {
             afsDatabase.openHelper.close()
-            deleteDatabaseFile(requireContext(), afsDatabase.openHelper.databaseName)
+            deleteDatabaseFile(requireContext(), afsDatabase.openHelper.databaseName!!)
         }.subscribeOn(ioScheduler)
             .observeOn(mainScheduler)
             .subscribeBy(

@@ -16,7 +16,7 @@ class PreferencesDataSourceImpl @Inject constructor(
 ) :
     PreferencesDataSource {
 
-    override fun getString(key: String) = getValueMaybe(key) { getString(it, null) }
+    override fun getString(key: String) = getValueMaybe(key) { getString(it, null)!! }
 
     override fun getInt(key: String): Maybe<Int> = getValueMaybe(key) { getInt(it, 0) }
 

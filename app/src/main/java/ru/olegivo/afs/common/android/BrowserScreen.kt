@@ -7,7 +7,7 @@ import ru.olegivo.afs.common.presentation.BrowserDestination
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class BrowserScreen(private val destination: BrowserDestination) : SupportAppScreen() {
-    override fun getActivityIntent(context: Context?) =
+    override fun getActivityIntent(context: Context) =
         Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(destination.url)
         }

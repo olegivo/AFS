@@ -50,7 +50,7 @@ class ScheduleNetworkSourceImpl @Inject constructor(
         val path = uri.path!!.trimStart('/')
         return api.getSchedule(
             path,
-            uri.queryParameterNames.associateBy({ it }, { uri.getQueryParameter(it) })
+            uri.queryParameterNames.associateBy({ it }, { uri.getQueryParameter(it)!! })
         ).blockingGet()
     }
 }
