@@ -14,7 +14,6 @@ import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import kotlin.random.Random
 
 
@@ -24,7 +23,6 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
 
     //<editor-fold desc="mocks">
     private val getCurrentClubUseCase: GetCurrentClubUseCase = mock()
-    private val actualizeScheduleUseCase: ActualizeScheduleUseCase = mock()
     private val view: WeekScheduleContract.View = mock()
     private val dateProvider: DateProvider = mock()
     private val navigator: Navigator = mock()
@@ -32,7 +30,6 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
 
     override fun getAllMocks() = arrayOf(
         getCurrentClubUseCase,
-        actualizeScheduleUseCase,
         view,
         dateProvider,
         navigator,
@@ -42,7 +39,6 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
 
     private val weekWeekSchedulePresenter = WeekSchedulePresenter(
         getCurrentClubUseCase,
-        actualizeScheduleUseCase,
         dateProvider,
         navigator,
         schedulerRule.testScheduler,

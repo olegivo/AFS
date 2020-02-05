@@ -12,7 +12,6 @@ import ru.olegivo.afs.common.get
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
-import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.models.Day
 import java.util.*
@@ -21,7 +20,6 @@ import javax.inject.Named
 
 class WeekSchedulePresenter @Inject constructor(
     private val getCurrentClub: GetCurrentClubUseCase,
-    private val actualizeSchedule: ActualizeScheduleUseCase,
     private val dateProvider: DateProvider,
     private val navigator: Navigator,
     @Named("main") private val mainScheduler: Scheduler,
