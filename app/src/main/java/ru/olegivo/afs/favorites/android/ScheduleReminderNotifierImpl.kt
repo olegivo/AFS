@@ -143,7 +143,7 @@ class ScheduleReminderNotifierImpl @Inject constructor(
         fun activity() = appendln("Занятие: ${schedule.activity}")
         fun group() = appendln("Группа: ${schedule.group}")
         fun startTime() = appendln("Начало: ${timeFormat.format(schedule.datetime)}")
-        fun date() = appendln("Дата: ${timeFormat.format(schedule.datetime)}")
+        fun date() = appendln("Дата: ${dateFormat.format(schedule.datetime)}")
 
         fun appendln(string: String) = stringBuilder.appendln(string)
 
