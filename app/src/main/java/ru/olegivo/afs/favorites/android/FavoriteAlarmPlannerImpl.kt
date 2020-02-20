@@ -44,6 +44,5 @@ class FavoriteAlarmPlannerImpl @Inject constructor(
                     )
                 }
             }
-
         }.subscribeOn(ioScheduler)
 }

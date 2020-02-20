@@ -58,4 +58,3 @@ abstract class FavoritesModule {
         fun provideFavoriteDao(afsDatabase: AfsDatabase) = afsDatabase.favorites
     }
 }
-

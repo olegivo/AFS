@@ -27,7 +27,6 @@ class SportsActivityReserveReceiver : BroadcastReceiver() {
                     .setInputData(SportsActivityReserveWorker.createInputData(intent.getSportsActivityReserveParameters()))
                     .build()
             )
-
         }
     }
 

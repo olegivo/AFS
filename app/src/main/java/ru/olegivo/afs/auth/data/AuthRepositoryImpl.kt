@@ -15,7 +15,6 @@ class AuthRepositoryImpl @Inject constructor(private val preferencesDataSource: 
                 Single.just(accessToken)
                     .andThen { preferencesDataSource.putString(KEY_ACCESS_TOKEN, it) }
             })
-
     }
 
     companion object {

@@ -70,7 +70,7 @@ class WeekScheduleFragment : Fragment(R.layout.fragment_week_schedule), WeekSche
     }
 
     override fun showErrorMessage(message: String) {
-        Toast.makeText(requireContext(), "Error \n${message}", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "Error \n$message", Toast.LENGTH_LONG).show()
     }
 
     override fun showProgress() {

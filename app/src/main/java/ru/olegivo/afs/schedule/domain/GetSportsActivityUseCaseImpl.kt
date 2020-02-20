@@ -31,9 +31,7 @@ class GetSportsActivityUseCaseImpl @Inject constructor(
                                             isFavorite = isFavorite
                                         )
                                     }
-
                             }
-
                     }
             }
     }

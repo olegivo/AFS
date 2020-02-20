@@ -1,6 +1,5 @@
 package ru.olegivo.afs.schedule.domain.models
 
-
 data class Reserve(
     val fio: String,
     val phone: String,

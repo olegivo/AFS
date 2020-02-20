@@ -101,4 +101,3 @@ fun firstDayOfWeek(date: Date = today()): Date =
             // get start of this week in milliseconds
             set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
         }.time
-

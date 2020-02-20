@@ -63,6 +63,5 @@ class ReserveNetworkSourceImplTest : AuthorizedApiTest() {
         testObserver
             .assertNoErrors()
             .assertComplete()
-
     }
 }

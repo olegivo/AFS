@@ -23,7 +23,7 @@ fun FavoriteFilter.toDb() = FavoriteFilterEntity(
 
 fun FavoriteFilterEntity.toDomain() =
     FavoriteFilter(
-        groupId =groupId,
+        groupId = groupId,
         activityId = activityId,
         dayOfWeek = dayOfWeek,
         timeOfDay = timeOfDay

@@ -16,7 +16,6 @@ import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import ru.olegivo.afs.schedules.domain.GetDaySportsActivitiesUseCase
@@ -24,7 +23,6 @@ import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.domain.models.createSportsActivity
 import java.util.*
 import kotlin.random.Random
-
 
 class DaySchedulePresenterTest : BaseTestOf<DayScheduleContract.Presenter>() {
 

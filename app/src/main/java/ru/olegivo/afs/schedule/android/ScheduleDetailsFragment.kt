@@ -176,7 +176,6 @@ class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
             // TODO: copy paste
             SimpleDateFormat(FORMAT, Locale.getDefault())
         }
-
     }
 
     data class Args(val id: Long, val clubId: Int) {

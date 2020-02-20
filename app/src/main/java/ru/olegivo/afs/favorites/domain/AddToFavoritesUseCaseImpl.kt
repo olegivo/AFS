@@ -11,5 +11,4 @@ class AddToFavoritesUseCaseImpl @Inject constructor(private val favoritesReposit
     override fun invoke(schedule: Schedule): Completable = favoritesRepository.addFilter(
         schedule.toFavoriteFilter()
     )
-
 }

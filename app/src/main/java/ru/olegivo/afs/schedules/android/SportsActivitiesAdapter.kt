@@ -69,6 +69,5 @@ class SportsActivitiesAdapter(context: Context, private val onItemClick: (Sports
         private val hoursMinutesFormat: SimpleDateFormat by lazy {
             SimpleDateFormat(FORMAT, Locale.getDefault())
         }
-
     }
 }

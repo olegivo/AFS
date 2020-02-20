@@ -8,7 +8,7 @@ data class ReserveRequestError(
     val result: String,
     val errors: List<String>,
     val code: Int
-): ErrorWrapper {
+) : ErrorWrapper {
     override fun getError(): String {
         return errors.joinToString("\n")
     }

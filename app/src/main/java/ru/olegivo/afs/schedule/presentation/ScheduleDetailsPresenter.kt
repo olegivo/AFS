@@ -127,7 +127,6 @@ class ScheduleDetailsPresenter @Inject constructor(
                             })
                             .addToComposite()
                     }
-
                 },
                 { onError(it, errorMessage) }
             )
@@ -199,5 +198,4 @@ class ScheduleDetailsPresenter @Inject constructor(
             )
             .addToComposite()
     }
-
 }

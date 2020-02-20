@@ -81,7 +81,7 @@ class DayScheduleFragment : Fragment(R.layout.fragment_day_schedule), DaySchedul
     }
 
     override fun showErrorMessage(message: String) {
-        Toast.makeText(requireContext(), "Error \n${message}", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "Error \n$message", Toast.LENGTH_LONG).show()
     }
 
     override fun showProgress() {

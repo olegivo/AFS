@@ -14,4 +14,3 @@ fun Intent.getExtraFavoriteRecordReminderParameters() =
         getLongExtra("SCHEDULE_ID", 0),
         getIntExtra("CLUB_ID", 0)
     )
-

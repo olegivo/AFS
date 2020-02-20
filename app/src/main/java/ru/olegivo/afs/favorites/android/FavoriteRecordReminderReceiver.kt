@@ -30,7 +30,6 @@ class FavoriteRecordReminderReceiver : BroadcastReceiver() {
                     ))
                     .build()
             )
-
         }
     }
 

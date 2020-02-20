@@ -147,7 +147,6 @@ class ScheduleReminderNotifierImpl @Inject constructor(
 
         fun appendln(string: String) = stringBuilder.appendln(string)
 
-
         fun getDescription(): StringBuilder = stringBuilder
     }
 
@@ -254,6 +253,5 @@ class ScheduleReminderNotifierImpl @Inject constructor(
             // TODO: copy paste
             SimpleDateFormat(FORMAT_DATE, locale)
         }
-
     }
 }

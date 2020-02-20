@@ -74,7 +74,6 @@ abstract class ActivityBuilderModule {
 
     @ContributesAndroidInjector(modules = [FragmentBuilderModule::class])
     abstract fun bindMainActivity(): MainActivity
-
 }
 
 @Module

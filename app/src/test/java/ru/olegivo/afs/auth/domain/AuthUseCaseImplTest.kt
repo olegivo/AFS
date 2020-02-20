@@ -6,9 +6,6 @@ import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTest
-import ru.olegivo.afs.auth.domain.AuthRepository
-import ru.olegivo.afs.auth.domain.AuthUseCase
-import ru.olegivo.afs.auth.domain.AuthUseCaseImpl
 import ru.olegivo.afs.helpers.getRandomString
 
 class AuthUseCaseImplTest : BaseTest() {

@@ -48,6 +48,5 @@ open class AuthorizedApiTest {
         override fun getAccessToken(): Single<String> {
             return Single.just("6e614760bed07f246778ee614004232d")
         }
-
     }
 }

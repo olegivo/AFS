@@ -49,7 +49,6 @@ class FavoriteRecordReminderWorker @AssistedInject constructor(
                 }
         }
 
-
     companion object {
         const val TAG = "FavoriteRecordReminderWorker"
 

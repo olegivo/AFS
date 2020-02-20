@@ -35,6 +35,8 @@ apply plugin: 'com.google.firebase.appdistribution'
 
 apply plugin: 'io.fabric'
 
+apply plugin: "org.jmailen.kotlinter"
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -238,4 +240,13 @@ dependencies {
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
 
     androidTestImplementation "org.assertj:assertj-core:${assertJVersion}"
+}
+
+kotlinter {
+    disabledRules = [
+            "import-ordering",
+            "comment-spacing",
+            "no-wildcard-imports",
+            "curly-spacing"
+    ]
 }

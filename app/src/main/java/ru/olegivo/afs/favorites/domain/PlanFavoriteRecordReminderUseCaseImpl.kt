@@ -32,5 +32,4 @@ class PlanFavoriteRecordReminderUseCaseImpl @Inject constructor(
                     Completable.complete()
                 }
             }
-
 }

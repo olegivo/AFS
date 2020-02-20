@@ -18,7 +18,6 @@ import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
-
 class MainActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
@@ -74,7 +73,6 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         navigatorHolder.removeNavigator()
         super.onPause()
     }
-
 
     companion object {
         private const val ACTION_SHOW_SPORTS_ACTIVITY_DETAILS =

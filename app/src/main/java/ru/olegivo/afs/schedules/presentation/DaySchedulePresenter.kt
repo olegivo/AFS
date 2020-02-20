@@ -70,4 +70,3 @@ class DaySchedulePresenter @Inject constructor(
         view?.showSchedule(sportsActivity/*.filter { it.schedule.preEntry }*/)
     }
 }
-

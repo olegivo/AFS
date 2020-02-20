@@ -115,5 +115,4 @@ class GetCurrentWeekSportsActivitiesUseCaseImplTest : BaseTestOf<GetCurrentWeekS
         verify(scheduleRepository).getCurrentWeekReservedScheduleIds()
         verify(favoritesRepository).getFavoriteFilters()
     }
-
 }

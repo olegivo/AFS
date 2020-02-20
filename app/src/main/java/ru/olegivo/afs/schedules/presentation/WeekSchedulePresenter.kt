@@ -105,4 +105,3 @@ class WeekSchedulePresenter @Inject constructor(
         view?.onReady(currentDay)
     }
 }
-

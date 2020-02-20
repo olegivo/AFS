@@ -110,5 +110,4 @@ class ShowRecordReminderUseCaseImplTest : BaseTestOf<ShowRecordReminderUseCase>(
             reserveContacts.phone
         )
     }
-
 }

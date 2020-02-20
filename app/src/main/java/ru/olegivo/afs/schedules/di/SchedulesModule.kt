@@ -51,7 +51,6 @@ abstract class SchedulesModule {
     @Binds
     abstract fun bindReserveDbSource(impl: ScheduleDbSourceImpl): ScheduleDbSource
 
-
     @Module
     object ProvidesModule {
         @Provides

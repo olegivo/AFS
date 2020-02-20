@@ -16,7 +16,6 @@ import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.helpers.getRandomInt
 import kotlin.random.Random
 
-
 class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
 
     override fun createInstance(): WeekScheduleContract.Presenter = weekWeekSchedulePresenter

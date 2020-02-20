@@ -88,7 +88,6 @@ class SportsActivityReserveWorker @AssistedInject constructor(
     private fun showSuccessReserved(schedule: Schedule): Completable =
         scheduleReminderNotifier.showSuccessReserved(schedule)
 
-
     companion object {
         const val TAG = "SportsActivityReserveWorker"
 

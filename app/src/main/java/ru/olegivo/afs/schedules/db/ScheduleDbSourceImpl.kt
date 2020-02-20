@@ -101,5 +101,4 @@ class ScheduleDbSourceImpl @Inject constructor(
     override fun isScheduleReserved(scheduleId: Long): Single<Boolean> =
         reserveDao.isScheduleReserved(scheduleId)
             .subscribeOn(ioScheduler)
-
 }

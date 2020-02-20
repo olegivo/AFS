@@ -28,7 +28,6 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
 
-
 class MainFragment : Fragment(R.layout.fragment_main) {
 
     @Inject

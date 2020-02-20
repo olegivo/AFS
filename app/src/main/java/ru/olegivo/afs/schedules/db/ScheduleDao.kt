@@ -40,6 +40,5 @@ abstract class ScheduleDao {
         private const val scheduleJoins = " as s " +
                 "inner join dictionary as groups on s.groupId = groups.key and groups.dictionaryId = $DICTIONARY_GROUP " +
                 "inner join dictionary as activities on s.activityId = activities.key and activities.dictionaryId = $DICTIONARY_ACTIVITY "
-
     }
 }

@@ -13,7 +13,6 @@ import ru.olegivo.afs.schedules.db.models.DictionaryEntry
 import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 
-
 @Database(
     entities = [
         ScheduleEntity::class,
@@ -32,7 +31,6 @@ abstract class AfsDatabase : RoomDatabase() {
     abstract val reserve: ReserveDao
 
     companion object {
-        fun getMigrations(): Array<Migration> = arrayOf(
-        )
+        fun getMigrations(): Array<Migration> = arrayOf()
     }
 }

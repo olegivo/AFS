@@ -23,7 +23,7 @@ class ActualizeSchedulesWorker @AssistedInject constructor(
 
     override fun createWork(): Single<Result> =
         getCurrentClub()
-            .doOnSubscribe{ Timber.d("Actualizing schedules...")}
+            .doOnSubscribe { Timber.d("Actualizing schedules...") }
             .flatMapCompletable { clubId -> actualizeSchedule(clubId) }
             .andThen(Single.just(Result.success()))
 
