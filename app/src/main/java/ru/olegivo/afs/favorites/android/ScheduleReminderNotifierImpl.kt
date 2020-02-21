@@ -8,7 +8,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.reactivex.Completable
-import ru.olegivo.afs.MainActivity
+import ru.olegivo.afs.main.android.MainActivity
 import ru.olegivo.afs.R
 import ru.olegivo.afs.favorites.domain.ScheduleReminderNotifier
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters

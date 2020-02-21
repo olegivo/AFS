@@ -5,8 +5,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import ru.olegivo.afs.AfsApplication
-import ru.olegivo.afs.MainActivity
-import ru.olegivo.afs.MainFragment
+import ru.olegivo.afs.main.android.MainActivity
+import ru.olegivo.afs.main.android.MainFragment
 import ru.olegivo.afs.auth.di.AuthModule
 import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.android.ErrorReporterImpl

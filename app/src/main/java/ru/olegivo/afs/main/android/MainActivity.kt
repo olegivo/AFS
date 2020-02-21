@@ -1,4 +1,4 @@
-package ru.olegivo.afs
+package ru.olegivo.afs.main.android
 
 import android.app.PendingIntent
 import android.content.Context
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import ru.olegivo.afs.R
 import ru.olegivo.afs.favorites.android.getExtraFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.android.putFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters

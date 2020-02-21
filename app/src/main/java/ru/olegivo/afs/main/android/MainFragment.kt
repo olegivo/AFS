@@ -1,4 +1,4 @@
-package ru.olegivo.afs
+package ru.olegivo.afs.main.android
 
 import android.content.Context
 import android.os.Bundle
@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_main.activity_main_drop_db_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_is_stub_reserve_check_box
 import kotlinx.android.synthetic.main.fragment_main.activity_main_reserve_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_set_default_club_button
+import ru.olegivo.afs.R
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
