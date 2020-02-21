@@ -11,7 +11,7 @@ class UncaughtException private constructor() : Thread.UncaughtExceptionHandler 
 
     init {
         Timber.tag(javaClass.simpleName)
-        rootHandler = Thread.getDefaultUncaughtExceptionHandler()
+        rootHandler = Thread.getDefaultUncaughtExceptionHandler()!!
 
         Thread.setDefaultUncaughtExceptionHandler(this)
         RxJavaPlugins.setErrorHandler(this::onRxError)
@@ -32,7 +32,7 @@ class UncaughtException private constructor() : Thread.UncaughtExceptionHandler 
             is NullPointerException, is IllegalArgumentException /*that's likely a bug in the application*/,
             is IllegalStateException /*that's a bug in RxJava or in a custom operator*/ -> {
                 Thread.currentThread()
-                    .uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e)
+                    .uncaughtExceptionHandler!!.uncaughtException(Thread.currentThread(), e)
             }
 
             else -> {
