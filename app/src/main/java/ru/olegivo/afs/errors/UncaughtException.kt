@@ -1,4 +1,4 @@
-package ru.olegivo.afs
+package ru.olegivo.afs.errors
 
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins

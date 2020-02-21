@@ -15,6 +15,7 @@ import io.fabric.sdk.android.Fabric
 import net.danlew.android.joda.JodaTimeAndroid
 import ru.olegivo.afs.common.di.DaggerAppComponent
 import ru.olegivo.afs.common.errors.CrashlyticsTree
+import ru.olegivo.afs.errors.UncaughtException
 import ru.olegivo.afs.schedules.android.ActualizeSchedulesWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
