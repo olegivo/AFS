@@ -250,3 +250,5 @@ kotlinter {
             "curly-spacing"
     ]
 }
+
+apply from: "jacoco.gradle"
