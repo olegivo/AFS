@@ -1,4 +1,4 @@
-package ru.olegivo.afs.favorites.db.modes
+package ru.olegivo.afs.favorites.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

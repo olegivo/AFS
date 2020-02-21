@@ -5,8 +5,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import ru.olegivo.afs.favorites.db.FavoriteDao
-import ru.olegivo.afs.favorites.db.modes.FavoriteFilterEntity
-import ru.olegivo.afs.favorites.db.modes.RecordReminderScheduleEntity
+import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.schedules.db.ReserveDao
 import ru.olegivo.afs.schedules.db.ScheduleDao
 import ru.olegivo.afs.schedules.db.models.DictionaryEntry

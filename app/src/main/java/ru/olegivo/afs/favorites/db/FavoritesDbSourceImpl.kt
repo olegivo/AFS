@@ -4,9 +4,9 @@ import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
-import ru.olegivo.afs.favorites.db.modes.RecordReminderScheduleEntity
-import ru.olegivo.afs.favorites.db.modes.toDb
-import ru.olegivo.afs.favorites.db.modes.toDomain
+import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.favorites.db.models.toDb
+import ru.olegivo.afs.favorites.db.models.toDomain
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import java.util.*

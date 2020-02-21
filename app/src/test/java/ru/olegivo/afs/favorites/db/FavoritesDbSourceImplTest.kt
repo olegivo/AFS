@@ -12,8 +12,8 @@ import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
-import ru.olegivo.afs.favorites.db.modes.FavoriteFilterEntity
-import ru.olegivo.afs.favorites.db.modes.toDb
+import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.favorites.db.models.toDb
 import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomBoolean

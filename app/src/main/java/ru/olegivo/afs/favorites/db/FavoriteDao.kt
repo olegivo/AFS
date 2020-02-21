@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
-import ru.olegivo.afs.favorites.db.modes.FavoriteFilterEntity
-import ru.olegivo.afs.favorites.db.modes.RecordReminderScheduleEntity
+import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import java.util.*
 
 @Dao
