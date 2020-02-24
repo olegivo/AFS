@@ -1,0 +1,19 @@
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+detekt {
+    failFast = true
+
+    // Builds the AST in parallel. Rules are always executed in parallel. Can lead to speedups in larger projects. `false` by default.
+    parallel = true
+
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    config = files("$rootDir/detekt-config.yml")
+    baseline = file("$projectDir/detekt/baseline.xml")
+
+    reports {
+        txt.enabled = false
+        html.enabled = true
+        xml.enabled = false
+    }
+}
