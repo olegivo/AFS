@@ -5,7 +5,7 @@ import ru.olegivo.afs.common.presentation.Destination
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.ReserveScreen
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
-import ru.olegivo.afs.schedules.presentation.ScheduleScreen
+import ru.olegivo.afs.schedules.android.ScheduleScreen
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.Screen

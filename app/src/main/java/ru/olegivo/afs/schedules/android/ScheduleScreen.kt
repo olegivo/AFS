@@ -1,6 +1,5 @@
-package ru.olegivo.afs.schedules.presentation
+package ru.olegivo.afs.schedules.android
 
-import ru.olegivo.afs.schedules.android.WeekScheduleFragment
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
