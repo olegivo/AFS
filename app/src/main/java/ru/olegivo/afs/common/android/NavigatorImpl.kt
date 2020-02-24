@@ -3,7 +3,7 @@ package ru.olegivo.afs.common.android
 import ru.olegivo.afs.common.presentation.BrowserDestination
 import ru.olegivo.afs.common.presentation.Destination
 import ru.olegivo.afs.common.presentation.Navigator
-import ru.olegivo.afs.schedule.presentation.ReserveScreen
+import ru.olegivo.afs.schedule.android.ReserveScreen
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.android.ScheduleScreen
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
