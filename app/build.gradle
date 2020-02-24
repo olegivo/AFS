@@ -252,3 +252,20 @@ kotlinter {
 }
 
 apply from: "jacoco.gradle"
+
+task staticAnalysis(
+        dependsOn: [
+                'lintKotlin',
+                'detekt'
+        ]) {
+    group = 'verification'
+}
+
+task staticAnalysisFull(
+        dependsOn: [
+                'staticAnalysis',
+                'lintDebug'
+        ]) {
+    group = 'verification'
+}
+
