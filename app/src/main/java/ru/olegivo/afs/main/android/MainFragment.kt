@@ -44,6 +44,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     @Inject
     lateinit var afsDatabase: AfsDatabase
 
+    private var isStubReserve: Boolean? = null
+
     @field:[Inject Named("main")]
     lateinit var mainScheduler: Scheduler
 
@@ -80,30 +82,41 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         activity_main_drop_db_button.setOnClickListener {
             onDropDbBClicked()
         }
+        isStubReserve?.let { isStubReserve ->
+            initIsStubReserve(isStubReserve)
+        } ?: run {
+            disableIsStubReserveCheckBox()
+        }
     }
 
     override fun onStart() {
         super.onStart()
         reserveRepository.isStubReserve()
             .observeOn(mainScheduler)
-            .doOnSubscribe {
-                activity_main_is_stub_reserve_check_box.isEnabled = false
-                activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(null)
-            }
-            .doFinally {
-                activity_main_is_stub_reserve_check_box.isEnabled = true
-                activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(
-                    onCheckedChangeListener
-                )
-            }
             .subscribeBy(
                 onSuccess = { isStubReserve ->
-                    if (activity_main_is_stub_reserve_check_box.isChecked != isStubReserve) {
-                        activity_main_is_stub_reserve_check_box.isChecked = isStubReserve
+                    this.isStubReserve = isStubReserve
+                    if (activity_main_is_stub_reserve_check_box != null) {
+                        initIsStubReserve(isStubReserve)
                     }
                 },
                 onError = ::onError
             )
+    }
+
+    private fun initIsStubReserve(isStubReserve: Boolean) {
+        if (activity_main_is_stub_reserve_check_box.isChecked != isStubReserve) {
+            activity_main_is_stub_reserve_check_box.isChecked = isStubReserve
+        }
+        activity_main_is_stub_reserve_check_box.isEnabled = true
+        activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(
+            onCheckedChangeListener
+        )
+    }
+
+    private fun disableIsStubReserveCheckBox() {
+        activity_main_is_stub_reserve_check_box.isEnabled = false
+        activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(null)
     }
 
     private fun onDropDbBClicked() {
