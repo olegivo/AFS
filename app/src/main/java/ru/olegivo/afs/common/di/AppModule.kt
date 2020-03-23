@@ -22,8 +22,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import ru.olegivo.afs.AfsApplication
-import ru.olegivo.afs.main.android.MainActivity
-import ru.olegivo.afs.main.android.MainFragment
 import ru.olegivo.afs.auth.di.AuthModule
 import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.android.ErrorReporterImpl
@@ -32,6 +30,9 @@ import ru.olegivo.afs.common.domain.DateProviderImpl
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.favorites.android.FavoriteRecordReminderReceiver
 import ru.olegivo.afs.favorites.android.SportsActivityReserveReceiver
+import ru.olegivo.afs.logs.di.LogsModule
+import ru.olegivo.afs.main.android.MainActivity
+import ru.olegivo.afs.main.android.MainFragment
 import ru.olegivo.afs.preferences.di.PreferencesModule
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedule.di.ScheduleDetailsModule
@@ -50,7 +51,8 @@ import javax.inject.Named
         NetworkModule::class,
         DbModule::class,
         AuthModule::class,
-        PreferencesModule::class
+        PreferencesModule::class,
+        LogsModule::class
     ]
 )
 abstract class AppModule {
