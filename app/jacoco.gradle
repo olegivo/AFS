@@ -63,10 +63,10 @@ project.afterEvaluate {
                 group = "Reporting"
                 description = "Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
 
-                classDirectories = classDirs
-                additionalSourceDirs = files(coverageSourceDirs)
-                sourceDirectories = files(coverageSourceDirs)
-                executionData = files(jacocoExecFile)
+                classDirectories.setFrom classDirs
+                additionalSourceDirs.setFrom files(coverageSourceDirs)
+                sourceDirectories.setFrom files(coverageSourceDirs)
+                executionData.setFrom files(jacocoExecFile)
 
                 reports {
                     xml.enabled = true
@@ -78,9 +78,9 @@ project.afterEvaluate {
                 group = "Verification"
                 description = "Verifies Jacoco coverage reports on the ${sourceName.capitalize()} build."
 
-                classDirectories = classDirs
-                sourceDirectories = files(coverageSourceDirs)
-                executionData = files(jacocoExecFile)
+                classDirectories.setFrom classDirs
+                sourceDirectories.setFrom files(coverageSourceDirs)
+                executionData.setFrom files(jacocoExecFile)
 
                 violationRules {
                     setFailOnViolation(true)
