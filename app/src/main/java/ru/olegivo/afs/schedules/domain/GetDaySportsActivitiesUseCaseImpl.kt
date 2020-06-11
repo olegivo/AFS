@@ -83,10 +83,12 @@ class GetDaySportsActivitiesUseCaseImpl @Inject constructor(
 
     private fun getDaySchedule(clubId: Int, day: Date): Maybe<List<Schedule>> {
         return scheduleRepository.getDaySchedule(clubId, day)
-            .switchIfEmpty(Maybe.defer {
-                actualizeSchedule(clubId)
-                    .andThen(scheduleRepository.getDaySchedule(clubId, day))
-            })
+            .switchIfEmpty(
+                Maybe.defer {
+                    actualizeSchedule(clubId)
+                        .andThen(scheduleRepository.getDaySchedule(clubId, day))
+                }
+            )
     }
 
     private fun getFavoritesScheduleIds(schedules: List<Schedule>): Single<List<Long>> {

@@ -74,8 +74,8 @@ fun Date.equalsWithoutTime(date: Date): Boolean {
     val thisDate = toCalendar()
     val anotherDate = date.toCalendar()
     return thisDate.get(Calendar.YEAR) == anotherDate.get(Calendar.YEAR) &&
-            thisDate.get(Calendar.MONTH) == anotherDate.get(Calendar.MONTH) &&
-            thisDate.get(Calendar.DAY_OF_YEAR) == anotherDate.get(Calendar.DAY_OF_YEAR)
+        thisDate.get(Calendar.MONTH) == anotherDate.get(Calendar.MONTH) &&
+        thisDate.get(Calendar.DAY_OF_YEAR) == anotherDate.get(Calendar.DAY_OF_YEAR)
 }
 
 fun isDate(dateString: String): Boolean {

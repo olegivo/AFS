@@ -47,31 +47,32 @@ class ReserveUseCaseImpl @Inject constructor(
                 ReserveResult.TheTimeHasGone
             )
             fio.isEmpty() || phone.isEmpty() -> Single.just(ReserveResult.NameAndPhoneShouldBeStated)
-            else -> reserveRepository.getAvailableSlots(
-                sportsActivity.schedule.clubId,
-                sportsActivity.schedule.id
-            )
-                .flatMap { availableSlots ->
-                    if (availableSlots == 0) {
-                        Single.just(ReserveResult.NoSlots.APosteriori)
-                    } else {
-                        reserveRepository.isStubReserve()
-                            .flatMapCompletable { isStubReserve ->
-                                if (isStubReserve) {
-                                    Completable.complete()
-                                } else {
-                                    val reserve = Reserve(
-                                        fio,
-                                        phone,
-                                        sportsActivity.schedule.id,
-                                        sportsActivity.schedule.clubId
-                                    )
-                                    reserveRepository.reserve(reserve)
+            else ->
+                reserveRepository.getAvailableSlots(
+                    sportsActivity.schedule.clubId,
+                    sportsActivity.schedule.id
+                )
+                    .flatMap { availableSlots ->
+                        if (availableSlots == 0) {
+                            Single.just(ReserveResult.NoSlots.APosteriori)
+                        } else {
+                            reserveRepository.isStubReserve()
+                                .flatMapCompletable { isStubReserve ->
+                                    if (isStubReserve) {
+                                        Completable.complete()
+                                    } else {
+                                        val reserve = Reserve(
+                                            fio,
+                                            phone,
+                                            sportsActivity.schedule.id,
+                                            sportsActivity.schedule.clubId
+                                        )
+                                        reserveRepository.reserve(reserve)
+                                    }
                                 }
-                            }
-                            .andThen(Single.just(ReserveResult.Success))
-                            .andThen { scheduleRepository.setScheduleReserved(sportsActivity.schedule) }
+                                .andThen(Single.just(ReserveResult.Success))
+                                .andThen { scheduleRepository.setScheduleReserved(sportsActivity.schedule) }
+                        }
                     }
-                }
         }
 }

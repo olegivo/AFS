@@ -26,7 +26,7 @@ import javax.inject.Provider
 
 class AppWorkerFactory @Inject constructor(
     private val workerFactories: Map<Class<out ListenableWorker>,
-            @JvmSuppressWildcards Provider<ChildWorkerFactory>>
+        @JvmSuppressWildcards Provider<ChildWorkerFactory>>
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,

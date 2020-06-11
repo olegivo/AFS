@@ -27,7 +27,9 @@ interface DayScheduleContract {
         fun actualizeSchedule()
     }
 
-    interface View : PresentationContract.View, PresentationContract.ErrorDisplay,
+    interface View :
+        PresentationContract.View,
+        PresentationContract.ErrorDisplay,
         PresentationContract.ViewWithProgress {
         val day: Date
         val clubId: Int

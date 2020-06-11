@@ -28,7 +28,7 @@ import ru.olegivo.afs.schedules.db.models.DictionaryEntry
 import ru.olegivo.afs.schedules.db.models.DictionaryKind
 import ru.olegivo.afs.schedules.db.models.ScheduleDto
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
-import java.util.*
+import java.util.Date
 
 @Dao
 abstract class ScheduleDao {
@@ -55,7 +55,7 @@ abstract class ScheduleDao {
             "id, clubId, groupId, groups.value as [group], activityId, activities.value as activity, datetime, length, preEntry, totalSlots, recordFrom, recordTo" // TODO: later: room, trainer,
 
         private const val scheduleJoins = " as s " +
-                "inner join dictionary as groups on s.groupId = groups.key and groups.dictionaryId = $DICTIONARY_GROUP " +
-                "inner join dictionary as activities on s.activityId = activities.key and activities.dictionaryId = $DICTIONARY_ACTIVITY "
+            "inner join dictionary as groups on s.groupId = groups.key and groups.dictionaryId = $DICTIONARY_GROUP " +
+            "inner join dictionary as activities on s.activityId = activities.key and activities.dictionaryId = $DICTIONARY_ACTIVITY "
     }
 }

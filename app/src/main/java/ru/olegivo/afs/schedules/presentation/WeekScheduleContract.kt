@@ -29,7 +29,9 @@ interface WeekScheduleContract {
         fun onDayChanged(position: Int)
     }
 
-    interface View : PresentationContract.View, PresentationContract.ErrorDisplay,
+    interface View :
+        PresentationContract.View,
+        PresentationContract.ErrorDisplay,
         PresentationContract.ViewWithProgress {
         fun onReady(position: Int)
     }
