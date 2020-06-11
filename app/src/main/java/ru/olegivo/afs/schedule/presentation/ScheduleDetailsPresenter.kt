@@ -139,9 +139,11 @@ class ScheduleDetailsPresenter @Inject constructor(
                     if (!isFavorite) {
                         planFavoriteRecordReminderUseCase(sportsActivity.schedule)
                             .observeOn(mainScheduler)
-                            .subscribeBy(onError = {
-                                onError(it, "Ошибка при планировании уведомления")
-                            })
+                            .subscribeBy(
+                                onError = {
+                                    onError(it, "Ошибка при планировании уведомления")
+                                }
+                            )
                             .addToComposite()
                     }
                 },
@@ -177,7 +179,8 @@ class ScheduleDetailsPresenter @Inject constructor(
                 onSuccess = { view?.setReserveContacts(it) },
                 onError = {
                     onError(it, "Ошибка при восстановлении контактов для записи на занятие")
-                })
+                }
+            )
             .addToComposite()
 
         savedAgreementUseCase.isAgreementAccepted()
@@ -189,7 +192,8 @@ class ScheduleDetailsPresenter @Inject constructor(
                         it,
                         "Ошибка при получении факта принятия соглашения обработки персональных данных"
                     )
-                })
+                }
+            )
             .addToComposite()
     }
 

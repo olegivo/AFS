@@ -49,10 +49,12 @@ class ShowRecordReminderUseCaseImpl @Inject constructor(
                                 ).andThen(Maybe.just(Unit))
                             }
                     }
-                    .switchIfEmpty(Single.defer {
-                        scheduleReminderNotifier.showNotificationToShowDetails(schedule)
-                            .andThen(Single.just(Unit))
-                    })
+                    .switchIfEmpty(
+                        Single.defer {
+                            scheduleReminderNotifier.showNotificationToShowDetails(schedule)
+                                .andThen(Single.just(Unit))
+                        }
+                    )
                     .ignoreElement()
             }
 }

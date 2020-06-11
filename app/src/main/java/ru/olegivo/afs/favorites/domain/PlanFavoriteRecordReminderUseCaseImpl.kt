@@ -40,9 +40,11 @@ class PlanFavoriteRecordReminderUseCaseImpl @Inject constructor(
                                 Completable.complete()
                             } else {
                                 favoritesRepository.addReminderToRecord(schedule)
-                                    .andThen(Completable.defer {
-                                        favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)
-                                    })
+                                    .andThen(
+                                        Completable.defer {
+                                            favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)
+                                        }
+                                    )
                             }
                         }
                 } else {

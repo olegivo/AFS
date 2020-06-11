@@ -83,7 +83,8 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
         val exception = RuntimeException()
         setupGetCurrentClub(
             testData,
-            currentClubIdMaybeProvider = { Maybe.error(exception) })
+            currentClubIdMaybeProvider = { Maybe.error(exception) }
+        )
         instance.bindView(view)
             .andTriggerActions()
 
@@ -97,7 +98,8 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
         val testData = TestData()
         setupGetCurrentClub(
             testData,
-            currentClubIdMaybeProvider = { Maybe.empty() })
+            currentClubIdMaybeProvider = { Maybe.empty() }
+        )
         instance.bindView(view)
             .andTriggerActions()
 

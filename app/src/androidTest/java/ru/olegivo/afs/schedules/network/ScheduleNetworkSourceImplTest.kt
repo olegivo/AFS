@@ -19,8 +19,8 @@ package ru.olegivo.afs.schedules.network
 
 import android.util.Log
 import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.Flowables
 import io.reactivex.schedulers.TestScheduler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -73,7 +73,7 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
             }
             .toFlowable()
             .flatMap { schedules ->
-                Flowable.create<Schedules>({ emitter ->
+                Flowables.create<Schedules>(BackpressureStrategy.ERROR) { emitter ->
                     emitter.onNext(schedules)
                     var current: Schedules? = schedules
                     while (current?.next != null) {
@@ -81,7 +81,7 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
                         current = scheduleNetworkSource.getNextSchedule(current)
                         current?.let { emitter.onNext(it) }
                     }
-                }, BackpressureStrategy.ERROR)
+                }
             }
             .test()
 
@@ -106,7 +106,7 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
             }
             .toFlowable()
             .flatMap { schedules ->
-                Flowable.create<Schedules>({ emitter ->
+                Flowables.create<Schedules>(BackpressureStrategy.ERROR) { emitter ->
                     emitter.onNext(schedules)
                     var current: Schedules? = schedules
                     while (current?.next != null) {
@@ -114,7 +114,7 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
                         current = scheduleNetworkSource.getPrevSchedule(current)
                         current?.let { emitter.onNext(it) }
                     }
-                }, BackpressureStrategy.ERROR)
+                }
             }
             .test()
 

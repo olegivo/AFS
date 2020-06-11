@@ -43,7 +43,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class ScheduleDetailsFragment : Fragment(R.layout.fragment_schedule_details),
+class ScheduleDetailsFragment :
+    Fragment(R.layout.fragment_schedule_details),
     ScheduleDetailsContract.View {
     @Inject
     lateinit var presenter: ScheduleDetailsContract.Presenter

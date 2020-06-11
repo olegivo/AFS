@@ -33,7 +33,7 @@ buildscript {
     }
 }
 plugins {
-    id("org.jmailen.kotlinter") version "2.3.1"
+    id("org.jmailen.kotlinter") version "2.4.0"
 }
 
 allprojects {

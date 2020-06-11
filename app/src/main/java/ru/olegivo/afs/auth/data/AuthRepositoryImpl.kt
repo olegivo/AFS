@@ -28,10 +28,12 @@ class AuthRepositoryImpl @Inject constructor(private val preferencesDataSource: 
 
     override fun getAccessToken(): Single<String> {
         return preferencesDataSource.getString(KEY_ACCESS_TOKEN)
-            .switchIfEmpty(Single.defer {
-                Single.just(accessToken)
-                    .andThen { preferencesDataSource.putString(KEY_ACCESS_TOKEN, it) }
-            })
+            .switchIfEmpty(
+                Single.defer {
+                    Single.just(accessToken)
+                        .andThen { preferencesDataSource.putString(KEY_ACCESS_TOKEN, it) }
+                }
+            )
     }
 
     companion object {

@@ -103,7 +103,8 @@ class DaySchedulePresenterTest : BaseTestOf<DayScheduleContract.Presenter>() {
         val testData = TestData()
         setupGetCurrentWeekSchedule(
             testData,
-            dayScheduleProvider = { Maybe.empty() })
+            dayScheduleProvider = { Maybe.empty() }
+        )
         instance.bindView(view)
             .andTriggerActions()
 

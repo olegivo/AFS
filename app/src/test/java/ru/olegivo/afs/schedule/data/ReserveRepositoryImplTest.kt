@@ -62,12 +62,16 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         val scheduleId = getRandomLong()
         val expected = getRandomInt()
         given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
-            .willReturn(Single.just(listOf(
-                Slot(
-                    getRandomLong(),
-                    expected
+            .willReturn(
+                Single.just(
+                    listOf(
+                        Slot(
+                            getRandomLong(),
+                            expected
+                        )
+                    )
                 )
-            )))
+            )
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
             .test().andTriggerActions()
@@ -83,12 +87,16 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
         given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
-            .willReturn(Single.just(listOf(
-                Slot(
-                    getRandomLong(),
-                    null
+            .willReturn(
+                Single.just(
+                    listOf(
+                        Slot(
+                            getRandomLong(),
+                            null
+                        )
+                    )
                 )
-            )))
+            )
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
             .test().andTriggerActions()

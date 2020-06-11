@@ -42,9 +42,11 @@ class FavoriteRecordReminderReceiver : BroadcastReceiver() {
                 FavoriteRecordReminderWorker.TAG,
                 ExistingWorkPolicy.APPEND,
                 OneTimeWorkRequestBuilder<FavoriteRecordReminderWorker>()
-                    .setInputData(FavoriteRecordReminderWorker.createInputData(
-                        recordReminderParameters
-                    ))
+                    .setInputData(
+                        FavoriteRecordReminderWorker.createInputData(
+                            recordReminderParameters
+                        )
+                    )
                     .build()
             )
         }
