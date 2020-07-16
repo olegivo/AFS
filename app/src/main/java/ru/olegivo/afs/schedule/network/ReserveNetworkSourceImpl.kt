@@ -18,6 +18,7 @@
 package ru.olegivo.afs.schedule.network
 
 import io.reactivex.Scheduler
+import io.reactivex.rxkotlin.toCompletable
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.common.network.NetworkErrorsMapper
 import ru.olegivo.afs.common.network.mapCompletableError
@@ -35,7 +36,7 @@ class ReserveNetworkSourceImpl @Inject constructor(
 ) : ReserveNetworkSource {
 
     override fun reserve(reserve: Reserve) =
-        api.reserve(reserve.toNetwork())
+        { api.reserve(reserve.toNetwork()) }.toCompletable()
             .subscribeOn(ioScheduler)
             .mapCompletableError<ReserveRequestError>(networkErrorsMapper)
 }

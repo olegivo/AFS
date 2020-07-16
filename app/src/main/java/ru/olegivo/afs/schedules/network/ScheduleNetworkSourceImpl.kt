@@ -22,6 +22,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.extensions.parallelMap
+import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Slot
@@ -36,7 +37,7 @@ class ScheduleNetworkSourceImpl @Inject constructor(
     @Named("computation") private val computationScheduler: Scheduler
 ) : ScheduleNetworkSource {
     override fun getSchedules(clubId: Int): Single<Schedules> {
-        return api.getSchedule(clubId).subscribeOn(ioScheduler)
+        return { api.getSchedule(clubId) }.toSingle().subscribeOn(ioScheduler)
     }
 
     override fun getSchedule(clubId: Int): Single<List<DataSchedule>> {
@@ -48,7 +49,7 @@ class ScheduleNetworkSourceImpl @Inject constructor(
         val idByPosition =
             ids.mapIndexed { index, id -> index.toString() to id.toString() }
                 .associate { it }
-        return api.getSlots(clubId, idByPosition)
+        return { api.getSlots(clubId, idByPosition) }.toSingle()
             .subscribeOn(ioScheduler)
             .observeOn(computationScheduler)
             .map { slots ->
@@ -68,6 +69,6 @@ class ScheduleNetworkSourceImpl @Inject constructor(
         return api.getSchedule(
             path,
             uri.queryParameterNames.associateBy({ it }, { uri.getQueryParameter(it)!! })
-        ).blockingGet()
+        )
     }
 }
