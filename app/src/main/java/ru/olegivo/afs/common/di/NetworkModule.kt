@@ -59,8 +59,8 @@ class NetworkModule {
         val accessTokenInterceptor = AccessTokenInterceptor(authRepository)
 
         return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
             .addInterceptor(accessTokenInterceptor)
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 
