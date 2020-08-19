@@ -28,8 +28,8 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
-import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.schedule.network.models.ReserveRequest
+import ru.olegivo.afs.schedules.network.models.Club
 import ru.olegivo.afs.schedules.network.models.Schedules
 import ru.olegivo.afs.schedules.network.models.Slot
 

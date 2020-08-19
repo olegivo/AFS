@@ -34,13 +34,13 @@ data class Schedules(
 
 @JsonClass(generateAdapter = true)
 data class Club(
-    val barCodeType: String,
+//    val barCodeType: String,
 //    val externalBaseId: Any?,
 //    val externalId: Any?,
-    val externalBaseId: Int?,
-    val externalId: Int?,
+//    val externalBaseId: Int?,
+//    val externalId: Int?,
     val id: Int,
-    val timezone: String,
+//    val timezone: String,
     val title: String
 )
 
