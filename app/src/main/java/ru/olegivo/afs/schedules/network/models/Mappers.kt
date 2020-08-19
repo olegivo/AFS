@@ -15,23 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs.clubs.network
+package ru.olegivo.afs.schedules.network.models
 
-import io.reactivex.Scheduler
-import io.reactivex.Single
-import ru.olegivo.afs.clubs.data.ClubsNetworkSource
-import ru.olegivo.afs.clubs.domain.models.Club
-import ru.olegivo.afs.common.network.Api
-import ru.olegivo.afs.schedules.network.models.toDomain
-import javax.inject.Inject
-import javax.inject.Named
+typealias DomainClub = ru.olegivo.afs.clubs.domain.models.Club
 
-class ClubsNetworkSourceImpl @Inject constructor(
-    private val api: Api,
-    @Named("io") private val ioScheduler: Scheduler
-) : ClubsNetworkSource {
-    override fun getClubs(): Single<List<Club>> {
-        return api.getClubs().subscribeOn(ioScheduler)
-            .map { list -> list.map { it.toDomain() } }
-    }
+fun Club.toDomain(): DomainClub {
+    return with(this) { DomainClub(id = id, title = title) }
 }
