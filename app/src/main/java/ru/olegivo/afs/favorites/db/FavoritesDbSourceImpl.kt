@@ -26,7 +26,7 @@ import ru.olegivo.afs.favorites.db.models.toDb
 import ru.olegivo.afs.favorites.db.models.toDomain
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -60,12 +60,16 @@ class FavoritesDbSourceImpl @Inject constructor(
         favoriteDao.hasPlannedReminderToRecord(schedule.id)
             .subscribeOn(ioScheduler)
 
-    override fun addReminderToRecord(schedule: Schedule): Completable =
+    override fun addReminderToRecord(
+        scheduleId: Long,
+        dateFrom: Date,
+        dateUntil: Date
+    ): Completable =
         favoriteDao.addReminderToRecord(
             RecordReminderScheduleEntity(
-                schedule.id,
-                schedule.recordFrom!!,
-                schedule.recordTo!!
+                scheduleId = scheduleId,
+                dateFrom = dateFrom,
+                dateUntil = dateUntil
             )
         ).subscribeOn(ioScheduler)
 

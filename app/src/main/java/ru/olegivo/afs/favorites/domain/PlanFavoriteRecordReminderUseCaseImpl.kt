@@ -39,7 +39,14 @@ class PlanFavoriteRecordReminderUseCaseImpl @Inject constructor(
                             if (hasPlannedReminderToRecord) {
                                 Completable.complete()
                             } else {
-                                favoritesRepository.addReminderToRecord(schedule)
+                                val scheduleId = schedule.id
+                                val dateFrom = schedule.recordFrom!!
+                                val dateUntil = schedule.recordTo!!
+                                favoritesRepository.addReminderToRecord(
+                                    schedueId = scheduleId,
+                                    dateFrom = dateFrom,
+                                    dateUntil = dateUntil
+                                )
                                     .andThen(
                                         Completable.defer {
                                             favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)

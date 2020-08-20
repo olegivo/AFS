@@ -30,6 +30,8 @@ import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
 import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.helpers.getRandomBoolean
+import ru.olegivo.afs.helpers.getRandomDate
+import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 
@@ -101,14 +103,26 @@ class FavoritesRepositoryImplTest : BaseTestOf<FavoritesRepository>() {
 
     @Test
     fun `addReminderToRecord PASSES data to favoritesDbSource`() {
-        val schedule = createSchedule()
-        given(favoritesDbSource.addReminderToRecord(schedule))
+        val scheduleId = getRandomLong()
+        val dateFrom = getRandomDate()
+        val dateUntil = getRandomDate()
+        given(
+            favoritesDbSource.addReminderToRecord(
+                scheduleId = scheduleId,
+                dateFrom = dateFrom,
+                dateUntil = dateUntil
+            )
+        )
             .willReturn { Completable.complete() }
 
-        instance.addReminderToRecord(schedule)
+        instance.addReminderToRecord(scheduleId, dateFrom, dateUntil)
             .assertSuccess()
 
-        verify(favoritesDbSource).addReminderToRecord(schedule)
+        verify(favoritesDbSource).addReminderToRecord(
+            scheduleId = scheduleId,
+            dateFrom = dateFrom,
+            dateUntil = dateUntil
+        )
     }
 
     @Test
