@@ -17,9 +17,11 @@
 
 package ru.olegivo.afs.schedules.domain.models
 
+import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.get
 import ru.olegivo.afs.common.getDateWithoutTime
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 data class Schedule(
     val id: Long,
@@ -49,4 +51,9 @@ data class Schedule(
     }
 
     fun getDayOfWeek() = datetime.get(Calendar.DAY_OF_WEEK)
+
+    fun getReminderDateFrom() = recordFrom
+        ?: (datetime.getDateWithoutTime().add(hours = -3))
+
+    fun getReminderDateUntil() = recordTo ?: datetime
 }

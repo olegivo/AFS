@@ -21,14 +21,14 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.willReturn
-import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.helpers.willComplete
 import ru.olegivo.afs.schedules.domain.models.createSchedule
-import java.util.*
+import java.util.Date
 
 class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordReminderUseCase>() {
     override fun createInstance() =
@@ -55,10 +55,15 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
         val now = recordTo.add(hours = -1)
 
         given { dateProvider.getDate() }.willReturn { now }
-        given { favoritesRepository.addReminderToRecord(schedule) }
-            .willReturn { Completable.complete() }
+        given {
+            favoritesRepository.addReminderToRecord(
+                schedule.id,
+                schedule.recordFrom!!,
+                schedule.recordTo!!
+            )
+        }.willComplete()
         given { favoriteAlarmPlanner.planFavoriteRecordReminder(schedule) }
-            .willReturn { Completable.complete() }
+            .willComplete()
         given { favoritesRepository.hasPlannedReminderToRecord(schedule) }
             .willReturn { Single.just(false) }
 
@@ -67,7 +72,11 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
 
         verify(dateProvider).getDate()
         verify(favoritesRepository).hasPlannedReminderToRecord(schedule)
-        verify(favoritesRepository).addReminderToRecord(schedule)
+        verify(favoritesRepository).addReminderToRecord(
+            schedule.id,
+            schedule.recordFrom!!,
+            schedule.recordTo!!
+        )
         verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
     }
 
@@ -78,19 +87,62 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
         val now = datetime.add(hours = -1)
 
         given { dateProvider.getDate() }.willReturn { now }
-        given { favoritesRepository.addReminderToRecord(schedule) }
-            .willReturn { Completable.complete() }
-        given { favoriteAlarmPlanner.planFavoriteRecordReminder(schedule) }
-            .willReturn { Completable.complete() }
+        given {
+            favoritesRepository.addReminderToRecord(
+                schedule.id,
+                schedule.getReminderDateFrom(),
+                schedule.getReminderDateUntil()
+            )
+        }
+            .willComplete()
         given { favoritesRepository.hasPlannedReminderToRecord(schedule) }
             .willReturn { Single.just(false) }
+        given { favoriteAlarmPlanner.planFavoriteRecordReminder(schedule) }
+            .willComplete()
 
         instance.invoke(schedule)
             .assertSuccess()
 
         verify(dateProvider).getDate()
         verify(favoritesRepository).hasPlannedReminderToRecord(schedule)
-        verify(favoritesRepository).addReminderToRecord(schedule)
+        verify(favoritesRepository).addReminderToRecord(
+            schedule.id,
+            schedule.getReminderDateFrom(),
+            schedule.getReminderDateUntil()
+        )
+        verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
+    }
+
+    @Test
+    fun `invoke PLANS reminder 3 hours before the start date day WHEN recordFrom and recordFrom not specified, recordTo not specified, start time not passed (now is the day before), reminder was not planned`() {
+        val datetime = Date()
+        val schedule =
+            createSchedule().copy(recordFrom = null, recordTo = null, datetime = datetime)
+        val now = datetime.add(days = -1)
+
+        given { dateProvider.getDate() }.willReturn { now }
+        given { favoritesRepository.hasPlannedReminderToRecord(schedule) }
+            .willReturn { Single.just(false) }
+        given { favoriteAlarmPlanner.planFavoriteRecordReminder(schedule) }
+            .willComplete()
+        given {
+            favoritesRepository.addReminderToRecord(
+                schedule.id,
+                schedule.getReminderDateFrom(),
+                schedule.getReminderDateUntil()
+            )
+        }.willComplete()
+
+        instance.invoke(schedule)
+            .assertSuccess()
+
+        verify(dateProvider).getDate()
+        verify(favoritesRepository).hasPlannedReminderToRecord(schedule)
+        verify(favoritesRepository).addReminderToRecord(
+            schedule.id,
+            schedule.getReminderDateFrom(),
+            schedule.getReminderDateUntil()
+        )
         verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
     }
 
