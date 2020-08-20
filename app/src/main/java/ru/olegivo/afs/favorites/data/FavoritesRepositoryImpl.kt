@@ -23,7 +23,7 @@ import ru.olegivo.afs.favorites.domain.FavoritesRepository
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 class FavoritesRepositoryImpl @Inject constructor(private val favoritesDbSource: FavoritesDbSource) :
@@ -38,8 +38,16 @@ class FavoritesRepositoryImpl @Inject constructor(private val favoritesDbSource:
     override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
         favoritesDbSource.removeFilter(favoriteFilter)
 
-    override fun addReminderToRecord(schedule: Schedule): Completable =
-        favoritesDbSource.addReminderToRecord(schedule)
+    override fun addReminderToRecord(
+        schedueId: Long,
+        dateFrom: Date,
+        dateUntil: Date
+    ): Completable =
+        favoritesDbSource.addReminderToRecord(
+            scheduleId = schedueId,
+            dateFrom = dateFrom,
+            dateUntil = dateUntil
+        )
 
     override fun hasPlannedReminderToRecord(schedule: Schedule): Single<Boolean> =
         favoritesDbSource.hasPlannedReminderToRecord(schedule)
