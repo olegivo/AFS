@@ -98,7 +98,9 @@ android {
             buildConfigField "Boolean", "DEBUG_MODE", debugMode
 
             firebaseAppDistribution {
-                serviceCredentialsFile = "${projectDir}\\firebase-app-distribution.json"
+                serviceCredentialsFile = "${projectDir}/firebase-app-distribution.json"
+                def file = new File(serviceCredentialsFile)
+                if (!file.exists()) println "firebaseAppDistribution.serviceCredentialsFile not exists: $serviceCredentialsFile"
                 groups = "Alpha"
             }
         }
