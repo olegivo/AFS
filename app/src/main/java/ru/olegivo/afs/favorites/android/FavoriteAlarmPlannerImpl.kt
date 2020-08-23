@@ -45,7 +45,7 @@ class FavoriteAlarmPlannerImpl @Inject constructor(
 
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.apply {
-                val recordFrom = schedule.recordFrom!!
+                val recordFrom = schedule.getReminderDateFrom()
                 val triggerAtMillis = recordFrom.toCalendar().timeInMillis
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     setAndAllowWhileIdle(
