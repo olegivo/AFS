@@ -15,9 +15,23 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.network.models
+package ru.olegivo.afs.common.network
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializer
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import org.joda.time.DateTime
+import java.util.Date
 
-@Serializable
-data class Slot(val id: Long, val slots: Int?)
+@Serializer(forClass = Date::class)
+object DateSerializer : KSerializer<Date> {
+
+    override fun serialize(output: Encoder, obj: Date) {
+        output.encodeString(obj.time.toString())
+    }
+
+    override fun deserialize(input: Decoder): Date {
+        return DateTime(input.decodeString()).toDate()
+    }
+}

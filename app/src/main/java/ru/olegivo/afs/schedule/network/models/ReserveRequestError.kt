@@ -17,10 +17,10 @@
 
 package ru.olegivo.afs.schedule.network.models
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 import ru.olegivo.afs.common.domain.ErrorWrapper
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ReserveRequestError(
     val result: String,
     val errors: List<String>,

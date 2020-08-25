@@ -17,10 +17,10 @@
 
 package ru.olegivo.afs.schedule.network.models
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 import ru.olegivo.afs.schedule.domain.models.Reserve
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ReserveRequest(
     val fio: String,
     val phone: String,

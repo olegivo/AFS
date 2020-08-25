@@ -17,9 +17,9 @@
 
 package ru.olegivo.afs.schedules.network.models
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Schedules(
     // TODO: later val club: Club,
     val dateSince: String,
@@ -32,7 +32,7 @@ data class Schedules(
     val schedule: List<Schedule>
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Club(
 //    val barCodeType: String,
 //    val externalBaseId: Any?,
@@ -44,14 +44,14 @@ data class Club(
     val title: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Room(
     val id: Int,
     val sortOrder: Int,
     val title: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Trainer(
     val clubs: List<Int>,
     val facePhoto: String?,
@@ -67,7 +67,7 @@ data class Trainer(
     val vkLink: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Change(
     val activity: ActivityX?,
     val age: Int?,
@@ -86,28 +86,28 @@ data class Change(
     val type: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Activity(
-    val color: String?,
-    val description: String?,
+    val color: String? = null,
+    val description: String? = null,
     val id: Int,
-    val length: Int?,
+    val length: Int? = null,
     val title: String,
     val type: String,
     val typeId: Int,
-    val url: String?,
-    val youtubePreviewUrl: String?,
+    val url: String? = null,
+    val youtubePreviewUrl: String? = null,
     val youtubeUrl: String?
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Group(
     val id: Int,
     val sortOrder: Int,
     val title: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ActivityX(
     val color: String?,
     val id: Int,
