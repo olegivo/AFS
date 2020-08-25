@@ -17,48 +17,24 @@
 
 package ru.olegivo.afs.common.network
 
-import com.squareup.moshi.Moshi
 import io.reactivex.Single
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
-import ru.olegivo.afs.BuildConfig
+import ru.olegivo.afs.BaseTest
 import ru.olegivo.afs.auth.domain.AuthRepository
-import ru.olegivo.afs.auth.network.AccessTokenInterceptor
-import java.util.*
+import ru.olegivo.afs.common.di.NetworkModule
 
-open class AuthorizedApiTest {
-    private fun createMoshi(): Moshi = Moshi.Builder()
-        .add(Date::class.java, DateJsonAdapter().nullSafe())
-//        .add(UUID::class.java, UuidJsonAdapter().nullSafe())
-        .build()
+open class AuthorizedApiTest : BaseTest() {
 
-    protected val moshi by lazy { createMoshi() }
+    private val authRepository by lazy { StubAuthRepository() }
+    protected val api: Api by lazy { createKtorApi(authRepository) }
+    protected val networkErrorsMapper by lazy { NetworkErrorsMapper(json) }
+    private val json = NetworkModule.ProvidesKtorModule.providesJson()
 
-    protected val api: Api by lazy {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            //level = HttpLoggingInterceptor.Level.BASIC
-            level = HttpLoggingInterceptor.Level.BODY
-        }
+    override fun getAllMocks(): Array<Any> = emptyArray()
 
-        val authRepository = StubAuthRepository()
-        val accessTokenInterceptor = AccessTokenInterceptor(authRepository)
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(accessTokenInterceptor)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BuildConfig.API_URL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(okHttpClient)
-            .build()
-
-        retrofit.create(Api::class.java)
+    private fun createKtorApi(authRepository: StubAuthRepository): ApiImpl {
+        val okHttpClient = NetworkModule.ProvidesModule.providesOkHttpClient(authRepository)
+        val httpClient = NetworkModule.ProvidesKtorModule.providesHttpClient(okHttpClient, json)
+        return ApiImpl(httpClient)
     }
 
     class StubAuthRepository : AuthRepository {
