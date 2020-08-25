@@ -172,7 +172,6 @@ dependencyUpdates {
 dependencies {
     def assertJVersion = '3.17.0'
     def daggerVersion = "2.28.3"
-    def daggerAssistVersion = "0.5.2"
     def javaxInjectVersion = '1'
     def jUnitVersion = '4.13'
     def mockitoVersion = '3.5.6'
@@ -203,8 +202,6 @@ dependencies {
     implementation "androidx.work:work-runtime:$workVersion"
     implementation "androidx.work:work-runtime-ktx:$workVersion"
     implementation "androidx.work:work-rxjava2:$workVersion"
-    compileOnly "com.squareup.inject:assisted-inject-annotations-dagger2:$daggerAssistVersion"
-    kapt "com.squareup.inject:assisted-inject-processor-dagger2:$daggerAssistVersion"
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 

@@ -30,7 +30,6 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AndroidSupportInjectionModule::class,
-        AppAssistedInjectModule::class,
         AppModule::class,
         ActivityBuilderModule::class,
         BroadcastReceiverModule::class,
