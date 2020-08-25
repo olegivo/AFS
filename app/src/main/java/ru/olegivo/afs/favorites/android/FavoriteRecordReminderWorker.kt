@@ -22,8 +22,6 @@ import androidx.work.Data
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.common.android.worker.ChildWorkerFactory
@@ -32,17 +30,16 @@ import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.domain.RestoreAllActiveRecordRemindersUseCase
 import ru.olegivo.afs.favorites.domain.ShowRecordReminderUseCase
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
+import javax.inject.Inject
+import javax.inject.Provider
 
-class FavoriteRecordReminderWorker @AssistedInject constructor(
-    @Assisted private val appContext: Context,
-    @Assisted private val params: WorkerParameters,
+class FavoriteRecordReminderWorker constructor(
+    appContext: Context,
+    private val params: WorkerParameters,
     private val restoreAllActiveRecordReminders: RestoreAllActiveRecordRemindersUseCase,
     private val showRecordReminder: ShowRecordReminderUseCase,
     private val errorReporter: ErrorReporter
 ) : RxWorker(appContext, params) {
-
-    @AssistedInject.Factory
-    interface Factory : ChildWorkerFactory
 
     override fun createWork(): Single<Result> =
         params.inputData.toSingle()
@@ -76,5 +73,20 @@ class FavoriteRecordReminderWorker @AssistedInject constructor(
 
         fun Data.getScheduleId() = getLong("SCHEDULE_ID", 0)
         fun Data.isAfterRebootMode() = getBoolean("AFTER_REBOOT_MODE", false)
+    }
+
+    class Factory @Inject constructor(
+        private val restoreAllActiveRecordReminders: Provider<RestoreAllActiveRecordRemindersUseCase>,
+        private val showRecordReminder: Provider<ShowRecordReminderUseCase>,
+        private val errorReporter: Provider<ErrorReporter>
+    ) : ChildWorkerFactory {
+        override fun create(appContext: Context, params: WorkerParameters) =
+            FavoriteRecordReminderWorker(
+                appContext,
+                params,
+                restoreAllActiveRecordReminders.get(),
+                showRecordReminder.get(),
+                errorReporter.get()
+            )
     }
 }

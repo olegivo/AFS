@@ -20,23 +20,20 @@ package ru.olegivo.afs.schedules.android
 import android.content.Context
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Single
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.common.android.worker.ChildWorkerFactory
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Provider
 
-class ActualizeSchedulesWorker @AssistedInject constructor(
-    @Assisted private val appContext: Context,
-    @Assisted private val params: WorkerParameters,
+class ActualizeSchedulesWorker constructor(
+    appContext: Context,
+    params: WorkerParameters,
     private val getCurrentClub: GetCurrentClubUseCase,
     private val actualizeSchedule: ActualizeScheduleUseCase
 ) : RxWorker(appContext, params) {
-
-    @AssistedInject.Factory
-    interface Factory : ChildWorkerFactory
 
     override fun createWork(): Single<Result> =
         getCurrentClub()
@@ -46,5 +43,18 @@ class ActualizeSchedulesWorker @AssistedInject constructor(
 
     companion object {
         const val TAG = "ActualizeSchedulesWorker"
+    }
+
+    class Factory @Inject constructor(
+        private val getCurrentClub: Provider<GetCurrentClubUseCase>,
+        private val actualizeSchedule: Provider<ActualizeScheduleUseCase>
+    ) : ChildWorkerFactory {
+        override fun create(appContext: Context, params: WorkerParameters) =
+            ActualizeSchedulesWorker(
+                appContext,
+                params,
+                getCurrentClub.get(),
+                actualizeSchedule.get(),
+            )
     }
 }

@@ -20,8 +20,6 @@ package ru.olegivo.afs.favorites.android
 import android.content.Context
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.common.android.worker.ChildWorkerFactory
@@ -32,17 +30,16 @@ import ru.olegivo.afs.schedule.domain.ReserveUseCase
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Provider
 
-class SportsActivityReserveWorker @AssistedInject constructor(
-    @Assisted private val appContext: Context,
-    @Assisted private val params: WorkerParameters,
+class SportsActivityReserveWorker constructor(
+    appContext: Context,
+    private val params: WorkerParameters,
     private val getSportsActivity: GetSportsActivityUseCase,
     private val reserveUseCase: ReserveUseCase,
     private val scheduleReminderNotifier: ScheduleReminderNotifier
 ) : RxWorker(appContext, params) {
-
-    @AssistedInject.Factory
-    interface Factory : ChildWorkerFactory
 
     override fun createWork(): Single<Result> =
         params.inputData.toSingle()
@@ -110,5 +107,20 @@ class SportsActivityReserveWorker @AssistedInject constructor(
 
         fun createInputData(recordReminderParameters: SportsActivityReserveParameters) =
             recordReminderParameters.toWorkerParameters()
+    }
+
+    class Factory @Inject constructor(
+        private val getSportsActivity: Provider<GetSportsActivityUseCase>,
+        private val reserveUseCase: Provider<ReserveUseCase>,
+        private val scheduleReminderNotifier: Provider<ScheduleReminderNotifier>
+    ) : ChildWorkerFactory {
+        override fun create(appContext: Context, params: WorkerParameters) =
+            SportsActivityReserveWorker(
+                appContext,
+                params,
+                getSportsActivity.get(),
+                reserveUseCase.get(),
+                scheduleReminderNotifier.get()
+            )
     }
 }
