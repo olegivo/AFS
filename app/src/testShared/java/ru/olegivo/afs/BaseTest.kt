@@ -24,13 +24,19 @@ import org.junit.Before
 import org.junit.Rule
 
 abstract class BaseTest(
-    private val rxHelperImpl: RxHelperImpl = RxHelperImpl()
+    private val rxHelperImpl: RxHelperImpl = RxHelperImpl(),
+    private val dispatcherHelperImpl: DispatcherHelperImpl = DispatcherHelperImpl()
 ) :
-    RxHelper by rxHelperImpl {
+    RxHelper by rxHelperImpl,
+    DispatcherHelper by dispatcherHelperImpl {
 
     @Rule
     @JvmField
     val schedulerRule = rxHelperImpl.schedulerRule
+
+    @Rule
+    @JvmField
+    val dispatcherRule = dispatcherHelperImpl.dispatcherRule
 
     private val mocks: Array<Any> by lazy { getAllMocks() }
     protected abstract fun getAllMocks(): Array<Any>
@@ -48,5 +54,6 @@ abstract class BaseTest(
 
     fun <T> T.andTriggerActions(): T = also {
         triggerActions()
+        advanceUntilIdle()
     }
 }
