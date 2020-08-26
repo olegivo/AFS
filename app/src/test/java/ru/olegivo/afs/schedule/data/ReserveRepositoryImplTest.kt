@@ -20,16 +20,19 @@ package ru.olegivo.afs.schedule.data
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
+import ru.olegivo.afs.helpers.givenBlocking
+import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedule.domain.models.Reserve
@@ -39,9 +42,12 @@ import ru.olegivo.afs.schedules.domain.models.createReserveContacts
 
 class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
     override fun createInstance(): ReserveRepository = ReserveRepositoryImpl(
-        reserveNetworkSource,
-        preferencesDataSource,
-        scheduleNetworkSource
+        reserveNetworkSource = reserveNetworkSource,
+        preferencesDataSource = preferencesDataSource,
+        scheduleNetworkSource = scheduleNetworkSource,
+        coroutineToRxAdapter = CoroutineToRxAdapter().apply {
+            coroutineContext = testDispatcher
+        }
     )
 
     //<editor-fold desc="mocks">
@@ -61,17 +67,9 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
         val expected = getRandomInt()
-        given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
-            .willReturn(
-                Single.just(
-                    listOf(
-                        Slot(
-                            getRandomLong(),
-                            expected
-                        )
-                    )
-                )
-            )
+        val ids = listOf(scheduleId)
+        givenBlocking(scheduleNetworkSource) { getSlots(clubId, ids) }
+            .willReturn { listOf(Slot(getRandomLong(), expected)) }
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
             .test().andTriggerActions()
@@ -79,24 +77,16 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
             .values().single()
 
         assertThat(availableSlots).isEqualTo(expected)
-        verify(scheduleNetworkSource).getSlots(clubId, listOf(scheduleId))
+        verifyBlocking(scheduleNetworkSource) { getSlots(clubId, ids) }
     }
 
     @Test
     fun `getAvailableSlots RETURNS 0 WHEN returned slot is null`() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
-        given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
-            .willReturn(
-                Single.just(
-                    listOf(
-                        Slot(
-                            getRandomLong(),
-                            null
-                        )
-                    )
-                )
-            )
+        val ids = listOf(scheduleId)
+        givenBlocking(scheduleNetworkSource) { getSlots(clubId, ids) }
+            .willReturn { listOf(Slot(getRandomLong(), null)) }
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
             .test().andTriggerActions()
@@ -104,15 +94,16 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
             .values().single()
 
         assertThat(availableSlots).isEqualTo(0)
-        verify(scheduleNetworkSource).getSlots(clubId, listOf(scheduleId))
+        verifyBlocking(scheduleNetworkSource) { getSlots(clubId, ids) }
     }
 
     @Test
     fun `getAvailableSlots RETURNS 0 WHEN returned slots is empty`() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
-        given(scheduleNetworkSource.getSlots(clubId, listOf(scheduleId)))
-            .willReturn(Single.just(emptyList()))
+        val ids = listOf(scheduleId)
+        givenBlocking(scheduleNetworkSource) { getSlots(clubId, ids) }
+            .willReturn { emptyList() }
 
         val availableSlots = instance.getAvailableSlots(clubId, scheduleId)
             .test().andTriggerActions()
@@ -120,7 +111,7 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
             .values().single()
 
         assertThat(availableSlots).isEqualTo(0)
-        verify(scheduleNetworkSource).getSlots(clubId, listOf(scheduleId))
+        verifyBlocking(scheduleNetworkSource) { getSlots(clubId, ids) }
     }
 
     @Test
@@ -131,15 +122,13 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         val phone = getRandomString()
 
         val reserve = Reserve(fio, phone, scheduleId, clubId)
-        given(reserveNetworkSource.reserve(reserve))
-            .willReturn(Completable.complete())
 
         instance.reserve(reserve)
             .test().andTriggerActions()
             .assertNoErrors()
             .assertComplete()
 
-        verify(reserveNetworkSource).reserve(reserve)
+        verifyBlocking(reserveNetworkSource) { reserve(reserve) }
     }
 
     @Test

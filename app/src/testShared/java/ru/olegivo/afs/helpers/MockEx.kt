@@ -18,6 +18,7 @@
 package ru.olegivo.afs.helpers
 
 import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.stub
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Completable
@@ -31,3 +32,14 @@ inline fun <reified TMock : Any, reified TCaptureResult : Any> TMock.capture(blo
 
 fun BDDMockito.BDDMyOngoingStubbing<Completable>.willComplete() =
     willReturn { Completable.complete() }
+
+class BlockingOngoingStubbing<T : Any, R>(val mock: T, val m: suspend T.() -> R)
+
+fun <T : Any, R> givenBlocking(mock: T, m: suspend T.() -> R) =
+    BlockingOngoingStubbing<T, R>(mock, m)
+
+fun <T : Any, R> BlockingOngoingStubbing<T, R>.willReturn(result: () -> R) {
+    mock.stub {
+        this.onBlocking(m).thenReturn(result())
+    }
+}

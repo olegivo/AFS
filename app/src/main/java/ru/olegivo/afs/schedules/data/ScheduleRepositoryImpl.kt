@@ -21,6 +21,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
@@ -31,7 +32,7 @@ import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.Slot
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -39,6 +40,7 @@ class ScheduleRepositoryImpl @Inject constructor(
     private val scheduleNetworkSource: ScheduleNetworkSource,
     private val scheduleDbSource: ScheduleDbSource,
     private val dateProvider: DateProvider,
+    private val coroutineToRxAdapter: CoroutineToRxAdapter,
     @Named("computation") private val computationScheduler: Scheduler
 ) :
     ScheduleRepository {
@@ -58,7 +60,7 @@ class ScheduleRepositoryImpl @Inject constructor(
         }
 
     override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> =
-        scheduleNetworkSource.getSlots(clubId, ids)
+        coroutineToRxAdapter.runToSingle { scheduleNetworkSource.getSlots(clubId, ids) }
 
     override fun getCurrentWeekReservedScheduleIds(): Single<List<Long>> =
         withCurrentWeekInterval { weekStart, nextWeekStart ->
@@ -71,7 +73,7 @@ class ScheduleRepositoryImpl @Inject constructor(
         }
 
     override fun actualizeSchedules(clubId: Int): Single<List<Schedule>> =
-        scheduleNetworkSource.getSchedule(clubId)
+        coroutineToRxAdapter.runToSingle { scheduleNetworkSource.getSchedule(clubId) }
             .flatMap { list ->
                 val schedules = list.toSingle().toDomain()
                 scheduleDbSource.putSchedules(list)

@@ -20,12 +20,14 @@ package ru.olegivo.afs.schedules.data
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
@@ -33,21 +35,26 @@ import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
+import ru.olegivo.afs.helpers.givenBlocking
+import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.schedule.data.ReserveNetworkSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
 import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.createSchedule
-import java.util.*
+import java.util.Date
 
 class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
 
     override fun createInstance() = ScheduleRepositoryImpl(
-        scheduleNetworkSource,
-        scheduleDbSource,
-        dateProvider,
-        schedulerRule.testScheduler
+        scheduleNetworkSource = scheduleNetworkSource,
+        scheduleDbSource = scheduleDbSource,
+        dateProvider = dateProvider,
+        coroutineToRxAdapter = CoroutineToRxAdapter().apply {
+            coroutineContext = testDispatcher
+        },
+        computationScheduler = testScheduler
     )
 
     //<editor-fold desc="mocks">
@@ -126,8 +133,9 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
     fun `actualizeSchedules SYNCS schedule from network to db`() {
         val clubId = getRandomInt()
         val schedules = listOf(createDataSchedule())
-        given(scheduleNetworkSource.getSchedule(clubId))
-            .willReturn(Single.just(schedules))
+
+        givenBlocking(scheduleNetworkSource) { getSchedule(clubId) }
+            .willReturn { schedules }
         given(scheduleDbSource.putSchedules(schedules)).willReturn(Completable.complete())
 
         instance.actualizeSchedules(clubId)
@@ -135,7 +143,7 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
             .assertNoErrors()
             .assertComplete()
 
-        verify(scheduleNetworkSource).getSchedule(clubId)
+        verifyBlocking(scheduleNetworkSource) { getSchedule(clubId) }
         val actual = scheduleDbSource.capture { p: List<DataSchedule> -> putSchedules(p) }
         assertThat(actual).isEqualTo(schedules)
     }
