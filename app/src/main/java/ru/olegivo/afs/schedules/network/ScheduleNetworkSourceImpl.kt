@@ -18,57 +18,43 @@
 package ru.olegivo.afs.schedules.network
 
 import android.net.Uri
-import io.reactivex.Scheduler
-import io.reactivex.Single
 import ru.olegivo.afs.common.network.Api
-import ru.olegivo.afs.extensions.parallelMap
-import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.network.models.Schedules
 import ru.olegivo.afs.schedules.network.models.toData
 import javax.inject.Inject
-import javax.inject.Named
 
 class ScheduleNetworkSourceImpl @Inject constructor(
-    private val api: Api,
-    @Named("io") private val ioScheduler: Scheduler,
-    @Named("computation") private val computationScheduler: Scheduler
+    private val api: Api
 ) : ScheduleNetworkSource {
-    override fun getSchedules(clubId: Int): Single<Schedules> {
-        return { api.getSchedule(clubId) }.toSingle().subscribeOn(ioScheduler)
-    }
 
-    override fun getSchedule(clubId: Int): Single<List<DataSchedule>> {
-        return getSchedules(clubId)
-            .parallelMap(computationScheduler, { it.schedule }, { it.toData(clubId) })
-    }
+    override suspend fun getSchedules(clubId: Int): Schedules =
+        api.getSchedule(clubId)
 
-    override fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>> {
+    override suspend fun getSchedule(clubId: Int): List<DataSchedule> =
+        getSchedules(clubId).schedule.map { it.toData(clubId) } // TODO: parallel map
+
+    override suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot> {
         val idByPosition =
             ids.mapIndexed { index, id -> index.toString() to id.toString() }
                 .associate { it }
-        return { api.getSlots(clubId, idByPosition) }.toSingle()
-            .subscribeOn(ioScheduler)
-            .observeOn(computationScheduler)
-            .map { slots ->
-                slots.map { Slot(it.id, it.slots) }
-            }
+        return api.getSlots(clubId, idByPosition).map { Slot(it.id, it.slots) }
     }
 
-    override fun getNextSchedule(schedules: Schedules): Schedules? =
+    override suspend fun getNextSchedule(schedules: Schedules): Schedules? =
         schedules.next?.let { getSchedules(it) }
 
-    override fun getPrevSchedule(schedules: Schedules): Schedules? =
+    override suspend fun getPrevSchedule(schedules: Schedules): Schedules? =
         schedules.prev?.let { getSchedules(it) }
 
-    private fun getSchedules(url: String): Schedules? {
+    private suspend fun getSchedules(url: String): Schedules? {
         val uri = Uri.parse(url)
         val path = uri.path!!.trimStart('/')
         return api.getSchedule(
-            path,
-            uri.queryParameterNames.associateBy({ it }, { uri.getQueryParameter(it)!! })
+            path = path,
+            options = uri.queryParameterNames.associateBy({ it }, { uri.getQueryParameter(it)!! })
         )
     }
 }

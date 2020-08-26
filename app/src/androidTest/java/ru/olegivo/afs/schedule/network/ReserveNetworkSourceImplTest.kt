@@ -17,68 +17,77 @@
 
 package ru.olegivo.afs.schedule.network
 
-import io.reactivex.schedulers.TestScheduler
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import ru.olegivo.afs.clubs.network.ClubsNetworkSourceImpl
 import ru.olegivo.afs.common.network.AuthorizedApiTest
-import ru.olegivo.afs.common.network.NetworkErrorsMapper
+import ru.olegivo.afs.schedule.data.ReserveNetworkSource
 import ru.olegivo.afs.schedule.domain.models.Reserve
+import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
+import ru.olegivo.afs.schedules.data.models.DataSchedule
+import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
-import java.util.*
+import ru.olegivo.afs.schedules.network.models.DomainClub
 
 class ReserveNetworkSourceImplTest : AuthorizedApiTest() {
-    private val networkErrorsMapper = NetworkErrorsMapper(moshi)
 
     @Test
-    fun reserve_WHEN_the_available_slots_is_0() {
-        val scheduler = TestScheduler()
+    fun reserve_WHEN_the_available_slots_is_0() = runBlockingTest {
 
-        val networkSourceImpl = ClubsNetworkSourceImpl(api, scheduler)
-        val scheduleNetworkSource = ScheduleNetworkSourceImpl(api, scheduler, scheduler)
-        val reserveNetworkSource = ReserveNetworkSourceImpl(api, networkErrorsMapper, scheduler)
+        val scheduleNetworkSource: ScheduleNetworkSource = ScheduleNetworkSourceImpl(api)
+        val reserveNetworkSource: ReserveNetworkSource =
+            ReserveNetworkSourceImpl(api, networkErrorsMapper, testScheduler)
 
-        val now = Date()
-        val testObserver1 = scheduleNetworkSource.getSlots(375, listOf(101514102019))
-            .test()
-
-        scheduler.triggerActions()
-
-        val single = testObserver1
-            .assertNoErrors()
-            .values().single()
-
-        val testObserver = networkSourceImpl.getClubs()
-            .map { it.first() }
-            .flatMapCompletable { club ->
-                scheduleNetworkSource
-                    .getSchedule(club.id)
-                    .flatMapCompletable { schedules ->
-                        val sortedBy = schedules.sortedBy { it.datetime }
-                        val preEntrySchedules = sortedBy
-                            .filter { it.preEntry }
-                        //.filter { it.totalSlots == 0 }
-                        scheduleNetworkSource.getSlots(club.id, preEntrySchedules.map { it.id })
-                            .map { slots ->
-                                slots.first { it.slots ?: 0 == 0 }.id
-                            }
-                            .flatMapCompletable { scheduleId ->
-                                reserveNetworkSource.reserve(
-                                    Reserve(
-                                        "Тестович А.Б.",
-                                        "79817564213",
-                                        scheduleId,
-                                        club.id
-                                    )
-                                )
-                            }
-                    }
-            }
-            .test()
-
-        scheduler.triggerActions()
-
-        testObserver
-            .assertNoErrors()
-            .assertComplete()
+        runBlocking {
+            data class T(val scheduleIdWithZeroSlot: Long, val clubId: Int)
+            getClubs().asSequence()
+                .mapNotNull { club ->
+                    val slots = runBlocking { getSlots(scheduleNetworkSource, club.id) }
+                    val scheduleIdWithZeroSlot = slots.firstOrNull { it.slots ?: 0 == 0 }?.id
+                    scheduleIdWithZeroSlot?.let { T(scheduleIdWithZeroSlot = it, clubId = club.id) }
+                }
+                .firstOrNull()
+                ?.also {
+                    // not every times has the sport activity with zero slot,
+                    // so when it not null, we can check:
+                    reserveNetworkSource.reserve(
+                        Reserve(
+                            fio = "Тестович А.Б.",
+                            phone = "79817564213",
+                            scheduleId = it.scheduleIdWithZeroSlot,
+                            clubId = it.clubId
+                        )
+                    )
+                }
+        }
     }
+
+    private suspend fun getSlots(
+        scheduleNetworkSource: ScheduleNetworkSource,
+        clubId: Int
+    ): List<Slot> {
+        val schedule = getSchedule(scheduleNetworkSource, clubId)
+        return getSlots(schedule, scheduleNetworkSource, clubId)
+    }
+
+    private suspend fun getSlots(
+        schedules: List<DataSchedule>,
+        scheduleNetworkSource: ScheduleNetworkSource,
+        clubId: Int
+    ): List<Slot> {
+        val sortedBy = schedules.sortedBy { it.datetime }
+        val preEntrySchedules = sortedBy
+            .filter { it.preEntry }
+        //.filter { it.totalSlots == 0 }
+        return scheduleNetworkSource.getSlots(clubId, preEntrySchedules.map { it.id })
+    }
+
+    private suspend fun getSchedule(
+        scheduleNetworkSource: ScheduleNetworkSource,
+        clubId: Int
+    ): List<DataSchedule> = scheduleNetworkSource.getSchedule(clubId)
+
+    private suspend fun getClubs(): List<DomainClub> =
+        ClubsNetworkSourceImpl(api).getClubs()
 }

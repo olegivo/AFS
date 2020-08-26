@@ -24,9 +24,9 @@ import ru.olegivo.afs.schedules.network.models.Schedules
 
 interface ScheduleNetworkSource {
 
-    fun getSchedules(clubId: Int): Single<Schedules>
-    fun getSchedule(clubId: Int): Single<List<DataSchedule>>
-    fun getSlots(clubId: Int, ids: List<Long>): Single<List<Slot>>
-    fun getNextSchedule(schedules: Schedules): Schedules?
-    fun getPrevSchedule(schedules: Schedules): Schedules?
+    suspend fun getSchedules(clubId: Int): Schedules
+    suspend fun getSchedule(clubId: Int): List<DataSchedule>
+    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
+    suspend fun getNextSchedule(schedules: Schedules): Schedules?
+    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
 }
