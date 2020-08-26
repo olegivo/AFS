@@ -21,14 +21,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
+import ru.olegivo.afs.BaseTest
 
 abstract class BaseDaoTest<ROOM : RoomDatabase, DAO>(
     private val roomClass: Class<ROOM>,
     private val daoProvider: (ROOM) -> DAO
-) {
+) : BaseTest() {
     @Rule
     @JvmField
     val instantTaskExecutorRule =
@@ -36,9 +35,9 @@ abstract class BaseDaoTest<ROOM : RoomDatabase, DAO>(
 
     protected lateinit var room: ROOM
     protected val dao: DAO by lazy { daoProvider(room) }
+    override fun getAllMocks(): Array<Any> = emptyArray()
 
-    @Before
-    fun setUp() {
+    override fun setUp() {
         room = Room.inMemoryDatabaseBuilder(
             InstrumentationRegistry.getInstrumentation().context,
             roomClass
@@ -47,8 +46,7 @@ abstract class BaseDaoTest<ROOM : RoomDatabase, DAO>(
             .build()
     }
 
-    @After
-    fun tearDown() {
+    override fun tearDown() {
         room.close()
     }
 }
