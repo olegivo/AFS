@@ -17,7 +17,7 @@
 
 package ru.olegivo.afs.schedules.network.models
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Slot(val id: Long, val slots: Int?)

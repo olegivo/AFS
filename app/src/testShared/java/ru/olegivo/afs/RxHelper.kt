@@ -15,18 +15,18 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.data
+package ru.olegivo.afs
 
+import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.schedules.network.models.Schedules
+import io.reactivex.schedulers.TestScheduler
 
-interface ScheduleNetworkSource {
+interface RxHelper {
 
-    suspend fun getSchedules(clubId: Int): Schedules
-    suspend fun getSchedule(clubId: Int): List<DataSchedule>
-    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
-    suspend fun getNextSchedule(schedules: Schedules): Schedules?
-    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
+    val testScheduler: TestScheduler
+    fun <T> Single<T>.assertResult(block: (T) -> Unit): Unit
+    fun <T> Maybe<T>.assertResult(block: (T) -> Unit): Unit
+    fun Completable.assertSuccess(): Unit
+    fun triggerActions()
 }

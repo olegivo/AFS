@@ -18,8 +18,14 @@
 package ru.olegivo.afs.common.di
 
 import com.squareup.moshi.Moshi
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -29,45 +35,83 @@ import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.auth.domain.AuthRepository
 import ru.olegivo.afs.auth.network.AccessTokenInterceptor
 import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.common.network.ApiImpl
 import ru.olegivo.afs.common.network.DateJsonAdapter
-import java.util.*
+import java.util.Date
 import javax.inject.Singleton
 
-@Module
-class NetworkModule {
-    @Provides
+@Module(
+    includes = [
+        NetworkModule.ProvidesKtorModule::class
+    ]
+)
+abstract class NetworkModule {
+    @Binds
     @Singleton
-    fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
+    abstract fun provideApi(impl: ApiImpl): Api
 
-    @Provides
-    fun providesRetrofit(moshi: Moshi, okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.API_URL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(okHttpClient)
-            .build()
-
-    @Provides
-    fun providesOkHttpClient(authRepository: AuthRepository): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor()
-            .apply {
-                level = HttpLoggingInterceptor.Level.BASIC
-                // level = HttpLoggingInterceptor.Level.BODY
+    @Module(includes = [ProvidesModule::class])
+    object ProvidesKtorModule {
+        @Provides
+        fun providesHttpClient(
+            okHttpClient: OkHttpClient,
+            json: Json
+        ): HttpClient =
+            HttpClient(OkHttp) {
+                engine {
+                    preconfigured = okHttpClient
+                }
+                install(JsonFeature) {
+                    serializer = KotlinxSerializer(json)
+                }
             }
 
-        val accessTokenInterceptor = AccessTokenInterceptor(authRepository)
+        @Provides
+        @Singleton
+        fun providesJson(): Json =
+            Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+                encodeDefaults = false
+            }
 
-        return OkHttpClient.Builder()
-            .addInterceptor(accessTokenInterceptor)
-            .addInterceptor(loggingInterceptor)
+    }
+
+    @Module(includes = [ProvidesModule::class])
+    object ProvidesRetrofitModule {
+        @Provides
+        fun providesRetrofit(moshi: Moshi, okHttpClient: OkHttpClient): Retrofit =
+            Retrofit.Builder()
+                .baseUrl(BuildConfig.API_URL)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .client(okHttpClient)
+                .build()
+
+        @Provides
+        @Singleton
+        fun providesMoshi(): Moshi = Moshi.Builder()
+            .add(Date::class.java, DateJsonAdapter().nullSafe())
+//        .add(UUID::class.java, UuidJsonAdapter().nullSafe())
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun providesMoshi(): Moshi = Moshi.Builder()
-        .add(Date::class.java, DateJsonAdapter().nullSafe())
-//        .add(UUID::class.java, UuidJsonAdapter().nullSafe())
-        .build()
+    @Module
+    object ProvidesModule {
+        @Provides
+        fun providesOkHttpClient(authRepository: AuthRepository): OkHttpClient {
+            val loggingInterceptor = HttpLoggingInterceptor()
+                .apply {
+                    level = HttpLoggingInterceptor.Level.BASIC
+//                    level = HttpLoggingInterceptor.Level.BODY
+                }
+
+            val accessTokenInterceptor = AccessTokenInterceptor(authRepository)
+
+            return OkHttpClient.Builder()
+                .addInterceptor(accessTokenInterceptor)
+                .addInterceptor(loggingInterceptor)
+                .build()
+        }
+    }
 }

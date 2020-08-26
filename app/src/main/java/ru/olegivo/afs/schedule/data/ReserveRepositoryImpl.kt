@@ -20,6 +20,7 @@ package ru.olegivo.afs.schedule.data
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedule.domain.models.Reserve
@@ -30,7 +31,8 @@ import javax.inject.Inject
 class ReserveRepositoryImpl @Inject constructor(
     private val reserveNetworkSource: ReserveNetworkSource,
     private val preferencesDataSource: PreferencesDataSource,
-    private val scheduleNetworkSource: ScheduleNetworkSource
+    private val scheduleNetworkSource: ScheduleNetworkSource,
+    private val coroutineToRxAdapter: CoroutineToRxAdapter
 ) : ReserveRepository {
 
     override fun saveReserveContacts(reserveContacts: ReserveContacts): Completable =
@@ -46,12 +48,13 @@ class ReserveRepositoryImpl @Inject constructor(
         }
 
     override fun getAvailableSlots(clubId: Int, scheduleId: Long): Single<Int> =
-        scheduleNetworkSource.getSlots(clubId, listOf(scheduleId))
-            .map {
-                it.singleOrNull()?.slots ?: 0
-            }
+        coroutineToRxAdapter.runToSingle {
+            scheduleNetworkSource.getSlots(clubId, listOf(scheduleId))
+                .singleOrNull()?.slots ?: 0
+        }
 
-    override fun reserve(reserve: Reserve) = reserveNetworkSource.reserve(reserve)
+    override fun reserve(reserve: Reserve) =
+        coroutineToRxAdapter.runToCompletable { reserveNetworkSource.reserve(reserve) }
 
     override fun isAgreementAccepted(): Single<Boolean> =
         preferencesDataSource.getBoolean(IsAgreementAccepted)

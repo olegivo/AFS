@@ -15,18 +15,23 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.data
+package ru.olegivo.afs.common.network
 
-import io.reactivex.Single
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.schedules.network.models.Schedules
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializer
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import org.joda.time.DateTime
+import java.util.Date
 
-interface ScheduleNetworkSource {
+@Serializer(forClass = Date::class)
+object DateSerializer : KSerializer<Date> {
 
-    suspend fun getSchedules(clubId: Int): Schedules
-    suspend fun getSchedule(clubId: Int): List<DataSchedule>
-    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
-    suspend fun getNextSchedule(schedules: Schedules): Schedules?
-    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
+    override fun serialize(output: Encoder, obj: Date) {
+        output.encodeString(obj.time.toString())
+    }
+
+    override fun deserialize(input: Decoder): Date {
+        return DateTime(input.decodeString()).toDate()
+    }
 }

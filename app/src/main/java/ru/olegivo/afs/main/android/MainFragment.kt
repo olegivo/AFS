@@ -39,6 +39,7 @@ import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.SetCurrentClubUseCase
 import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
@@ -48,6 +49,8 @@ import javax.inject.Named
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
+    @Inject
+    lateinit var errorReporter: ErrorReporter
     @Inject
     lateinit var getClubs: GetClubsUseCase
     @Inject
@@ -202,6 +205,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun onError(t: Throwable) {
+        errorReporter.reportError(t, t.message ?: "")
         showMessage("Error \n${t.message}")
     }
 

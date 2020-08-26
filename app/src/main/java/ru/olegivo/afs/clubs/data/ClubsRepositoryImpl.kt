@@ -18,14 +18,17 @@
 package ru.olegivo.afs.clubs.data
 
 import ru.olegivo.afs.clubs.domain.ClubsRepository
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import javax.inject.Inject
 
 class ClubsRepositoryImpl @Inject constructor(
     private val clubsNetworkSource: ClubsNetworkSource,
-    private val preferencesDataSource: PreferencesDataSource
+    private val preferencesDataSource: PreferencesDataSource,
+    private val coroutineToRxAdapter: CoroutineToRxAdapter
 ) : ClubsRepository {
-    override fun getClubs() = clubsNetworkSource.getClubs()
+    override fun getClubs() =
+        coroutineToRxAdapter.runToSingle { clubsNetworkSource.getClubs() }
 
     override fun setCurrentClubId(clubId: Int) =
         preferencesDataSource.putInt(CURRENT_CLUB_ID, clubId)

@@ -15,18 +15,19 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.data
+package ru.olegivo.afs
 
-import io.reactivex.Single
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.schedules.network.models.Schedules
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 
-interface ScheduleNetworkSource {
+class DispatcherHelperImpl :
+    DispatcherHelper {
 
-    suspend fun getSchedules(clubId: Int): Schedules
-    suspend fun getSchedule(clubId: Int): List<DataSchedule>
-    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
-    suspend fun getNextSchedule(schedules: Schedules): Schedules?
-    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
+    val dispatcherRule = CoroutineDispatcherRule()
+
+    override val testDispatcher: TestCoroutineDispatcher
+        get() = dispatcherRule.testDispatcher
+
+    override fun advanceUntilIdle() {
+        testDispatcher.advanceUntilIdle()
+    }
 }

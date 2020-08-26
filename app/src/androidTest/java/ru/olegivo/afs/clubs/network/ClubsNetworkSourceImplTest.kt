@@ -17,26 +17,21 @@
 
 package ru.olegivo.afs.clubs.network
 
-import io.reactivex.schedulers.TestScheduler
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.network.AuthorizedApiTest
 
 class ClubsNetworkSourceImplTest : AuthorizedApiTest() {
+
     @Test
-    fun getClubs() {
-        val scheduler = TestScheduler()
+    fun getClubs() = runBlockingTest {
 
-        val testObserver = ClubsNetworkSourceImpl(api, scheduler)
-            .getClubs()
-            .test()
+        val clubs = runBlocking {
+            ClubsNetworkSourceImpl(api).getClubs()
+        }
 
-        scheduler.triggerActions()
-
-        val clubs = testObserver
-            .assertNoErrors()
-            .values()
-            .single()
         assertThat(clubs).isNotEmpty
     }
 }

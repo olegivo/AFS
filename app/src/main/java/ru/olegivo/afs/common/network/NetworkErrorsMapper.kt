@@ -17,8 +17,8 @@
 
 package ru.olegivo.afs.common.network
 
-import com.squareup.moshi.Moshi
-import io.reactivex.Completable
+import io.ktor.utils.io.core.use
+import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import ru.olegivo.afs.common.domain.ErrorWrapper
 import ru.olegivo.afs.common.domain.HttpCallFailureException
@@ -28,8 +28,9 @@ import ru.olegivo.afs.common.domain.ServerUnreachableException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
-class NetworkErrorsMapper @Inject constructor(private val moshi: Moshi) {
+class NetworkErrorsMapper @Inject constructor(private val json: Json) {
     inline fun <reified E : ErrorWrapper> mapError(error: Throwable): Throwable {
         return when {
             error is SocketTimeoutException -> {
@@ -39,12 +40,12 @@ class NetworkErrorsMapper @Inject constructor(private val moshi: Moshi) {
                 ServerUnreachableException(error)
             }
             error is HttpException && error.code() == 404 -> {
-                mapErrorBody(error, E::class.java)?.let {
+                mapErrorBody(error, E::class)?.let {
                     HttpNotFoundException(it.getError(), error)
                 } ?: IllegalStateException("Mapping http body failed!")
             }
             error is HttpException && error.code() >= 400 -> {
-                mapErrorBody(error, E::class.java)?.let {
+                mapErrorBody(error, E::class)?.let {
                     HttpCallFailureException(it.getError(), error)
                 } ?: IllegalStateException("Mapping http body failed!")
             }
@@ -54,17 +55,24 @@ class NetworkErrorsMapper @Inject constructor(private val moshi: Moshi) {
         }
     }
 
-    fun <T> mapErrorBody(error: HttpException, type: Class<T>) =
+    fun <T : Any> mapErrorBody(error: HttpException, type: KClass<T>) =
         error.response()?.errorBody()
             ?.let { errorBody ->
-                errorBody.use {
-                    moshi.adapter<T>(type)
-                        .fromJson(it.string())
-                }
+                json.serializersModule.getContextual(type)
+                    ?.let { deserializer ->
+                        errorBody.use {
+                            json.decodeFromString(deserializer, it.string())
+                        }
+                    }
             }
 }
 
-inline fun <reified E : ErrorWrapper> Completable.mapCompletableError(networkErrorsMapper: NetworkErrorsMapper): Completable =
-    onErrorResumeNext { error ->
-        Completable.error(networkErrorsMapper.mapError<E>(error))
+suspend inline fun <reified E : ErrorWrapper, T : Any> mapCoroutineError(
+    networkErrorsMapper: NetworkErrorsMapper,
+    crossinline block: suspend () -> T
+) =
+    try {
+        block()
+    } catch (error: Throwable) {
+        throw networkErrorsMapper.mapError<E>(error)
     }

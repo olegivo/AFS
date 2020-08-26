@@ -22,7 +22,7 @@ import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
 import org.joda.time.DateTime
 import java.io.IOException
-import java.util.*
+import java.util.Date
 
 class DateJsonAdapter : JsonAdapter<Date>() {
 

@@ -15,18 +15,27 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.data
+package ru.olegivo.afs.common.di
 
-import io.reactivex.Single
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.schedules.network.models.Schedules
+import dagger.Module
+import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
-interface ScheduleNetworkSource {
+@Module
+class CoroutinesModule {
+    companion object {
+        @Provides
+        @Named("io")
+        fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
-    suspend fun getSchedules(clubId: Int): Schedules
-    suspend fun getSchedule(clubId: Int): List<DataSchedule>
-    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
-    suspend fun getNextSchedule(schedules: Schedules): Schedules?
-    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
+        @Provides
+        @Named("computation")
+        fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
+        @Provides
+        @Named("main")
+        fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    }
 }

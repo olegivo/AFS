@@ -15,13 +15,16 @@
  * AFS.
  */
 
+@file:UseSerializers(DateSerializer::class)
 package ru.olegivo.afs.schedules.network.models
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
+import ru.olegivo.afs.common.network.DateSerializer
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import java.util.*
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Schedule(
     val activity: Activity,
 //    val age: Any?,

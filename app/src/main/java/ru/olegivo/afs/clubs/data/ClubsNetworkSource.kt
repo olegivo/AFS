@@ -17,9 +17,8 @@
 
 package ru.olegivo.afs.clubs.data
 
-import io.reactivex.Single
-import ru.olegivo.afs.clubs.domain.models.Club
+import ru.olegivo.afs.schedules.network.models.DomainClub
 
 interface ClubsNetworkSource {
-    fun getClubs(): Single<List<Club>>
+    suspend fun getClubs(): List<DomainClub>
 }
