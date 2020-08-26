@@ -26,20 +26,15 @@ import javax.inject.Named
 
 @Module
 class RxModule {
-
-    @Module
     companion object {
-        @JvmStatic
         @Provides
         @Named("io")
         fun provideIoScheduler(): Scheduler = Schedulers.io()
 
-        @JvmStatic
         @Provides
         @Named("computation")
         fun provideComputationScheduler(): Scheduler = Schedulers.computation()
 
-        @JvmStatic
         @Provides
         @Named("main")
         fun provideMainScheduler(): Scheduler = AndroidSchedulers.mainThread()
