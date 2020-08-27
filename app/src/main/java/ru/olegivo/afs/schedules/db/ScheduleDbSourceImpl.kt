@@ -18,23 +18,18 @@
 package ru.olegivo.afs.schedules.db
 
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toFlowable
-import ru.olegivo.afs.extensions.parallelMap
 import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.schedules.data.ScheduleDbSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.db.models.DictionaryEntry
-import ru.olegivo.afs.schedules.db.models.DictionaryKind
 import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import ru.olegivo.afs.schedules.db.models.toData
 import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -65,48 +60,10 @@ class ScheduleDbSourceImpl @Inject constructor(
 
     override fun putSchedules(schedules: List<DataSchedule>): Completable =
         schedules.toSingle()
-            .flatMap { list ->
-                getDictionary(list)
-                    .flatMap {
-                        scheduleDao.putDictionary(it)
-                            .andThen(Single.just(list))
-                    }
-            }
             .parallelMapList(computationScheduler) { it.toDb() }
             .observeOn(ioScheduler)
             .flatMapCompletable {
                 scheduleDao.putSchedules(it)
-            }
-
-    private fun getDictionary(list: List<DataSchedule>) =
-        list.toFlowable()
-            .let { flowable ->
-                Flowable.concat(
-                    flowable.distinctParallelMapDictionary(
-                        keySelector = { activityId },
-                        valueSelector = { activity },
-                        dictionaryKind = DictionaryKind.Activity
-                    ),
-                    flowable.distinctParallelMapDictionary(
-                        keySelector = { groupId },
-                        valueSelector = { group },
-                        dictionaryKind = DictionaryKind.Group
-                    )
-                )
-            }.toList()
-
-    private fun Flowable<DataSchedule>.distinctParallelMapDictionary(
-        keySelector: DataSchedule.() -> Int,
-        valueSelector: DataSchedule.() -> String,
-        dictionaryKind: DictionaryKind
-    ) =
-        distinct(keySelector)
-            .parallelMap(computationScheduler) {
-                DictionaryEntry(
-                    dictionaryKind.value,
-                    it.keySelector(),
-                    it.valueSelector()
-                )
             }
 
     override fun getSchedule(id: Long): Single<DataSchedule> =

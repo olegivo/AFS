@@ -28,7 +28,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class DbModule {
+object DbModule {
     @Singleton
     @Provides
     fun providesAfsDatabase(@Named("application") context: Context): AfsDatabase {

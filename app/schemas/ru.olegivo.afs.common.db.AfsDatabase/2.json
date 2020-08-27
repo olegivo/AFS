@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "4a701dd2bb6abc0b19aff0763e2a4575",
+    "identityHash": "f7fd80a21e1640df7a74b083c9984c15",
     "entities": [
       {
         "tableName": "schedules",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `clubId` INTEGER NOT NULL, `group` TEXT NOT NULL, `activity` TEXT NOT NULL, `datetime` INTEGER NOT NULL, `length` INTEGER NOT NULL, `preEntry` INTEGER NOT NULL, `totalSlots` INTEGER, `recordFrom` INTEGER, `recordTo` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `clubId` INTEGER NOT NULL, `groupId` INTEGER NOT NULL, `group` TEXT NOT NULL, `activityId` INTEGER NOT NULL, `activity` TEXT NOT NULL, `datetime` INTEGER NOT NULL, `length` INTEGER NOT NULL, `preEntry` INTEGER NOT NULL, `totalSlots` INTEGER, `recordFrom` INTEGER, `recordTo` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,9 +21,21 @@
             "notNull": true
           },
           {
+            "fieldPath": "groupId",
+            "columnName": "groupId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "group",
             "columnName": "group",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activityId",
+            "columnName": "activityId",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -116,7 +128,7 @@
       },
       {
         "tableName": "favoriteFilters",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group` TEXT NOT NULL, `activity` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `timeOfDay` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `groupId` INTEGER NOT NULL, `activityId` INTEGER NOT NULL, `dayOfWeek` INTEGER NOT NULL, `timeOfDay` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -125,15 +137,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "group",
-            "columnName": "group",
-            "affinity": "TEXT",
+            "fieldPath": "groupId",
+            "columnName": "groupId",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "activity",
-            "columnName": "activity",
-            "affinity": "TEXT",
+            "fieldPath": "activityId",
+            "columnName": "activityId",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -194,7 +206,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a701dd2bb6abc0b19aff0763e2a4575')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f7fd80a21e1640df7a74b083c9984c15')"
     ]
   }
 }
