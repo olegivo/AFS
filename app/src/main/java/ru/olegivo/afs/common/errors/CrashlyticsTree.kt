@@ -18,7 +18,8 @@
 package ru.olegivo.afs.common.errors
 
 import android.util.Log
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.setCustomKeys
 import timber.log.Timber
 
 class CrashlyticsTree : Timber.Tree() {
@@ -26,14 +27,18 @@ class CrashlyticsTree : Timber.Tree() {
         if (priority == Log.VERBOSE || priority == Log.DEBUG) {
             return
         }
-        Crashlytics.setInt(CRASHLYTICS_KEY_PRIORITY, priority)
-        Crashlytics.setString(CRASHLYTICS_KEY_TAG, tag)
-        Crashlytics.setString(CRASHLYTICS_KEY_MESSAGE, message)
+        val crashlytics = FirebaseCrashlytics.getInstance()
+        crashlytics.setCustomKeys {
+            key(CRASHLYTICS_KEY_PRIORITY, priority)
+            tag?.let { key(CRASHLYTICS_KEY_TAG, it) }
+            key(CRASHLYTICS_KEY_MESSAGE, message)
+        }
         if (t != null) {
-            Crashlytics.logException(t)
+            crashlytics.recordException(t)
         } else {
             val formattedMessage: String = LogMessageHelper.format(priority, tag, message)
-            Crashlytics.logException(StackTraceRecorder(formattedMessage))
+//            crashlytics.log(formattedMessage)
+            crashlytics.recordException(StackTraceRecorder(formattedMessage))
         }
     }
 
