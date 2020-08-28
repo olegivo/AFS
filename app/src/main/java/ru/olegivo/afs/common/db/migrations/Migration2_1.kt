@@ -22,71 +22,82 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import ru.olegivo.afs.common.db.doInTransaction
 import ru.olegivo.afs.common.db.exists
 
+private val createTableDictionary =
+    """CREATE TABLE IF NOT EXISTS `dictionary` (
+    |`dictionaryId` INTEGER NOT NULL, 
+    |`key` INTEGER NOT NULL, 
+    |`value` TEXT NOT NULL, 
+    |PRIMARY KEY(`dictionaryId`, `key`)
+    |)"""
+        .trimMargin()
+
+private val insertGroups =
+    """INSERT INTO dictionary
+    |SELECT 1, groupId, [group]
+    |FROM schedules
+    |GROUP BY groupId, [group]
+    |;""".trimMargin()
+
+private val insertActivities =
+    """INSERT INTO dictionary
+    |SELECT 2, activityId, activity
+    |FROM schedules
+    |GROUP BY activityId, activity
+    |;""".trimMargin()
+
+private val createTableSchedules_1 =
+    """CREATE TABLE IF NOT EXISTS `schedules_1` (
+    |`id` INTEGER NOT NULL, 
+    |`clubId` INTEGER NOT NULL, 
+    |`groupId` INTEGER NOT NULL, 
+    |`activityId` INTEGER NOT NULL, 
+    |`datetime` INTEGER NOT NULL, 
+    |`length` INTEGER NOT NULL, 
+    |`preEntry` INTEGER NOT NULL, 
+    |`totalSlots` INTEGER, 
+    |`recordFrom` INTEGER, 
+    |`recordTo` INTEGER, 
+    |PRIMARY KEY(`id`)
+    |)"""
+        .trimMargin()
+
+private val fillSchedules_1 =
+    """INSERT INTO `schedules_1`
+    |SELECT
+    |id, 
+    |clubId, 
+    |groupId, 
+    |activityId, 
+    |datetime, 
+    |length, 
+    |preEntry, 
+    |totalSlots, 
+    |recordFrom, 
+    |recordTo 
+    |FROM schedules"""
+        .trimMargin()
+
+private val createIndex_schedules_datetime_clubId =
+    """CREATE INDEX IF NOT EXISTS `index_schedules_datetime_clubId`
+        |ON `schedules` (`datetime`, `clubId`)""".trimMargin()
+
 val migration2_1 = object : Migration(2, 1) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
         database.doInTransaction {
             val hasSchedules = exists("SELECT * FROM schedules")
-            execSQL(
-                """CREATE TABLE IF NOT EXISTS `dictionary` (
-                    |`dictionaryId` INTEGER NOT NULL, 
-                    |`key` INTEGER NOT NULL, 
-                    |`value` TEXT NOT NULL, 
-                    |PRIMARY KEY(`dictionaryId`, `key`)
-                    |)"""
-                    .trimMargin()
-            )
+            execSQL(createTableDictionary)
             if (hasSchedules) {
-                execSQL(
-                    """INSERT INTO dictionary
-                        |SELECT 1, groupId, [group]
-                        |FROM schedules
-                        |GROUP BY groupId, [group]
-                        |;""".trimMargin()
-                )
-                execSQL(
-                    """INSERT INTO dictionary
-                        |SELECT 2, activityId, activity
-                        |FROM schedules
-                        |GROUP BY activityId, activity
-                        |;""".trimMargin()
-                )
+                execSQL(insertGroups)
+                execSQL(insertActivities)
             }
-            execSQL(
-                """CREATE TABLE IF NOT EXISTS `schedules_1` (
-                    |`id` INTEGER NOT NULL, 
-                    |`clubId` INTEGER NOT NULL, 
-                    |`groupId` INTEGER NOT NULL, 
-                    |`activityId` INTEGER NOT NULL, 
-                    |`datetime` INTEGER NOT NULL, 
-                    |`length` INTEGER NOT NULL, 
-                    |`preEntry` INTEGER NOT NULL, 
-                    |`totalSlots` INTEGER, 
-                    |`recordFrom` INTEGER, 
-                    |`recordTo` INTEGER, 
-                    |PRIMARY KEY(`id`)
-                    |)"""
-                    .trimMargin()
-            )
-            execSQL(
-                """INSERT INTO `schedules_1`
-                    |SELECT
-                    |id, 
-                    |clubId, 
-                    |groupId, 
-                    |activityId, 
-                    |datetime, 
-                    |length, 
-                    |preEntry, 
-                    |totalSlots, 
-                    |recordFrom, 
-                    |recordTo 
-                    |FROM schedules"""
-                    .trimMargin()
-            )
+            execSQL(createTableSchedules_1)
+            execSQL(fillSchedules_1)
             execSQL("DROP table schedules")
             execSQL("ALTER TABLE schedules_1 RENAME TO schedules")
-            execSQL("CREATE INDEX IF NOT EXISTS `index_schedules_datetime_clubId` ON `schedules` (`datetime`, `clubId`)")
+            execSQL(
+                createIndex_schedules_datetime_clubId
+            )
         }
     }
 }

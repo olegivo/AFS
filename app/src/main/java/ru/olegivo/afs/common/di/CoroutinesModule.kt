@@ -24,18 +24,16 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module
-class CoroutinesModule {
-    companion object {
-        @Provides
-        @Named("io")
-        fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+object CoroutinesModule {
+    @Provides
+    @Named("io")
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
-        @Provides
-        @Named("computation")
-        fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    @Provides
+    @Named("computation")
+    fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
-        @Provides
-        @Named("main")
-        fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-    }
+    @Provides
+    @Named("main")
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

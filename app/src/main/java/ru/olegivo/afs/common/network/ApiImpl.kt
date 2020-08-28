@@ -25,7 +25,6 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.parametersOf
 import io.ktor.http.takeFrom
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.schedule.network.models.ReserveRequest
@@ -58,7 +57,9 @@ class ApiImpl @Inject constructor(
         httpClient.get {
             url {
                 takeFrom("${apiUrl}$path")
-                parametersOf(*options.map { it.key to listOf(it.value) }.toTypedArray())
+                options.forEach {
+                    parameter(it.key, listOf(it.value))
+                }
             }
         }
 

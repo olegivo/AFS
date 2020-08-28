@@ -29,7 +29,11 @@ import java.util.Date
 
 @Dao
 abstract class ScheduleDao {
-    @Query("select $scheduleFields from schedules where datetime >= :from and datetime < :until and clubId = :clubId")
+    @Query(
+        """select $scheduleFields 
+                from schedules 
+                where datetime >= :from and datetime < :until and clubId = :clubId"""
+    )
     abstract fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<ScheduleEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -43,6 +47,7 @@ abstract class ScheduleDao {
 
     companion object {
         private const val scheduleFields =
-            "id, clubId, groupId, [group], activityId, activity, datetime, length, preEntry, totalSlots, recordFrom, recordTo" // TODO: later: room, trainer,
+            """id, clubId, groupId, [group], activityId, activity, datetime, length, 
+preEntry, totalSlots, recordFrom, recordTo""" // TODO: later: room, trainer,
     }
 }
