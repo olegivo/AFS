@@ -106,7 +106,7 @@ workflows:
         - gradle_task: lintKotlin
     - install-missing-android-tools@2:
         inputs:
-        - gradlew_path: $PROJECT_LOCATION/gradlew
+        - gradlew_path: $GRADLEW_PATH
     - file-downloader@1:
         inputs:
         - destination: $PROJECT_LOCATION/$MODULE/google-services.json
@@ -135,6 +135,15 @@ workflows:
         - project_location: $PROJECT_LOCATION
         - module: $MODULE
         - variant: $VARIANT
+    - gradle-runner@1:
+        inputs:
+        - gradle_task: testDebugUnitTestCoverageVerification
+    - deploy-to-bitrise-io@1:
+        inputs:
+        - zip_name: Coverage
+        - deploy_path: >-
+            $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
+        - is_compress: 'true'
     - deploy-to-bitrise-io@1: {}
     - cache-push@2: {}
 app:
