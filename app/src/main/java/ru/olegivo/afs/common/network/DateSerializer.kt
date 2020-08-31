@@ -21,17 +21,15 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializer
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import org.joda.time.DateTime
+import ru.olegivo.afs.common.DateConverter
 import java.util.Date
 
 @Serializer(forClass = Date::class)
 object DateSerializer : KSerializer<Date> {
 
-    override fun serialize(output: Encoder, obj: Date) {
-        output.encodeString(obj.time.toString())
-    }
+    override fun serialize(output: Encoder, obj: Date) =
+        output.encodeString(DateConverter.toString(obj))
 
-    override fun deserialize(input: Decoder): Date {
-        return DateTime(input.decodeString()).toDate()
-    }
+    override fun deserialize(input: Decoder): Date =
+        DateConverter.fromString(input.decodeString())
 }

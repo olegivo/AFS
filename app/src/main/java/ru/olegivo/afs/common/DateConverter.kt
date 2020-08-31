@@ -15,15 +15,24 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.domain
+package ru.olegivo.afs.common
 
+import org.threeten.bp.DateTimeUtils
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.Date
-import javax.inject.Inject
 
-class DateProviderImpl @Inject constructor(
-    private val dateTimeUtils: DateTimeUtils
-) : DateProvider {
+object DateConverter {
+    fun fromString(input: String): Date {
+        val offsetDateTime = OffsetDateTime.parse(input, dateTimeFormatter)
+        val instant = offsetDateTime.toInstant()
+        return DateTimeUtils.toDate(instant)
+    }
 
-    override fun getDate() = Date()
-    override fun getCurrentWeekDayNumber() = dateTimeUtils.getWeekDayNumber(getDate())
+    fun toString(input: Date): String {
+        val instant = DateTimeUtils.toInstant(input)
+        return dateTimeFormatter.format(instant)
+    }
+
+    private val dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 }

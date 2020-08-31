@@ -111,6 +111,7 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
         expectedWeekDaysReady: Boolean = true
     ) {
         verify(dateProvider).getDate()
+        verify(dateProvider).getCurrentWeekDayNumber()
         verify(getCurrentClubUseCase).invoke()
         if (expectedWeekDaysReady) {
             verify(view).onReady(testData.initialPosition)
@@ -127,11 +128,13 @@ class WeekSchedulePresenterTest : BaseTestOf<WeekScheduleContract.Presenter>() {
     ) {
         given(getCurrentClubUseCase.invoke()).willReturn { currentClubIdMaybeProvider() }
         given(dateProvider.getDate()).willReturn { testData.now }
+        given(dateProvider.getCurrentWeekDayNumber()).willReturn(testData.initialPosition + 1)
     }
 
     private class TestData(val clubId: Int = getRandomInt()) {
         val firstDayOfWeek = firstDayOfWeek()
-        val initialPosition: Int = Random.nextInt(0, 7)
-        val now = firstDayOfWeek.add(days = initialPosition, hours = Random.nextInt(0, 23))
+        val initialPosition: Int = Random.nextInt(0, 6)
+        val now =
+            firstDayOfWeek.add(days = initialPosition, hours = Random.nextInt(0, 23))
     }
 }
