@@ -18,12 +18,7 @@
 package ru.olegivo.afs.common.domain
 
 import java.util.Date
-import javax.inject.Inject
 
-class DateProviderImpl @Inject constructor(
-    private val dateTimeUtils: DateTimeUtils
-) : DateProvider {
-
-    override fun getDate() = Date()
-    override fun getCurrentWeekDayNumber() = dateTimeUtils.getWeekDayNumber(getDate())
+interface DateTimeUtils {
+    fun getWeekDayNumber(date: Date): Int
 }

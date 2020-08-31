@@ -21,4 +21,5 @@ import java.util.*
 
 interface DateProvider {
     fun getDate(): Date
+    fun getCurrentWeekDayNumber(): Int
 }

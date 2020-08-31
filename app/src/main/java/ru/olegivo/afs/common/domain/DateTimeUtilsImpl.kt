@@ -17,13 +17,19 @@
 
 package ru.olegivo.afs.common.domain
 
+import org.threeten.bp.DateTimeUtils
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.temporal.WeekFields
 import java.util.Date
 import javax.inject.Inject
 
-class DateProviderImpl @Inject constructor(
-    private val dateTimeUtils: DateTimeUtils
-) : DateProvider {
+class DateTimeUtilsImpl @Inject constructor() :
+    ru.olegivo.afs.common.domain.DateTimeUtils {
 
-    override fun getDate() = Date()
-    override fun getCurrentWeekDayNumber() = dateTimeUtils.getWeekDayNumber(getDate())
+    override fun getWeekDayNumber(date: Date): Int {
+        val instant = DateTimeUtils.toInstant(date)
+        val offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.systemDefault())
+        return offsetDateTime[WeekFields.ISO.dayOfWeek()]
+    }
 }

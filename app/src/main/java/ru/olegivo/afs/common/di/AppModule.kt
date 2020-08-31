@@ -27,6 +27,8 @@ import ru.olegivo.afs.clubs.di.ClubsModule
 import ru.olegivo.afs.common.android.ErrorReporterImpl
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.DateProviderImpl
+import ru.olegivo.afs.common.domain.DateTimeUtils
+import ru.olegivo.afs.common.domain.DateTimeUtilsImpl
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.favorites.android.FavoriteRecordReminderReceiver
 import ru.olegivo.afs.favorites.android.SportsActivityReserveReceiver
@@ -62,6 +64,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindDateProvider(app: DateProviderImpl): DateProvider
+
+    @Binds
+    abstract fun bindDateTimeUtils(app: DateTimeUtilsImpl): DateTimeUtils
 
     @Binds
     abstract fun bindErrorReporter(app: ErrorReporterImpl): ErrorReporter

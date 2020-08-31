@@ -25,13 +25,11 @@ import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.firstDayOfWeek
-import ru.olegivo.afs.common.get
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.models.Day
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -82,25 +80,17 @@ class WeekSchedulePresenter @Inject constructor(
 
     private fun start() {
         val now = dateProvider.getDate()
-        currentDay = now.get(Calendar.DAY_OF_WEEK) - 2
+        currentDay = dateProvider.getCurrentWeekDayNumber() - 1
         days = firstDayOfWeek(now)
             .let { firstDayOfWeek ->
-                (0..6).map {
-                    val weekDay = firstDayOfWeek.add(days = it)
-                    Day(
-                        caption = when (it) {
-                            0 -> "ПН"
-                            1 -> "ВТ"
-                            2 -> "СР"
-                            3 -> "ЧТ"
-                            4 -> "ПТ"
-                            5 -> "СБ"
-                            6 -> "ВС"
-                            else -> TODO("unknown day of week")
-                        },
-                        date = weekDay
-                    )
-                }
+                arrayOf("ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС")
+                    .mapIndexed { index, dayName ->
+                        val weekDay = firstDayOfWeek.add(days = index)
+                        Day(
+                            caption = dayName,
+                            date = weekDay
+                        )
+                    }
             }
 
         getCurrentClub()
