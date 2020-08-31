@@ -15,21 +15,24 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.network
+package ru.olegivo.afs.common
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import ru.olegivo.afs.common.DateConverter
+import org.threeten.bp.DateTimeUtils
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.Date
 
-@Serializer(forClass = Date::class)
-object DateSerializer : KSerializer<Date> {
+object DateConverter {
+    fun fromString(input: String): Date {
+        val offsetDateTime = OffsetDateTime.parse(input, dateTimeFormatter)
+        val instant = offsetDateTime.toInstant()
+        return DateTimeUtils.toDate(instant)
+    }
 
-    override fun serialize(output: Encoder, obj: Date) =
-        output.encodeString(DateConverter.toString(obj))
+    fun toString(input: Date): String {
+        val instant = DateTimeUtils.toInstant(input)
+        return dateTimeFormatter.format(instant)
+    }
 
-    override fun deserialize(input: Decoder): Date =
-        DateConverter.fromString(input.decodeString())
+    private val dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 }

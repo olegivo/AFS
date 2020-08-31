@@ -25,9 +25,9 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
-import net.danlew.android.joda.JodaTimeAndroid
 import ru.olegivo.afs.common.di.DaggerAppComponent
 import ru.olegivo.afs.common.errors.CrashlyticsTree
 import ru.olegivo.afs.errors.UncaughtException
@@ -57,7 +57,7 @@ class AfsApplication : Application(), HasAndroidInjector {
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true/*!BuildConfig.DEBUG*/)
 
-        JodaTimeAndroid.init(this)
+        AndroidThreeTen.init(this)
         DaggerAppComponent.factory().create(this).let {
             it.inject(this)
 
