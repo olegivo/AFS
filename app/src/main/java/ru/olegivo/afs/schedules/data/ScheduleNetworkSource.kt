@@ -17,7 +17,6 @@
 
 package ru.olegivo.afs.schedules.data
 
-import io.reactivex.Single
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.network.models.Schedules

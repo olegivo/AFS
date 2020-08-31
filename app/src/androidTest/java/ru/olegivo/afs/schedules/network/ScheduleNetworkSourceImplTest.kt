@@ -60,7 +60,6 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
         var current: Schedules? = schedulesCurrentWeek
         var count = 0
         while (current != null && count < 3) {
-            assertThat(current.schedule).isNotEmpty
             Log.d("getSchedule_flatten", "next = ${current.next}")
             current = runBlocking { scheduleNetworkSource.getNextSchedule(current!!) }
             count++
@@ -76,7 +75,6 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
         var current: Schedules? = schedulesCurrentWeek
         var count = 0
         while (current != null && count < 3) {
-            assertThat(current.schedule).isNotEmpty
             Log.d("getSchedule_flatten", "prev = ${current.prev}")
             current = runBlocking { scheduleNetworkSource.getPrevSchedule(current!!) }
             count++

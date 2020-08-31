@@ -30,7 +30,6 @@ fun SupportSQLiteDatabase.doInTransaction(action: SupportSQLiteDatabase.() -> Un
     }
 }
 
-
 fun SupportSQLiteDatabase.getCount(query: String) =
     query(query).use {
         if (it.moveToFirst()) {

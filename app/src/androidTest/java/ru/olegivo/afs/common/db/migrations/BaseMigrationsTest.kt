@@ -84,4 +84,3 @@ abstract class BaseMigrationsTest(
         private const val TEST_DB_NAME = "test-db"
     }
 }
-

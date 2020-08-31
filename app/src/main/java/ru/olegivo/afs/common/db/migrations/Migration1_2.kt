@@ -28,10 +28,10 @@ val migration1_2 = object : Migration(1, 2) {
         database.doInTransaction {
             val hasInvalidRecords = exists(
                 """SELECT * FROM schedules s
-                        LEFT JOIN dictionary as groups on s.groupId = groups.key and groups.dictionaryId = 1 
-                        LEFT JOIN dictionary as activities on s.activityId = activities.key and activities.dictionaryId = 2
-                        WHERE groups.key IS NULL OR activities.key IS NULL 
-                        """
+LEFT JOIN dictionary as groups on s.groupId = groups.key and groups.dictionaryId = 1 
+LEFT JOIN dictionary as activities on s.activityId = activities.key and activities.dictionaryId = 2
+WHERE groups.key IS NULL OR activities.key IS NULL 
+"""
             )
             if (hasInvalidRecords) throw IllegalStateException("cannot denormalize groups and activities")
 
