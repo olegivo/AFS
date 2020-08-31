@@ -29,4 +29,3 @@ fun <T : Any> Completable.andThenDeferSingle(singleProvider: () -> Single<T>): S
 
 fun <T : Any> Completable.andThenDeferMaybe(maybeProvider: () -> Maybe<T>): Maybe<T> =
     andThen(Maybe.defer(maybeProvider))
-

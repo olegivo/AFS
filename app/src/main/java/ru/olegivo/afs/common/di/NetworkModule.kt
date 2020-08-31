@@ -74,7 +74,6 @@ abstract class NetworkModule {
                 isLenient = true
                 encodeDefaults = false
             }
-
     }
 
     @Module(includes = [ProvidesModule::class])

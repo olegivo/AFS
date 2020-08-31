@@ -101,6 +101,9 @@ workflows:
     - cache-pull@2: {}
     - script@1:
         title: Do anything with Script step
+    - gradle-runner@1:
+        inputs:
+        - gradle_task: lintKotlin
     - install-missing-android-tools@2:
         inputs:
         - gradlew_path: $PROJECT_LOCATION/gradlew
@@ -108,11 +111,25 @@ workflows:
         inputs:
         - destination: $PROJECT_LOCATION/$MODULE/google-services.json
         - source: $BITRISEIO_GOOGLE_SERVICES_JSON_URL
-    - android-lint@0:
+#    - android-lint@0:
+#        inputs:
+#        - project_location: $PROJECT_LOCATION
+#        - module: $MODULE
+#        - variant: $VARIANT
+    - gradle-runner@1:
         inputs:
-        - project_location: $PROJECT_LOCATION
-        - module: $MODULE
-        - variant: $VARIANT
+        - gradle_task: staticAnalysisFull
+    - deploy-to-bitrise-io@1:
+        inputs:
+          - zip_name: ktlint
+          - deploy_path: >-
+              $PROJECT_LOCATION/$MODULE/build/reports/ktlint
+          - is_compress: 'true'
+    - deploy-to-bitrise-io@1:
+        inputs:
+          - zip_name: detekt
+          - deploy_path: >-
+              $PROJECT_LOCATION/$MODULE/build/reports/detekt/detekt.html
     - android-unit-test@1:
         inputs:
         - project_location: $PROJECT_LOCATION
@@ -131,3 +148,6 @@ app:
   - opts:
       is_expand: false
     VARIANT: debug
+  - opts:
+      is_expand: false
+    GRADLEW_PATH: ./gradlew

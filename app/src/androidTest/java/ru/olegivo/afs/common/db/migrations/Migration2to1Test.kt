@@ -96,5 +96,4 @@ class Migration2to1Test :
             }
         }
     }
-
 }
