@@ -20,12 +20,11 @@ package ru.olegivo.afs.common.network
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.QueryMap
 import ru.olegivo.afs.schedule.network.models.ReserveRequest
-import ru.olegivo.afs.schedules.network.models.Club
-import ru.olegivo.afs.schedules.network.models.Schedules
-import ru.olegivo.afs.schedules.network.models.Slot
+import ru.olegivo.afs.shared.network.models.Schedules
+import ru.olegivo.afs.shared.network.models.Slot
+import ru.olegivo.afs.shared.network.NewApi
 
-interface Api {
-    suspend fun getClubs(): List<Club>
+interface Api : NewApi {
 
     suspend fun getSchedule(clubId: Int): Schedules
 

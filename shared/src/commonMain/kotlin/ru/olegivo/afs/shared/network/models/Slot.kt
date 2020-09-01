@@ -15,25 +15,9 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.network.models
+package ru.olegivo.afs.shared.network.models
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Change(
-    val activity: ActivityX?,
-    val age: Int?,
-    val datetime: String?,
-    val group: Group?,
-    val id: String,
-    val length: Int?,
-//    val level: Any?,
-    val level: Int?,
-    val note: String?,
-    val publishDatetime: String,
-    val room: Room?,
-    val silent: Boolean,
-    val title: String,
-    val trainers: List<Trainer>?,
-    val type: String
-)
+data class Slot(val id: Long, val slots: Int?)

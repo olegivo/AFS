@@ -15,20 +15,11 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.network.models
+package ru.olegivo.afs.shared.network
 
-import kotlinx.serialization.Serializable
+import ru.olegivo.afs.shared.network.models.Club
 
-@Serializable
-data class Activity(
-    val color: String? = null,
-    val description: String? = null,
-    val id: Int,
-    val length: Int? = null,
-    val title: String,
-    val type: String,
-    val typeId: Int,
-    val url: String? = null,
-    val youtubePreviewUrl: String? = null,
-    val youtubeUrl: String?
-)
+interface NewApi {
+    val apiUrl: String
+    suspend fun getClubs(): List<Club>
+}

@@ -15,13 +15,18 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.network.models
+package ru.olegivo.afs.shared.network.models
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Group(
+data class ActivityX(
+    val color: String?,
     val id: Int,
-    val sortOrder: Int,
-    val title: String
+    val title: String,
+    val type: String,
+    val typeId: Int,
+    val url: String?,
+    val youtubePreviewUrl: String?,
+    val youtubeUrl: String?
 )

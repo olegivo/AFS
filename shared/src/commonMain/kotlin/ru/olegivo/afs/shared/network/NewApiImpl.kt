@@ -15,19 +15,22 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.network.models
+package ru.olegivo.afs.shared.network
 
-import kotlinx.serialization.Serializable
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.http.takeFrom
+import ru.olegivo.afs.shared.network.models.Club
 
-@Serializable
-data class Schedules(
-    // TODO: later val club: Club,
-    val dateSince: String,
-    val dateTo: String,
-    val entryEnabled: Boolean,
-    val isNew: Boolean,
-    val needSlots: Boolean,
-    val next: String?,
-    val prev: String?,
-    val schedule: List<Schedule>
-)
+class NewApiImpl constructor(
+    private val httpClient: HttpClient,
+    override val apiUrl: String
+) : NewApi {
+
+    override suspend fun getClubs(): List<Club> =
+        httpClient.get {
+            url {
+                takeFrom("${apiUrl}api/v6/franchise/clubs.json")
+            }
+        }
+}

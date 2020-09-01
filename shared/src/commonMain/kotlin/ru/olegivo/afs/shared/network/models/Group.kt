@@ -15,18 +15,13 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.network.models
+package ru.olegivo.afs.shared.network.models
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Club(
-//    val barCodeType: String,
-//    val externalBaseId: Any?,
-//    val externalId: Any?,
-//    val externalBaseId: Int?,
-//    val externalId: Int?,
+data class Group(
     val id: Int,
-//    val timezone: String,
+    val sortOrder: Int,
     val title: String
 )

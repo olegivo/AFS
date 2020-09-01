@@ -15,25 +15,22 @@
  * AFS.
  */
 
-@file:UseSerializers(DateSerializer::class)
-package ru.olegivo.afs.schedules.network.models
+//@file:UseSerializers(LocalDateTimeSerializer::class)
+
+package ru.olegivo.afs.shared.network.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
-import ru.olegivo.afs.common.network.DateSerializer
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import java.util.*
 
 @Serializable
 data class Schedule(
     val activity: Activity,
 //    val age: Any?,
     val age: Int?,
-    val beginDate: Date?,
+    val beginDate: String?,
     // TODO: later: val change: Change?,
     // TODO: later: val commercial: Boolean,
-    val datetime: Date,
-    val endDate: Date?,
+    val datetime: String,
+    val endDate: String?,
     // TODO: later: val firstFree: Boolean,
     val group: Group,
     val id: Long,
@@ -50,21 +47,3 @@ data class Schedule(
     // TODO: later: val trainers: List<Trainer>,
     // TODO: later: val type: String
 )
-
-fun Schedule.toData(clubId: Int) =
-    DataSchedule(
-        id = id,
-        clubId = clubId,
-        groupId = group.id,
-        group = group.title,
-        activityId = activity.id,
-        activity = activity.title,
-        // TODO: later: room = room?.title,
-        // TODO: later: trainer = trainers.firstOrNull()?.title,
-        datetime = datetime,
-        length = length,
-        preEntry = preEntry,
-        totalSlots = totalSlots,
-        recordFrom = beginDate,
-        recordTo = endDate
-    )

@@ -15,12 +15,18 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.network.models
+package ru.olegivo.afs.shared.network.models
 
-import ru.olegivo.afs.shared.network.models.Club
+import kotlinx.serialization.Serializable
 
-typealias DomainClub = ru.olegivo.afs.clubs.domain.models.Club
-
-fun Club.toDomain(): DomainClub {
-    return with(this) { DomainClub(id = id, title = title) }
-}
+@Serializable
+data class Club(
+//    val barCodeType: String,
+//    val externalBaseId: Any?,
+//    val externalId: Any?,
+//    val externalBaseId: Int?,
+//    val externalId: Int?,
+    val id: Int,
+//    val timezone: String,
+    val title: String
+)
