@@ -50,8 +50,6 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 apply plugin: 'com.google.firebase.firebase-perf'
 
-apply plugin: "org.jmailen.kotlinter"
-
 apply plugin: 'kotlinx-serialization'
 
 ext.appId = "ru.olegivo.afs"
@@ -299,14 +297,7 @@ dependencies {
     androidTestImplementation "org.assertj:assertj-core:${assertJVersion}"
 }
 
-kotlinter {
-    disabledRules = [
-            "import-ordering",
-            "comment-spacing",
-            "no-wildcard-imports",
-            "curly-spacing"
-    ]
-}
+apply from: "${rootProject.projectDir}/kotlinter.gradle"
 
 apply from: "jacoco.gradle"
 

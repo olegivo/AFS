@@ -110,3 +110,7 @@ val packForXcode by tasks.creating(Sync::class) {
     into(targetDir)
 }
 tasks.getByName("build").dependsOn(packForXcode)
+
+apply {
+    from("${rootProject.projectDir}/kotlinter.gradle")
+}
