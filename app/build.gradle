@@ -33,6 +33,7 @@ plugins {
 }
 repositories {
     mavenCentral()
+    maven { url = "https://kotlin.bintray.com/kotlinx/" }
 }
 
 apply plugin: 'com.android.application'

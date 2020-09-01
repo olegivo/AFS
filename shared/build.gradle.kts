@@ -29,6 +29,7 @@ repositories {
     google()
     jcenter()
     mavenCentral()
+    maven(url = "https://kotlin.bintray.com/kotlinx/")
     maven {
         url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
     }
@@ -56,6 +57,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
                 //Coroutines
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.0")
             }
         }
         val commonTest by getting {
