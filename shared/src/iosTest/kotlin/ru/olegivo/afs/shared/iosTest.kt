@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * AFS.
  */
-include ':shared'
 
-include ':app'
+package ru.olegivo.afs.shared
+
+import kotlin.test.Test
+import kotlin.test.assertTrue
+
+class GreetingTest {
+
+    @Test
+    fun testExample() {
+        assertTrue(Greeting().greeting().contains("iOS"), "Check iOS is mentioned")
+    }
+}

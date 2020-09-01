@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * AFS.
  */
-include ':shared'
 
-include ':app'
+package ru.olegivo.afs.shared
+
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class GreetingTest {
+
+    @Test
+    fun testExample() {
+        assertTrue("Check Android is mentioned", Greeting().greeting().contains("Android"))
+    }
+}

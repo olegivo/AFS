@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * AFS.
  */
-include ':shared'
 
-include ':app'
+package ru.olegivo.afs.shared
+
+import platform.UIKit.UIDevice
+
+actual class Platform actual constructor() {
+    actual val platform: String =
+        UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
+}

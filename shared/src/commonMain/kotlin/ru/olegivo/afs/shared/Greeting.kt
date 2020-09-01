@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * AFS.
  */
-include ':shared'
 
-include ':app'
+package ru.olegivo.afs.shared
+
+class Greeting {
+    fun greeting(): String {
+        return "Hello, ${Platform().platform}!"
+    }
+}

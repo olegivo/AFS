@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * AFS.
  */
-include ':shared'
 
-include ':app'
+package ru.olegivo.afs.shared
+
+actual class Platform actual constructor() {
+    actual val platform: String = "Android ${android.os.Build.VERSION.SDK_INT}"
+}
