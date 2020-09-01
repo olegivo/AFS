@@ -20,14 +20,13 @@ package ru.olegivo.afs.schedules.network.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Schedules(
-    // TODO: later val club: Club,
-    val dateSince: String,
-    val dateTo: String,
-    val entryEnabled: Boolean,
-    val isNew: Boolean,
-    val needSlots: Boolean,
-    val next: String?,
-    val prev: String?,
-    val schedule: List<Schedule>
+data class Club(
+//    val barCodeType: String,
+//    val externalBaseId: Any?,
+//    val externalId: Any?,
+//    val externalBaseId: Int?,
+//    val externalId: Int?,
+    val id: Int,
+//    val timezone: String,
+    val title: String
 )
