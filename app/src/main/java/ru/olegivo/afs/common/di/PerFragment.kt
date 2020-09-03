@@ -15,23 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.di
+package ru.olegivo.afs.common.di
 
-import dagger.Binds
-import dagger.Module
-import ru.olegivo.afs.common.di.PerFragment
-import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
-import ru.olegivo.afs.schedules.presentation.WeekSchedulePresenter
+import javax.inject.Scope
 
-@Module(
-    /*includes = [
-        SchedulesModule.ProvidesModule::class,
-        ClubsModule::class,
-        FavoritesModule::class
-    ]*/
-)
-abstract class WeekScheduleModule {
-    @Binds
-    @PerFragment
-    abstract fun bindWeekSchedulePresenter(impl: WeekSchedulePresenter): WeekScheduleContract.Presenter
-}
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class PerFragment
