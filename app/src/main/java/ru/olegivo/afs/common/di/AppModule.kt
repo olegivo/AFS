@@ -39,7 +39,6 @@ import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedule.di.ScheduleDetailsModule
 import ru.olegivo.afs.schedules.android.DayScheduleFragment
 import ru.olegivo.afs.schedules.android.WeekScheduleFragment
-import ru.olegivo.afs.schedules.di.ScheduleScope
 import ru.olegivo.afs.schedules.di.SchedulesModule
 import ru.olegivo.afs.schedules.di.WeekScheduleModule
 import javax.inject.Named
@@ -81,7 +80,7 @@ abstract class FragmentBuilderModule {
     @ContributesAndroidInjector(modules = [ClubsModule::class, ScheduleDetailsModule::class])
     abstract fun bindMainFragment(): MainFragment
 
-    @ScheduleScope
+    @PerFragment
     @ContributesAndroidInjector(modules = [WeekScheduleModule::class])
     abstract fun bindWeekScheduleFragment(): WeekScheduleFragment
 

@@ -37,7 +37,6 @@ import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
 import ru.olegivo.afs.schedules.presentation.DayScheduleContract
 import ru.olegivo.afs.schedules.presentation.DaySchedulePresenter
-import javax.inject.Scope
 
 @Module(
     includes = [
@@ -77,7 +76,3 @@ abstract class SchedulesModule {
         fun provideScheduleDao(afsDatabase: AfsDatabase) = afsDatabase.schedules
     }
 }
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ScheduleScope
