@@ -19,8 +19,26 @@ package ru.olegivo.afs.common.android.worker
 
 import android.content.Context
 import androidx.work.ListenableWorker
+import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import kotlin.reflect.KClass
 
-interface ChildWorkerFactory {
-    fun create(appContext: Context, params: WorkerParameters): ListenableWorker
+abstract class ChildWorkerFactory<T : ListenableWorker>(kClass: KClass<T>) :
+    WorkerFactory() {
+
+    private val workerClassName = kClass.java.name
+
+    override fun createWorker(
+        appContext: Context,
+        workerClassName: String,
+        workerParameters: WorkerParameters
+    ): ListenableWorker? {
+        return if (workerClassName == this.workerClassName) {
+            create(appContext, workerParameters)
+        } else {
+            null
+        }
+    }
+
+    abstract fun create(appContext: Context, params: WorkerParameters): T
 }

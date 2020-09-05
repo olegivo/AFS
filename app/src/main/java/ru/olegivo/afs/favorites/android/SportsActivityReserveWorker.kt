@@ -113,7 +113,7 @@ class SportsActivityReserveWorker constructor(
         private val getSportsActivity: Provider<GetSportsActivityUseCase>,
         private val reserveUseCase: Provider<ReserveUseCase>,
         private val scheduleReminderNotifier: Provider<ScheduleReminderNotifier>
-    ) : ChildWorkerFactory {
+    ) : ChildWorkerFactory<SportsActivityReserveWorker>(SportsActivityReserveWorker::class) {
         override fun create(appContext: Context, params: WorkerParameters) =
             SportsActivityReserveWorker(
                 appContext,

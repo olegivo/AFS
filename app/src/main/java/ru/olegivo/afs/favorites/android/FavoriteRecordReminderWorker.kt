@@ -79,7 +79,7 @@ class FavoriteRecordReminderWorker constructor(
         private val restoreAllActiveRecordReminders: Provider<RestoreAllActiveRecordRemindersUseCase>,
         private val showRecordReminder: Provider<ShowRecordReminderUseCase>,
         private val errorReporter: Provider<ErrorReporter>
-    ) : ChildWorkerFactory {
+    ) : ChildWorkerFactory<FavoriteRecordReminderWorker>(FavoriteRecordReminderWorker::class) {
         override fun create(appContext: Context, params: WorkerParameters) =
             FavoriteRecordReminderWorker(
                 appContext,

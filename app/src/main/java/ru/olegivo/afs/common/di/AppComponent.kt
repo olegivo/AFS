@@ -22,7 +22,6 @@ import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import ru.olegivo.afs.AfsApplication
-import ru.olegivo.afs.common.android.worker.AppWorkerFactory
 import ru.olegivo.afs.common.android.worker.di.WorkerBindingModule
 import javax.inject.Singleton
 
@@ -37,8 +36,6 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent : AndroidInjector<AfsApplication> {
-
-    fun workerFactory(): AppWorkerFactory
 
     @Component.Factory
     interface Factory {

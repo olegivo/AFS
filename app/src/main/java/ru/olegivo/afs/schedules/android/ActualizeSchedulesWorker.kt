@@ -48,7 +48,8 @@ class ActualizeSchedulesWorker constructor(
     class Factory @Inject constructor(
         private val getCurrentClub: Provider<GetCurrentClubUseCase>,
         private val actualizeSchedule: Provider<ActualizeScheduleUseCase>
-    ) : ChildWorkerFactory {
+    ) : ChildWorkerFactory<ActualizeSchedulesWorker>(ActualizeSchedulesWorker::class) {
+
         override fun create(appContext: Context, params: WorkerParameters) =
             ActualizeSchedulesWorker(
                 appContext,
