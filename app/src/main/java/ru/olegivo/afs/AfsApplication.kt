@@ -20,6 +20,7 @@ package ru.olegivo.afs
 import android.app.Application
 import androidx.work.Configuration
 import androidx.work.Constraints
+import androidx.work.DelegatingWorkerFactory
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
@@ -37,12 +38,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AfsApplication : Application(), HasAndroidInjector {
+class AfsApplication : Application(), HasAndroidInjector, Configuration.Provider {
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var workManagerProvider: Provider<WorkManager>
+
+    @Inject
+    lateinit var delegatingWorkerFactory: DelegatingWorkerFactory
 
     override fun onCreate() {
         super.onCreate()
@@ -55,19 +59,11 @@ class AfsApplication : Application(), HasAndroidInjector {
 
         UncaughtException.setup()
 
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true/*!BuildConfig.DEBUG*/)
+        FirebaseCrashlytics.getInstance()
+            .setCrashlyticsCollectionEnabled(true/*!BuildConfig.DEBUG*/)
 
         AndroidThreeTen.init(this)
-        DaggerAppComponent.factory().create(this).let {
-            it.inject(this)
-
-            WorkManager.initialize(
-                this,
-                Configuration.Builder()
-                    .setWorkerFactory(it.workerFactory())
-                    .build()
-            )
-        }
+        DaggerAppComponent.factory().create(this).inject(this)
 
         planActualizeSchedulesWork()
     }
@@ -78,7 +74,10 @@ class AfsApplication : Application(), HasAndroidInjector {
         workManagerProvider.get().enqueueUniquePeriodicWork(
             ActualizeSchedulesWorker.TAG,
             ExistingPeriodicWorkPolicy.REPLACE,
-            PeriodicWorkRequestBuilder<ActualizeSchedulesWorker>(1, TimeUnit.HOURS) // TODO: periodic settings
+            PeriodicWorkRequestBuilder<ActualizeSchedulesWorker>(
+                1,
+                TimeUnit.HOURS
+            ) // TODO: periodic settings
                 .setConstraints(
                     Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.NOT_ROAMING)
@@ -88,4 +87,10 @@ class AfsApplication : Application(), HasAndroidInjector {
                 .build()
         )
     }
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setMinimumLoggingLevel(android.util.Log.DEBUG)
+            .setWorkerFactory(delegatingWorkerFactory)
+            .build()
 }
