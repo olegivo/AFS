@@ -34,7 +34,6 @@ import ru.olegivo.afs.favorites.android.FavoriteRecordReminderReceiver
 import ru.olegivo.afs.favorites.android.SportsActivityReserveReceiver
 import ru.olegivo.afs.main.android.MainActivity
 import ru.olegivo.afs.main.android.MainFragment
-import ru.olegivo.afs.preferences.di.PreferencesModule
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedule.di.ScheduleDetailsModule
 import ru.olegivo.afs.schedules.android.DayScheduleFragment
@@ -49,10 +48,7 @@ import javax.inject.Named
         CoroutinesModule::class,
         RxModule::class,
         NavigationModule::class,
-        NetworkModule::class,
-        DbModule::class,
-        AuthModule::class,
-        PreferencesModule::class
+        AuthModule::class
     ]
 )
 abstract class AppModule {
