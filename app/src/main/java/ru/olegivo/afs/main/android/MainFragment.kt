@@ -47,30 +47,19 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
 
-class MainFragment : Fragment(R.layout.fragment_main) {
-
-    @Inject
-    lateinit var errorReporter: ErrorReporter
-    @Inject
-    lateinit var getClubs: GetClubsUseCase
-    @Inject
-    lateinit var getCurrentClub: GetCurrentClubUseCase
-    @Inject
-    lateinit var setCurrentClub: SetCurrentClubUseCase
-    @Inject
-    lateinit var reserveRepository: ReserveRepository
-    @Inject
-    lateinit var navigator: Navigator
-    @Inject
-    lateinit var afsDatabase: AfsDatabase
+class MainFragment @Inject constructor(
+    private val errorReporter: ErrorReporter,
+    private val reserveRepository: ReserveRepository,
+    private val getClubs: GetClubsUseCase,
+    private val getCurrentClub: GetCurrentClubUseCase,
+    private val setCurrentClub: SetCurrentClubUseCase,
+    private val navigator: Navigator,
+    private val afsDatabase: AfsDatabase,
+    @Named("main") private val mainScheduler: Scheduler,
+    @Named("io") private val ioScheduler: Scheduler
+) : Fragment(R.layout.fragment_main) {
 
     private var isStubReserve: Boolean? = null
-
-    @field:[Inject Named("main")]
-    lateinit var mainScheduler: Scheduler
-
-    @field:[Inject Named("io")]
-    lateinit var ioScheduler: Scheduler
 
     private val onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _, isChecked ->
         reserveRepository.setStubReserve(isChecked)

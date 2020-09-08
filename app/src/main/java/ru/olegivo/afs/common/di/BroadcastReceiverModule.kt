@@ -15,11 +15,19 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.common.di
 
-import ru.terrakok.cicerone.android.support.FragmentParams
-import ru.terrakok.cicerone.android.support.SupportAppScreen
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
+import ru.olegivo.afs.favorites.android.FavoriteRecordReminderReceiver
+import ru.olegivo.afs.favorites.android.SportsActivityReserveReceiver
 
-object MainScreen : SupportAppScreen() {
-    override fun getFragmentParams() = FragmentParams(MainFragment::class.java)
+@Module
+abstract class BroadcastReceiverModule {
+
+    @ContributesAndroidInjector
+    abstract fun contributesFavoriteRecordReminderReceiver(): FavoriteRecordReminderReceiver
+
+    @ContributesAndroidInjector
+    abstract fun contributesSportsActivityReserveReceiver(): SportsActivityReserveReceiver
 }

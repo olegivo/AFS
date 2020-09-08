@@ -15,11 +15,15 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.common.di
 
-import ru.terrakok.cicerone.android.support.FragmentParams
-import ru.terrakok.cicerone.android.support.SupportAppScreen
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
+import ru.olegivo.afs.main.android.MainActivity
 
-object MainScreen : SupportAppScreen() {
-    override fun getFragmentParams() = FragmentParams(MainFragment::class.java)
+@Module
+abstract class ActivityBuilderModule {
+
+    @ContributesAndroidInjector(modules = [FragmentContributorModule::class])
+    abstract fun bindMainActivity(): MainActivity
 }

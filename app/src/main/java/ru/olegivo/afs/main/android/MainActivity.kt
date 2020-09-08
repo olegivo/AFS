@@ -26,6 +26,7 @@ import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import ru.olegivo.afs.R
+import ru.olegivo.afs.common.di.ScopedFragmentFactory
 import ru.olegivo.afs.favorites.android.getExtraFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.android.putFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
@@ -49,6 +50,9 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
     lateinit var appNavigator: ru.olegivo.afs.common.presentation.Navigator
 
+    @Inject
+    lateinit var scopedFragmentFactory: ScopedFragmentFactory
+
     private val navigator: Navigator =
         object : SupportAppNavigator(this, supportFragmentManager, R.id.container) {
         }
@@ -57,6 +61,7 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
+        supportFragmentManager.fragmentFactory = scopedFragmentFactory
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         router.newRootScreen(MainScreen)

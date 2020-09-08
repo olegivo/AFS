@@ -40,17 +40,15 @@ import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
-class ScheduleDetailsFragment :
+class ScheduleDetailsFragment @Inject constructor(
+    private val presenter: ScheduleDetailsContract.Presenter,
+    private val navigator: Navigator
+) :
     Fragment(R.layout.fragment_schedule_details),
     ScheduleDetailsContract.View {
-    @Inject
-    lateinit var presenter: ScheduleDetailsContract.Presenter
-
-    @Inject
-    lateinit var navigator: Navigator
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -182,11 +180,7 @@ class ScheduleDetailsFragment :
 
     @SuppressLint("ConstantLocale")
     companion object {
-        fun createInstance(id: Long, clubId: Int): ScheduleDetailsFragment {
-            return ScheduleDetailsFragment().apply {
-                arguments = Args(id, clubId).toBundle()
-            }
-        }
+        fun getArguments(id: Long, clubId: Int) = Args(id, clubId).toBundle()
 
         private const val FORMAT = "HH:mm"
 

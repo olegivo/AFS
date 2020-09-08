@@ -25,26 +25,18 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.Scheduler
 import kotlinx.android.synthetic.main.fragment_day_schedule.schedule_recycler_view
 import kotlinx.android.synthetic.main.fragment_day_schedule.swipeRefresh
 import ru.olegivo.afs.R
-import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.DayScheduleContract
 import ru.olegivo.afs.schedules.presentation.models.Day
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
-import javax.inject.Named
 
-class DayScheduleFragment : Fragment(R.layout.fragment_day_schedule), DayScheduleContract.View {
-    @Inject
-    lateinit var getCurrentClub: GetCurrentClubUseCase
-    @Inject
-    lateinit var presenter: DayScheduleContract.Presenter
-
-    @field:[Inject Named("main")]
-    lateinit var mainScheduler: Scheduler
+class DayScheduleFragment @Inject constructor(
+    private val presenter: DayScheduleContract.Presenter
+) : Fragment(R.layout.fragment_day_schedule), DayScheduleContract.View {
 
     override var clubId: Int = 0
 
@@ -110,12 +102,9 @@ class DayScheduleFragment : Fragment(R.layout.fragment_day_schedule), DaySchedul
     }
 
     companion object {
-        fun create(clubId: Int, day: Day) =
-            DayScheduleFragment().apply {
-                arguments = bundleOf(
-                    "ARG_CLUB_ID" to clubId,
-                    "ARG_DATE" to day.date.time
-                )
-            }
+        fun getArguments(clubId: Int, day: Day): Bundle = bundleOf(
+            "ARG_CLUB_ID" to clubId,
+            "ARG_DATE" to day.date.time
+        )
     }
 }

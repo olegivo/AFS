@@ -21,17 +21,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
+import javax.inject.Provider
 
 class ViewPagerAdapter(
     activity: FragmentActivity,
-    private val presenter: WeekScheduleContract.Presenter
+    private val presenter: WeekScheduleContract.Presenter,
+    private val dayScheduleFragmentProvider: Provider<DayScheduleFragment>
 ) : FragmentStateAdapter(activity) {
     override fun getItemCount(): Int = 7
 
-    override fun createFragment(position: Int): Fragment {
-        return DayScheduleFragment.create(
-            clubId = presenter.getClubId(),
-            day = presenter.getDay(position)
-        )
-    }
+    override fun createFragment(position: Int): Fragment =
+        dayScheduleFragmentProvider.get().apply {
+            arguments = DayScheduleFragment.getArguments(
+                clubId = presenter.getClubId(),
+                day = presenter.getDay(position)
+            )
+        }
 }
