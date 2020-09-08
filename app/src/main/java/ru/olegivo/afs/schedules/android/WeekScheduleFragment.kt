@@ -25,24 +25,17 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.Scheduler
 import kotlinx.android.synthetic.main.fragment_week_schedule.tabs
 import kotlinx.android.synthetic.main.fragment_week_schedule.view_pager
 import ru.olegivo.afs.R
-import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
 import javax.inject.Inject
-import javax.inject.Named
+import javax.inject.Provider
 
-class WeekScheduleFragment : Fragment(R.layout.fragment_week_schedule), WeekScheduleContract.View {
-    @Inject
-    lateinit var getCurrentClub: GetCurrentClubUseCase
-
-    @Inject
-    lateinit var presenter: WeekScheduleContract.Presenter
-
-    @field:[Inject Named("main")]
-    lateinit var mainScheduler: Scheduler
+class WeekScheduleFragment @Inject constructor(
+    private val presenter: WeekScheduleContract.Presenter,
+    private val dayScheduleFragmentProvider: Provider<DayScheduleFragment>
+) : Fragment(R.layout.fragment_week_schedule), WeekScheduleContract.View {
 
     private lateinit var pagerAdapter: ViewPagerAdapter
     private lateinit var tabLayoutMediator: TabLayoutMediator
@@ -61,7 +54,7 @@ class WeekScheduleFragment : Fragment(R.layout.fragment_week_schedule), WeekSche
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pagerAdapter = ViewPagerAdapter(requireActivity(), presenter)
+        pagerAdapter = ViewPagerAdapter(requireActivity(), presenter, dayScheduleFragmentProvider)
         view_pager.adapter = pagerAdapter
         tabLayoutMediator = TabLayoutMediator(tabs, view_pager) { tab, position ->
             tab.text = presenter.getDay(position).caption

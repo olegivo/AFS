@@ -19,10 +19,12 @@ package ru.olegivo.afs.common.di
 
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import ru.olegivo.afs.AfsApplication
 import ru.olegivo.afs.common.android.worker.di.WorkerBindingModule
+import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import javax.inject.Singleton
 
 @Singleton
@@ -30,16 +32,21 @@ import javax.inject.Singleton
     modules = [
         AndroidSupportInjectionModule::class,
         AppModule::class,
-        ExternalModule::class,
+        TestExternalModule::class,
         ActivityBuilderModule::class,
         BroadcastReceiverModule::class,
         WorkerBindingModule::class
     ]
 )
-interface AppComponent : AndroidInjector<AfsApplication> {
+interface TestAppComponent : AppComponent {
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance app: AfsApplication): AppComponent
+        fun create(
+            @BindsInstance app: AfsApplication,
+            @BindsInstance api: Api,
+            @BindsInstance preferencesDataSource: PreferencesDataSource,
+            @BindsInstance afsDatabase: AfsDatabase
+        ): TestAppComponent
     }
 }

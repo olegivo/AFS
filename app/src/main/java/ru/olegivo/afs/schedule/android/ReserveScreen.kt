@@ -18,14 +18,18 @@
 package ru.olegivo.afs.schedule.android
 
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
+import ru.terrakok.cicerone.android.support.FragmentParams
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 data class ReserveScreen(
     val reserveDestination: ReserveDestination
 ) : SupportAppScreen() {
-    override fun getFragment() =
-        ScheduleDetailsFragment.createInstance(
-            reserveDestination.id,
-            reserveDestination.clubId
+    override fun getFragmentParams() =
+        FragmentParams(
+            ScheduleDetailsFragment::class.java,
+            ScheduleDetailsFragment.getArguments(
+                id = reserveDestination.id,
+                clubId = reserveDestination.clubId
+            )
         )
 }
