@@ -273,6 +273,9 @@ dependencies {
     kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
+
+    androidTestImplementation 'com.squareup.rx.idler:rx2-idler:0.11.0'
+
     androidTestImplementation "org.mockito:mockito-android:${mockitoVersion}"
 
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${coroutinesVersion}"
