@@ -187,6 +187,7 @@ dependencies {
     def retrofitVersion = "2.9.0"
     def roomVersion = "2.2.5"
     def workVersion = "2.4.0"
+    def androidXFragmentVersion = "1.2.5"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -197,7 +198,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+    implementation "androidx.fragment:fragment-ktx:$androidXFragmentVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "androidx.room:room-rxjava2:$roomVersion"
@@ -263,6 +264,10 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
 
+    debugImplementation("androidx.fragment:fragment-testing:$androidXFragmentVersion") {
+        exclude group:'androidx.test', module:'monitor'
+    }
+
     androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
@@ -271,6 +276,8 @@ dependencies {
 
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerVersion"
+
+    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.1.0'
 
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
 
