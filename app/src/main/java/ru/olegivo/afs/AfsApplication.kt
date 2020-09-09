@@ -39,6 +39,8 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class AfsApplication : Application(), HasAndroidInjector, Configuration.Provider {
+    internal var testMode = false
+
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
@@ -63,9 +65,11 @@ class AfsApplication : Application(), HasAndroidInjector, Configuration.Provider
             .setCrashlyticsCollectionEnabled(true/*!BuildConfig.DEBUG*/)
 
         AndroidThreeTen.init(this)
-        DaggerAppComponent.factory().create(this).inject(this)
 
-        planActualizeSchedulesWork()
+        if (!testMode) {
+            DaggerAppComponent.factory().create(this).inject(this)
+            planActualizeSchedulesWork()
+        }
     }
 
     override fun androidInjector() = androidInjector

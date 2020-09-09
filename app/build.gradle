@@ -59,12 +59,12 @@ android {
         targetSdkVersion 29
         versionCode 7
         versionName "0.2.5"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "ru.olegivo.afs.CustomAndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
-                        "room.incremental": "true",
+                        "room.incremental"   : "true",
                         "room.schemaLocation": "$projectDir/schemas".toString()
                 ]
             }
@@ -187,6 +187,7 @@ dependencies {
     def retrofitVersion = "2.9.0"
     def roomVersion = "2.2.5"
     def workVersion = "2.4.0"
+    def androidXFragmentVersion = "1.2.5"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -197,7 +198,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+    implementation "androidx.fragment:fragment-ktx:$androidXFragmentVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "androidx.room:room-rxjava2:$roomVersion"
@@ -263,6 +264,10 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
 
+    debugImplementation("androidx.fragment:fragment-testing:$androidXFragmentVersion") {
+        exclude group:'androidx.test', module:'monitor'
+    }
+
     androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
@@ -272,7 +277,12 @@ dependencies {
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerVersion"
 
+    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.1.0'
+
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
+
+    androidTestImplementation 'com.squareup.rx.idler:rx2-idler:0.11.0'
+
     androidTestImplementation "org.mockito:mockito-android:${mockitoVersion}"
 
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${coroutinesVersion}"
