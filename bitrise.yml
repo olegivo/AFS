@@ -129,6 +129,9 @@ workflows:
       - gradle-runner@1:
           inputs:
             - gradle_task: testDebugUnitTestCoverageVerification
+      - gradle-runner@1:
+          inputs:
+            - gradle_task: compileDebugAndroidTestSources
       - deploy-to-bitrise-io@1:
           inputs:
             - zip_name: Coverage
