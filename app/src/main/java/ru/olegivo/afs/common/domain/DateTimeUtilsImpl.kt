@@ -17,18 +17,17 @@
 
 package ru.olegivo.afs.common.domain
 
-import org.threeten.bp.DateTimeUtils
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.temporal.WeekFields
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.temporal.WeekFields
 import java.util.Date
 import javax.inject.Inject
 
 class DateTimeUtilsImpl @Inject constructor() :
-    ru.olegivo.afs.common.domain.DateTimeUtils {
+    DateTimeUtils {
 
     override fun getWeekDayNumber(date: Date): Int {
-        val instant = DateTimeUtils.toInstant(date)
+        val instant = date.toInstant()
         val offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.systemDefault())
         return offsetDateTime[WeekFields.ISO.dayOfWeek()]
     }

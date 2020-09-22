@@ -17,12 +17,11 @@
 
 package ru.olegivo.afs.schedules.network.models
 
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.shared.network.models.Club
 import ru.olegivo.afs.shared.network.models.Schedule
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 import java.util.Date
 
 typealias DomainClub = ru.olegivo.afs.clubs.domain.models.Club
@@ -49,5 +48,8 @@ fun Schedule.toData(clubId: Int) =
         recordTo = endDate?.toDate()
     )
 
-private fun String.toDate(): Date =
-    Date(toLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds)
+fun String.toDate(): Date {
+    val offsetDateTime = OffsetDateTime.parse(this, ISO_OFFSET_DATE_TIME)
+    val instant = offsetDateTime.toInstant()
+    return Date(instant.toEpochMilli())
+}
