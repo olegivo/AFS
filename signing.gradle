@@ -1,0 +1,73 @@
+configure(project) {
+
+    def userProfile = System.getenv('$HOME')
+    def userProfileGradle = userProfile + "/.gradle"
+    def userProfileGradleSigning = userProfileGradle + "/signing"
+    def userProfileGradleSigningApp = userProfileGradleSigning + "/" + appId
+    def gradlePropertiesFile = userProfileGradleSigningApp + "/gradle.properties"
+
+    //example: $HOME/.gradle/signing/ru.olegivo.afs.debug/gradle.properties
+    if (new File(gradlePropertiesFile).exists()) {
+
+        android {
+            Properties props = new Properties()
+            props.load(new FileInputStream(file(gradlePropertiesFile)))
+
+            def signingDebug = getSigningConfig(props, "debug", userProfileGradleSigningApp)
+            def signingRelease = getSigningConfig(props, "release", userProfileGradleSigningApp)
+
+            if (signingDebug != null) {
+                signingConfigs {
+                    debug {
+                        storeFile file(signingDebug.storeFile)
+                        storePassword signingDebug.storePassword
+                        keyAlias signingDebug.keyAlias
+                        keyPassword signingDebug.keyPassword
+                    }
+                }
+                buildTypes {
+                    debug {
+                        signingConfig signingConfigs.debug
+                    }
+                }
+            }
+
+            if (signingRelease != null) {
+                signingConfigs {
+                    release {
+                        storeFile file(signingRelease.storeFile)
+                        storePassword signingRelease.storePassword
+                        keyAlias signingRelease.keyAlias
+                        keyPassword signingRelease.keyPassword
+                    }
+                }
+                buildTypes {
+                    release {
+                        signingConfig signingConfigs.release
+                    }
+                }
+            }
+        }
+    }
+}
+
+class SigningConfig {
+    String storeFile, storePassword, keyAlias, keyPassword
+}
+
+private static def getSigningConfig(Properties props, String buildType, String signingPath) {
+    def signingFile = props["${buildType}_keystore_file"]
+    if (signingFile == null) return null
+
+    def keystoreFile = signingPath + "/" + signingFile
+    def keystorePassword = props["${buildType}keystore_storePassword"]
+    def signingAlias = props["${buildType}keystore_keyAlias"]
+    def signingPassword = props["${buildType}keystore_signingPassword"]
+
+    return new SigningConfig().tap {
+        storeFile = keystoreFile
+        storePassword = keystorePassword
+        keyAlias = signingAlias
+        keyPassword = signingPassword
+    }
+}

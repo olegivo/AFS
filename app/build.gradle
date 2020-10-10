@@ -305,6 +305,8 @@ kotlinter {
 
 apply from: "jacoco.gradle"
 
+apply from: "$rootDir/signing.gradle"
+
 task staticAnalysis(
         dependsOn: [
                 'lintKotlin',
