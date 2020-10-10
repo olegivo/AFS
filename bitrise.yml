@@ -109,6 +109,14 @@ workflows:
           inputs:
             - destination: $PROJECT_LOCATION/$MODULE/src/debug/google-services.json
             - source: $BITRISEIO_GOOGLE_SERVICES_JSON_DEBUG_URL
+      - file-downloader@1:
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/signing.properties
+            - source: $BITRISEIO_SIGNING_PROPERTIES_URL
+      - file-downloader@1:
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/AFS.debug.jks
+            - source: $BITRISEIO_SIGNING_KEYSTORE_DEBUG_URL
       - gradle-runner@1:
           inputs:
             - gradle_task: staticAnalysisFull

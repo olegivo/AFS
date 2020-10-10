@@ -3,18 +3,23 @@ configure(project) {
     def userProfile = System.getenv('$HOME')
     def userProfileGradle = userProfile + "/.gradle"
     def userProfileGradleSigning = userProfileGradle + "/signing"
-    def userProfileGradleSigningApp = userProfileGradleSigning + "/" + appId
-    def gradlePropertiesFile = userProfileGradleSigningApp + "/gradle.properties"
+    String signingPath = userProfileGradleSigning + "/" + appId
+    if (!(new File(signingPath).exists())) {
+        signingPath = project.projectDir
+    }
+
+    def gradlePropertiesFile = signingPath + "/signing.properties"
 
     //example: $HOME/.gradle/signing/ru.olegivo.afs.debug/gradle.properties
+
     if (new File(gradlePropertiesFile).exists()) {
 
         android {
             Properties props = new Properties()
             props.load(new FileInputStream(file(gradlePropertiesFile)))
 
-            def signingDebug = getSigningConfig(props, "debug", userProfileGradleSigningApp)
-            def signingRelease = getSigningConfig(props, "release", userProfileGradleSigningApp)
+            def signingDebug = getSigningConfig(props, "debug", signingPath)
+            def signingRelease = getSigningConfig(props, "release", signingPath)
 
             if (signingDebug != null) {
                 signingConfigs {
