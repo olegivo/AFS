@@ -107,8 +107,8 @@ workflows:
             - gradlew_path: $GRADLEW_PATH
       - file-downloader@1:
           inputs:
-            - destination: $PROJECT_LOCATION/$MODULE/google-services.json
-            - source: $BITRISEIO_GOOGLE_SERVICES_JSON_URL
+            - destination: $PROJECT_LOCATION/$MODULE/src/debug/google-services.json
+            - source: $BITRISEIO_GOOGLE_SERVICES_JSON_DEBUG_URL
       - gradle-runner@1:
           inputs:
             - gradle_task: staticAnalysisFull

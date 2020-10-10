@@ -51,10 +51,12 @@ apply plugin: "org.jmailen.kotlinter"
 
 apply plugin: 'kotlinx-serialization'
 
+ext.appId = "ru.olegivo.afs"
+
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "ru.olegivo.afs"
+        applicationId appId
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 7
@@ -84,6 +86,7 @@ android {
             switch (name) {
                 case "debug":
                     debugMode = 'true'
+                    applicationIdSuffix ".debug"
                     break
                 case "release":
                     debugMode = 'false'
