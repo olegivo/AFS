@@ -66,37 +66,45 @@ workflows:
       - cache-pull@2: {}
       - install-missing-android-tools@2:
           inputs:
-            - gradlew_path: $PROJECT_LOCATION/gradlew
+            - gradlew_path: $GRADLEW_PATH
+      - file-downloader@1:
+          title: Download google-services.json
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/src/debug/google-services.json
+            - source: $BITRISEIO_GOOGLE_SERVICES_JSON_DEBUG_URL
+      - file-downloader@1:
+          title: Download signing.properties
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/signing.properties
+            - source: $BITRISEIO_SIGNING_PROPERTIES_URL
+      - file-downloader@1:
+          title: Download debug keystore
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/AFS.debug.jks
+            - source: $BITRISEIO_SIGNING_KEYSTORE_DEBUG_URL
+      - file-downloader@1:
+          title: Download firebase-app-distribution.json
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/firebase-app-distribution.json
+            - source: $BITRISEIO_FIREBASE_APP_DISTRIBUTION_JSON_URL
       - change-android-versioncode-and-versionname@1:
           inputs:
             - build_gradle_path: $PROJECT_LOCATION/$MODULE/build.gradle
-      - android-lint@0:
+      - gradle-runner@1:
+          title: Assemble debug
           inputs:
-            - project_location: $PROJECT_LOCATION
-            - module: $MODULE
-            - variant: $VARIANT
-      - android-unit-test@1:
+            - gradle_task: assembleDebug
+      - gradle-runner@1:
+          title: Firebase App Distribution
           inputs:
-            - project_location: $PROJECT_LOCATION
-            - module: $MODULE
-            - variant: $VARIANT
-      - android-build@0:
-          inputs:
-            - project_location: $PROJECT_LOCATION
-            - module: $MODULE
-            - variant: $VARIANT
-      - sign-apk@1:
-          run_if: '{{getenv "BITRISEIO_ANDROID_KEYSTORE_URL" | ne ""}}'
+            - gradle_task: appDistributionUploadDebug
       - deploy-to-bitrise-io@1: {}
-      - cache-push@2: {}
   primary:
     steps:
       - activate-ssh-key@4:
           run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
       - git-clone@4: {}
       - cache-pull@2: {}
-      - script@1:
-          title: Do anything with Script step
       - gradle-runner@1:
           title: KtLint
           inputs:
