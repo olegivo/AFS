@@ -65,9 +65,14 @@ private static def getSigningConfig(Properties props, String buildType, String s
     if (signingFile == null) return null
 
     def keystoreFile = signingPath + "/" + signingFile
-    def keystorePassword = props["${buildType}keystore_storePassword"]
-    def signingAlias = props["${buildType}keystore_keyAlias"]
-    def signingPassword = props["${buildType}keystore_signingPassword"]
+    def keystorePassword = props["${buildType}_keystore_storePassword"]
+    def signingAlias = props["${buildType}_keystore_keyAlias"]
+    def signingPassword = props["${buildType}_keystore_signingPassword"]
+
+    if (keystoreFile == null) throw new NullPointerException("keystoreFile is null")
+    if (keystorePassword == null) throw new NullPointerException("keystorePassword is null")
+    if (signingAlias == null) throw new NullPointerException("signingAlias is null")
+    if (signingPassword == null) throw new NullPointerException("signingPassword is null")
 
     return new SigningConfig().tap {
         storeFile = keystoreFile
