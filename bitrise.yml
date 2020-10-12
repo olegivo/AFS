@@ -3,9 +3,13 @@ format_version: '8'
 default_step_lib_source: 'https://github.com/bitrise-io/bitrise-steplib.git'
 project_type: android
 trigger_map:
+  - push_branch: 'master'
+    workflow: empty
   - push_branch: '*'
     workflow: primary
 workflows:
+  empty:
+    description: Empty workflow for exclude branch from push trigger
   deploy:
     description: >
       ## How to get a signed APK
