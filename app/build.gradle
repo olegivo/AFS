@@ -47,6 +47,8 @@ apply plugin: 'com.google.firebase.appdistribution'
 
 apply plugin: 'com.google.firebase.crashlytics'
 
+apply plugin: 'com.google.firebase.firebase-perf'
+
 apply plugin: "org.jmailen.kotlinter"
 
 apply plugin: 'kotlinx-serialization'
@@ -229,6 +231,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:25.10.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-perf'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
