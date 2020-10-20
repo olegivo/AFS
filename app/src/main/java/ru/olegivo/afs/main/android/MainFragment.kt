@@ -29,6 +29,7 @@ import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_main.activity_main_choose_club_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_drop_db_button
+import kotlinx.android.synthetic.main.fragment_main.activity_main_favorites_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_is_stub_reserve_check_box
 import kotlinx.android.synthetic.main.fragment_main.activity_main_reserve_button
 import kotlinx.android.synthetic.main.fragment_main.activity_main_set_default_club_button
@@ -41,6 +42,7 @@ import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.Navigator
+import ru.olegivo.afs.favorites.presentation.models.FavoritesDestination
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import java.io.File
@@ -81,6 +83,9 @@ class MainFragment @Inject constructor(
 
         activity_main_choose_club_button.setOnClickListener {
             onChooseClubClicked()
+        }
+        activity_main_favorites_button.setOnClickListener {
+            onFavoritesClicked()
         }
         activity_main_reserve_button.setOnClickListener {
             onReserveClicked()
@@ -172,6 +177,10 @@ class MainFragment @Inject constructor(
                 },
                 ::onError
             )
+    }
+
+    private fun onFavoritesClicked() {
+        navigator.navigateTo(FavoritesDestination)
     }
 
     private fun onReserveClicked() {

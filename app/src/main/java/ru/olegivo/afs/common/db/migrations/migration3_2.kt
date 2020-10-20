@@ -21,7 +21,8 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ru.olegivo.afs.common.db.doInTransaction
 
-private val createTableFavoriteFilters_1 = """
+private val createTableFavoriteFilters_1 =
+    """
 |   CREATE TABLE IF NOT EXISTS `favoriteFilters_1` ( 
 |       `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
 |       `groupId` INTEGER NOT NULL, 

@@ -17,14 +17,12 @@
 
 package ru.olegivo.afs.schedules.android
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_day_schedule.schedule_recycler_view
 import kotlinx.android.synthetic.main.fragment_day_schedule.swipeRefresh
 import ru.olegivo.afs.R
@@ -49,11 +47,6 @@ class DayScheduleFragment @Inject constructor(
                 if (it.containsKey("ARG_DATE")) day = Date(it.getLong("ARG_DATE"))
                 if (it.containsKey("ARG_CLUB_ID")) clubId = it.getInt("ARG_CLUB_ID")
             }
-    }
-
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
     }
 
     private val sportsActivitiesAdapter: SportsActivitiesAdapter by lazy {
