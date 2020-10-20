@@ -15,17 +15,22 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.data
+package ru.olegivo.afs.shared.network.models
 
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.shared.network.models.Schedules
+import kotlinx.serialization.Serializable
 
-interface ScheduleNetworkSource {
-
-    suspend fun getSchedules(clubId: Int): Schedules
-    suspend fun getSchedule(clubId: Int): List<DataSchedule>
-    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
-    suspend fun getNextSchedule(schedules: Schedules): Schedules?
-    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
-}
+@Serializable
+data class Trainer(
+    val clubs: List<Int>,
+    val facePhoto: String?,
+    val facebookLink: String,
+    val id: String,
+    val instagramLink: String,
+    val phone: String?,
+    val photo: String?,
+    val position: String,
+    val sortOrder: Int,
+    val title: String,
+    val url: String,
+    val vkLink: String
+)

@@ -22,7 +22,7 @@ import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.schedules.network.models.Schedules
+import ru.olegivo.afs.shared.network.models.Schedules
 import ru.olegivo.afs.schedules.network.models.toData
 import javax.inject.Inject
 

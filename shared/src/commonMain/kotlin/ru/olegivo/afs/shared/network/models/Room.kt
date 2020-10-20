@@ -15,21 +15,13 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.network
+package ru.olegivo.afs.shared.network.models
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import ru.olegivo.afs.common.DateConverter
-import java.util.Date
+import kotlinx.serialization.Serializable
 
-@Serializer(forClass = Date::class)
-object DateSerializer : KSerializer<Date> {
-
-    override fun serialize(output: Encoder, obj: Date) =
-        output.encodeString(DateConverter.toString(obj))
-
-    override fun deserialize(input: Decoder): Date =
-        DateConverter.fromString(input.decodeString())
-}
+@Serializable
+data class Room(
+    val id: Int,
+    val sortOrder: Int,
+    val title: String
+)

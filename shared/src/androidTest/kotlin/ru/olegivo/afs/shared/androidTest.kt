@@ -15,17 +15,15 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.data
+package ru.olegivo.afs.shared
 
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.shared.network.models.Schedules
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
-interface ScheduleNetworkSource {
+class GreetingTest {
 
-    suspend fun getSchedules(clubId: Int): Schedules
-    suspend fun getSchedule(clubId: Int): List<DataSchedule>
-    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
-    suspend fun getNextSchedule(schedules: Schedules): Schedules?
-    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
+    @Test
+    fun testExample() {
+        assertTrue("Check Android is mentioned", Greeting().greeting().contains("Android"))
+    }
 }

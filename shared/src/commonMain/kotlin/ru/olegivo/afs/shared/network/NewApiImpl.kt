@@ -15,25 +15,22 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.network
+package ru.olegivo.afs.shared.network
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonReader
-import com.squareup.moshi.JsonWriter
-import ru.olegivo.afs.common.DateConverter
-import java.io.IOException
-import java.util.Date
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.http.takeFrom
+import ru.olegivo.afs.shared.network.models.Club
 
-class DateJsonAdapter : JsonAdapter<Date>() {
+class NewApiImpl constructor(
+    private val httpClient: HttpClient,
+    override val apiUrl: String
+) : NewApi {
 
-    @Synchronized
-    @Throws(IOException::class)
-    override fun fromJson(reader: JsonReader): Date =
-        DateConverter.fromString(reader.nextString())
-
-    @Synchronized
-    @Throws(IOException::class)
-    override fun toJson(writer: JsonWriter, value: Date?) {
-        value?.also { writer.value(DateConverter.toString(it)) }
-    }
+    override suspend fun getClubs(): List<Club> =
+        httpClient.get {
+            url {
+                takeFrom("${apiUrl}api/v6/franchise/clubs.json")
+            }
+        }
 }

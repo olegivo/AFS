@@ -28,23 +28,15 @@ import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.schedule.network.models.ReserveRequest
-import ru.olegivo.afs.schedules.network.models.Club
-import ru.olegivo.afs.schedules.network.models.Schedules
-import ru.olegivo.afs.schedules.network.models.Slot
+import ru.olegivo.afs.shared.network.models.Schedules
+import ru.olegivo.afs.shared.network.models.Slot
+import ru.olegivo.afs.shared.network.NewApi
+import ru.olegivo.afs.shared.network.NewApiImpl
 import javax.inject.Inject
 
-class ApiImpl @Inject constructor(
-    private val httpClient: HttpClient
-) : Api {
-
-    private val apiUrl = BuildConfig.API_URL
-
-    override suspend fun getClubs(): List<Club> =
-        httpClient.get {
-            url {
-                takeFrom("${apiUrl}api/v6/franchise/clubs.json")
-            }
-        }
+class ApiImpl @Inject constructor(private val httpClient: HttpClient) :
+    Api,
+    NewApi by NewApiImpl(httpClient, BuildConfig.API_URL) {
 
     override suspend fun getSchedule(clubId: Int): Schedules =
         httpClient.get {

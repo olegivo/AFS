@@ -15,24 +15,8 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common
+package ru.olegivo.afs.shared
 
-import org.threeten.bp.DateTimeUtils
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.format.DateTimeFormatter
-import java.util.Date
-
-object DateConverter {
-    fun fromString(input: String): Date {
-        val offsetDateTime = OffsetDateTime.parse(input, dateTimeFormatter)
-        val instant = offsetDateTime.toInstant()
-        return DateTimeUtils.toDate(instant)
-    }
-
-    fun toString(input: Date): String {
-        val instant = DateTimeUtils.toInstant(input)
-        return dateTimeFormatter.format(instant)
-    }
-
-    private val dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+actual class Platform actual constructor() {
+    actual val platform: String = "Android ${android.os.Build.VERSION.SDK_INT}"
 }

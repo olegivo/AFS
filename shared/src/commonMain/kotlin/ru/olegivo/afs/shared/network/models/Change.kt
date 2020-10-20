@@ -15,17 +15,25 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.data
+package ru.olegivo.afs.shared.network.models
 
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.domain.models.Slot
-import ru.olegivo.afs.shared.network.models.Schedules
+import kotlinx.serialization.Serializable
 
-interface ScheduleNetworkSource {
-
-    suspend fun getSchedules(clubId: Int): Schedules
-    suspend fun getSchedule(clubId: Int): List<DataSchedule>
-    suspend fun getSlots(clubId: Int, ids: List<Long>): List<Slot>
-    suspend fun getNextSchedule(schedules: Schedules): Schedules?
-    suspend fun getPrevSchedule(schedules: Schedules): Schedules?
-}
+@Serializable
+data class Change(
+    val activity: ActivityX?,
+    val age: Int?,
+    val datetime: String?,
+    val group: Group?,
+    val id: String,
+    val length: Int?,
+//    val level: Any?,
+    val level: Int?,
+    val note: String?,
+    val publishDatetime: String,
+    val room: Room?,
+    val silent: Boolean,
+    val title: String,
+    val trainers: List<Trainer>?,
+    val type: String
+)
