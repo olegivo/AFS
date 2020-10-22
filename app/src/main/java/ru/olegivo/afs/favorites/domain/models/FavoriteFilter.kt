@@ -21,7 +21,9 @@ import ru.olegivo.afs.schedules.domain.models.Schedule
 
 data class FavoriteFilter(
     val groupId: Int,
+    val group: String,
     val activityId: Int,
+    val activity: String,
     val dayOfWeek: Int,
     val timeOfDay: Long
 )
@@ -29,7 +31,9 @@ data class FavoriteFilter(
 fun Schedule.toFavoriteFilter(): FavoriteFilter {
     return FavoriteFilter(
         groupId = groupId,
+        group = group,
         activityId = activityId,
+        activity = activity,
         dayOfWeek = getDayOfWeek(),
         timeOfDay = getTimeOfDay()
     )

@@ -32,7 +32,7 @@ interface FavoriteDao {
     @Insert
     fun addFilter(favoriteFilterEntity: FavoriteFilterEntity): Completable
 
-    @Query("select id, groupId, activityId, dayOfWeek, timeOfDay from favoriteFilters")
+    @Query("select id, groupId, `group`, activityId, activity, dayOfWeek, timeOfDay from favoriteFilters")
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
 
     @Query("delete from favoriteFilters where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay")

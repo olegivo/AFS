@@ -44,7 +44,9 @@ class AddToFavoritesUseCaseImplTest : BaseTestOf<AddToFavoritesUseCase>() {
         val schedule = createSchedule()
         val expectedFilter = FavoriteFilter(
             groupId = schedule.groupId,
+            group = schedule.group,
             activityId = schedule.activityId,
+            activity = schedule.activity,
             dayOfWeek = schedule.getDayOfWeek(),
             timeOfDay = schedule.datetime.let {
                 it.time - it.getDateWithoutTime().time
