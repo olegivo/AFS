@@ -20,6 +20,7 @@ package ru.olegivo.afs.common.di
 import android.content.Context
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import ru.olegivo.afs.AfsApplication
 import ru.olegivo.afs.auth.di.AuthModule
 import ru.olegivo.afs.common.android.ErrorReporterImpl
@@ -28,28 +29,38 @@ import ru.olegivo.afs.common.domain.DateProviderImpl
 import ru.olegivo.afs.common.domain.DateTimeUtils
 import ru.olegivo.afs.common.domain.DateTimeUtilsImpl
 import ru.olegivo.afs.common.domain.ErrorReporter
+import java.util.Locale
 import javax.inject.Named
+import javax.inject.Singleton
 
 @Module(
     includes = [
         CoroutinesModule::class,
         RxModule::class,
         NavigationModule::class,
-        AuthModule::class
+        AuthModule::class,
+        AppModule.AppProvidesModule::class
     ]
 )
-abstract class AppModule {
+interface AppModule {
 
     @Binds
     @Named("application")
-    abstract fun bindApplicationContext(app: AfsApplication): Context
+    fun bindApplicationContext(app: AfsApplication): Context
 
     @Binds
-    abstract fun bindDateProvider(app: DateProviderImpl): DateProvider
+    fun bindDateProvider(app: DateProviderImpl): DateProvider
 
     @Binds
-    abstract fun bindDateTimeUtils(app: DateTimeUtilsImpl): DateTimeUtils
+    fun bindDateTimeUtils(app: DateTimeUtilsImpl): DateTimeUtils
 
     @Binds
-    abstract fun bindErrorReporter(app: ErrorReporterImpl): ErrorReporter
+    fun bindErrorReporter(app: ErrorReporterImpl): ErrorReporter
+
+    @Module
+    object AppProvidesModule {
+        @Provides
+        @Singleton
+        fun providesLocale() = Locale.getDefault()
+    }
 }
