@@ -79,6 +79,9 @@ android {
                     files("$projectDir/schemas".toString())
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
     buildTypes {
         all {
             def apiAddress = "https://mobifitness.ru/"
@@ -238,6 +241,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    implementation 'com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:1.2.2'
 
     implementation "com.squareup.moshi:moshi:${moshiVersion}"
     implementation "com.squareup.moshi:moshi-adapters:${moshiVersion}"
