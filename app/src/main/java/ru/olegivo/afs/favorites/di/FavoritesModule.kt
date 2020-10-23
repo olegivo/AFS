@@ -50,7 +50,8 @@ interface FavoritesModule {
     fun bindAddToFavoritesUseCase(impl: AddToFavoritesUseCaseImpl): AddToFavoritesUseCase
 
     @Binds
-    fun bindRestoreAllActiveRecordRemindersUseCase(impl: RestoreAllActiveRecordRemindersUseCaseImpl): RestoreAllActiveRecordRemindersUseCase
+    fun bindRestoreAllActiveRecordRemindersUseCase(impl: RestoreAllActiveRecordRemindersUseCaseImpl):
+        RestoreAllActiveRecordRemindersUseCase
 
     @Binds
     fun bindShowRecordReminderUseCase(impl: ShowRecordReminderUseCaseImpl): ShowRecordReminderUseCase

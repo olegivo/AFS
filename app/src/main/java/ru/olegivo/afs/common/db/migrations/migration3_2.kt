@@ -19,6 +19,7 @@ package ru.olegivo.afs.common.db.migrations
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import ru.olegivo.afs.common.db.DbVersions
 import ru.olegivo.afs.common.db.doInTransaction
 
 private val createTableFavoriteFilters_1 =
@@ -47,7 +48,7 @@ private val fillFavoriteFilters_1 =
     |   timeOfDay
     |FROM favoriteFilters""".trimMargin()
 
-val migration3_2 = object : Migration(3, 2) {
+val migration3_2 = object : Migration(DbVersions.v3, DbVersions.v2) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
         database.doInTransaction {

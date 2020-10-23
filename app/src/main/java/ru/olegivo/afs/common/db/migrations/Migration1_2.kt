@@ -19,10 +19,11 @@ package ru.olegivo.afs.common.db.migrations
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import ru.olegivo.afs.common.db.DbVersions
 import ru.olegivo.afs.common.db.doInTransaction
 import ru.olegivo.afs.common.db.exists
 
-val migration1_2 = object : Migration(1, 2) {
+val migration1_2 = object : Migration(DbVersions.v1, DbVersions.v2) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
         database.doInTransaction {
