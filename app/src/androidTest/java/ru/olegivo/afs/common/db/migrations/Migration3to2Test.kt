@@ -45,7 +45,7 @@ class Migration3to2Test :
                     put("activityId", it.activityId)
                     put("activity", it.activity)
                     put("dayOfWeek", it.dayOfWeek)
-                    put("timeOfDay", it.timeOfDay)
+                    put("timeOfDay", it.minutesOfDay)
                 }
             }
 
@@ -65,7 +65,7 @@ class Migration3to2Test :
                         activityId = getInt("activityId"),
                         activity = "",
                         dayOfWeek = getInt("dayOfWeek"),
-                        timeOfDay = getLong("timeOfDay")
+                        minutesOfDay = getInt("timeOfDay")
                     )
                 )
             }

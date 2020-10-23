@@ -18,7 +18,6 @@
 package ru.olegivo.afs.favorites.db.models
 
 import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
 
 fun createFavoriteFilterEntity() =
@@ -28,5 +27,5 @@ fun createFavoriteFilterEntity() =
         activityId = getRandomInt(),
         activity = getRandomString(),
         dayOfWeek = getRandomInt(),
-        timeOfDay = getRandomLong()
+        minutesOfDay = getRandomInt()
     )

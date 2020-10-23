@@ -30,7 +30,7 @@ data class FavoriteFilterEntity(
     val activityId: Int,
     val activity: String,
     val dayOfWeek: Int,
-    val timeOfDay: Long
+    val minutesOfDay: Int
 )
 
 fun FavoriteFilter.toDb() = FavoriteFilterEntity(
@@ -39,7 +39,7 @@ fun FavoriteFilter.toDb() = FavoriteFilterEntity(
     activityId = activityId,
     activity = activity,
     dayOfWeek = dayOfWeek,
-    timeOfDay = timeOfDay
+    minutesOfDay = minutesOfDay
 )
 
 fun FavoriteFilterEntity.toDomain() =
@@ -49,5 +49,5 @@ fun FavoriteFilterEntity.toDomain() =
         activityId = activityId,
         activity = activity,
         dayOfWeek = dayOfWeek,
-        timeOfDay = timeOfDay
+        minutesOfDay = minutesOfDay
     )

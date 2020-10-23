@@ -39,10 +39,10 @@ class Migration2to3Test :
 
     @Test
     fun migrate_SUCCESS_WHEN_has_no_favorites_with_group_or_activity_missing_in_schedules() {
-        val earlierG1A2 = createFavoriteFilter().copy(timeOfDay = 1, groupId = 1, activityId = 2)
-        val earlierG2A1 = createFavoriteFilter().copy(timeOfDay = 1, groupId = 2, activityId = 1)
-        val laterG1A2 = createFavoriteFilter().copy(timeOfDay = 2, groupId = 1, activityId = 2)
-        val laterG2A1 = createFavoriteFilter().copy(timeOfDay = 2, groupId = 2, activityId = 1)
+        val earlierG1A2 = createFavoriteFilter().copy(minutesOfDay = 1, groupId = 1, activityId = 2)
+        val earlierG2A1 = createFavoriteFilter().copy(minutesOfDay = 1, groupId = 2, activityId = 1)
+        val laterG1A2 = createFavoriteFilter().copy(minutesOfDay = 2, groupId = 1, activityId = 2)
+        val laterG2A1 = createFavoriteFilter().copy(minutesOfDay = 2, groupId = 2, activityId = 1)
         val favorites = listOf(
             earlierG1A2,
             earlierG2A1,
@@ -58,7 +58,7 @@ class Migration2to3Test :
                     put("`group`", it.group)
                     put("activityId", it.activityId)
                     put("activity", it.activity)
-                    put("datetime", it.timeOfDay)
+                    put("datetime", it.minutesOfDay)
                     put("length", getRandomInt())
                     put("preEntry", getRandomBoolean())
                     put("totalSlots", getRandomInt())

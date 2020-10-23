@@ -61,6 +61,6 @@ interface AppModule {
     object AppProvidesModule {
         @Provides
         @Singleton
-        fun providesLocale() = Locale.getDefault()
+        fun providesLocale() = Locale("ru")
     }
 }

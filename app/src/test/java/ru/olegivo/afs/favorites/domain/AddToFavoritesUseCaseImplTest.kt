@@ -23,7 +23,7 @@ import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Completable
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
-import ru.olegivo.afs.common.getDateWithoutTime
+import ru.olegivo.afs.common.getMinutesOfDay
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 
@@ -48,9 +48,7 @@ class AddToFavoritesUseCaseImplTest : BaseTestOf<AddToFavoritesUseCase>() {
             activityId = schedule.activityId,
             activity = schedule.activity,
             dayOfWeek = schedule.getDayOfWeek(),
-            timeOfDay = schedule.datetime.let {
-                it.time - it.getDateWithoutTime().time
-            }
+            minutesOfDay = schedule.datetime.getMinutesOfDay()
         )
 
         given(favoritesRepository.addFilter(expectedFilter)).willReturn(Completable.complete())

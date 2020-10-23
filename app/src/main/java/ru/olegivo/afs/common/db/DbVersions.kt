@@ -21,18 +21,23 @@ import ru.olegivo.afs.common.db.migrations.migration1_2
 import ru.olegivo.afs.common.db.migrations.migration2_1
 import ru.olegivo.afs.common.db.migrations.migration2_3
 import ru.olegivo.afs.common.db.migrations.migration3_2
+import ru.olegivo.afs.common.db.migrations.migration3_4
+import ru.olegivo.afs.common.db.migrations.migration4_3
 
 object DbVersions {
     const val v1 = 1
     const val v2 = 2
     const val v3 = 3
+    const val v4 = 4
 
-    const val current = v3
+    const val current = v4
 
     val migrations = arrayOf(
         migration1_2,
         migration2_1,
         migration2_3,
-        migration3_2
+        migration3_2,
+        migration3_4,
+        migration4_3
     )
 }
