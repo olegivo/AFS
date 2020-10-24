@@ -82,5 +82,9 @@ abstract class BaseMigrationsTest(
 
     companion object {
         private const val TEST_DB_NAME = "test-db"
+
+        fun Cursor.getInt(columnName: String) = getInt(getColumnIndex(columnName))
+        fun Cursor.getLong(columnName: String) = getLong(getColumnIndex(columnName))
+        fun Cursor.getString(columnName: String) = getString(getColumnIndex(columnName))
     }
 }

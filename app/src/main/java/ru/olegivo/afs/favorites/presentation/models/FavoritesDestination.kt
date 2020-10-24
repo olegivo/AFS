@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
- *  
+ *
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -15,15 +15,8 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.db.models
+package ru.olegivo.afs.favorites.presentation.models
 
-import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.helpers.getRandomLong
+import ru.olegivo.afs.common.presentation.Destination
 
-fun createFavoriteFilterEntity() =
-    FavoriteFilterEntity(
-        groupId = getRandomInt(),
-        activityId = getRandomInt(),
-        dayOfWeek = getRandomInt(),
-        timeOfDay = getRandomLong()
-    )
+object FavoritesDestination : Destination

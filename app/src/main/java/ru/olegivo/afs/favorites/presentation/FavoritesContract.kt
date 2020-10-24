@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
- *  
+ *
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -15,16 +15,20 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.data.models
+package ru.olegivo.afs.favorites.presentation
 
-import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.helpers.getRandomLong
+import ru.olegivo.afs.common.presentation.PresentationContract
+import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import java.util.*
 
-fun createFavoriteFilter(): FavoriteFilter =
-    FavoriteFilter(
-        groupId = getRandomInt(),
-        activityId = getRandomInt(),
-        dayOfWeek = getRandomInt(),
-        timeOfDay = getRandomLong()
-    )
+interface FavoritesContract {
+    interface Presenter : PresentationContract.Presenter<View>
+
+    interface View :
+        PresentationContract.View,
+        PresentationContract.ErrorDisplay,
+        PresentationContract.ViewWithProgress {
+
+        fun showFavorites(favorites: List<FavoritesItem>)
+    }
+}

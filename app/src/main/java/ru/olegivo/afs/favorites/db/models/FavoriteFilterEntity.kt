@@ -26,22 +26,28 @@ data class FavoriteFilterEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val groupId: Int,
+    val group: String,
     val activityId: Int,
+    val activity: String,
     val dayOfWeek: Int,
-    val timeOfDay: Long
+    val minutesOfDay: Int
 )
 
 fun FavoriteFilter.toDb() = FavoriteFilterEntity(
     groupId = groupId,
+    group = group,
     activityId = activityId,
+    activity = activity,
     dayOfWeek = dayOfWeek,
-    timeOfDay = timeOfDay
+    minutesOfDay = minutesOfDay
 )
 
 fun FavoriteFilterEntity.toDomain() =
     FavoriteFilter(
         groupId = groupId,
+        group = group,
         activityId = activityId,
+        activity = activity,
         dayOfWeek = dayOfWeek,
-        timeOfDay = timeOfDay
+        minutesOfDay = minutesOfDay
     )

@@ -46,9 +46,6 @@ data class Schedule(
     val recordFrom: Date?,
     val recordTo: Date?
 ) {
-    fun getTimeOfDay() = datetime.let {
-        it.time - it.getDateWithoutTime().time
-    }
 
     fun getDayOfWeek() = datetime.get(Calendar.DAY_OF_WEEK)
 

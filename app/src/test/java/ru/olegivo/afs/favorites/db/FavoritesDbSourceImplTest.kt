@@ -97,7 +97,7 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
                     groupId = groupId,
                     activityId = activityId,
                     dayOfWeek = dayOfWeek,
-                    timeOfDay = timeOfDay
+                    minutesOfDay = minutesOfDay
                 )
             )
                 .willReturn(Single.just(exist))
@@ -114,7 +114,7 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
                 groupId = groupId,
                 activityId = activityId,
                 dayOfWeek = dayOfWeek,
-                timeOfDay = timeOfDay
+                minutesOfDay = minutesOfDay
             )
         }
         assertThat(result).isEqualTo(exist)

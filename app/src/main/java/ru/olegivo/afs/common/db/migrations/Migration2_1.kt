@@ -19,6 +19,7 @@ package ru.olegivo.afs.common.db.migrations
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import ru.olegivo.afs.common.db.DbVersions
 import ru.olegivo.afs.common.db.doInTransaction
 import ru.olegivo.afs.common.db.exists
 
@@ -81,7 +82,7 @@ private val createIndex_schedules_datetime_clubId =
     """CREATE INDEX IF NOT EXISTS `index_schedules_datetime_clubId`
         |ON `schedules` (`datetime`, `clubId`)""".trimMargin()
 
-val migration2_1 = object : Migration(2, 1) {
+val migration2_1 = object : Migration(DbVersions.v2, DbVersions.v1) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
         database.doInTransaction {

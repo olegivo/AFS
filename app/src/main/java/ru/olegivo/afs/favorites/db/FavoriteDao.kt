@@ -32,14 +32,21 @@ interface FavoriteDao {
     @Insert
     fun addFilter(favoriteFilterEntity: FavoriteFilterEntity): Completable
 
-    @Query("select id, groupId, activityId, dayOfWeek, timeOfDay from favoriteFilters")
+    @Query("select id, groupId, `group`, activityId, activity, dayOfWeek, minutesOfDay from favoriteFilters")
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
 
-    @Query("delete from favoriteFilters where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay")
-    fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, timeOfDay: Long): Completable
+    @Query(
+        """delete from favoriteFilters 
+where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and minutesOfDay = :minutesOfDay"""
+    )
+    fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Completable
 
-    @Query("select exists(select * from favoriteFilters where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay)")
-    fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, timeOfDay: Long): Single<Boolean>
+    @Query(
+        """select exists
+(select * from favoriteFilters 
+where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and minutesOfDay = :minutesOfDay)"""
+    )
+    fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Single<Boolean>
 
     @Query("select scheduleId from recordReminderSchedules where dateFrom <= :moment and :moment <= dateUntil")
     fun getActiveRecordReminderScheduleIds(moment: Date): Single<List<Long>>

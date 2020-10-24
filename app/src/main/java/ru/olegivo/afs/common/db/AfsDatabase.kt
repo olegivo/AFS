@@ -20,9 +20,6 @@ package ru.olegivo.afs.common.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
-import ru.olegivo.afs.common.db.migrations.migration1_2
-import ru.olegivo.afs.common.db.migrations.migration2_1
 import ru.olegivo.afs.favorites.db.FavoriteDao
 import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
@@ -38,7 +35,7 @@ import ru.olegivo.afs.schedules.db.models.ScheduleEntity
         FavoriteFilterEntity::class,
         RecordReminderScheduleEntity::class
     ],
-    version = 2,
+    version = DbVersions.current,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -46,11 +43,4 @@ abstract class AfsDatabase : RoomDatabase() {
     abstract val schedules: ScheduleDao
     abstract val favorites: FavoriteDao
     abstract val reserve: ReserveDao
-
-    companion object {
-        fun getMigrations(): Array<Migration> = arrayOf(
-            migration1_2,
-            migration2_1
-        )
-    }
 }

@@ -24,6 +24,7 @@ import dagger.Module
 import dagger.Provides
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.common.db.DbVersions
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -31,10 +32,11 @@ import javax.inject.Singleton
 object DbModule {
     @Singleton
     @Provides
+    @Suppress("SpreadOperator")
     fun providesAfsDatabase(@Named("application") context: Context): AfsDatabase {
         return Room
             .databaseBuilder(context, AfsDatabase::class.java, BuildConfig.DB_NAME)
-            .addMigrations(*(AfsDatabase.getMigrations()))
+            .addMigrations(*DbVersions.migrations)
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
             .build()
     }

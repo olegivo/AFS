@@ -19,7 +19,9 @@ package ru.olegivo.afs.common
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 fun Date.add(
     years: Int? = null,
@@ -118,3 +120,9 @@ fun firstDayOfWeek(date: Date = today()): Date =
             // get start of this week in milliseconds
             set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
         }.time
+
+private const val MINUTES_IN_HOUR = 60
+
+fun Date.getMinutesOfDay(): Int = toCalendar().let {
+    it[Calendar.HOUR_OF_DAY] * MINUTES_IN_HOUR + it[Calendar.MINUTE]
+}

@@ -23,45 +23,37 @@ import ru.olegivo.afs.common.db.DbVersions
 import ru.olegivo.afs.common.db.doInTransaction
 import ru.olegivo.afs.common.db.exists
 
-val migration1_2 = object : Migration(DbVersions.v1, DbVersions.v2) {
+val migration2_3 = object : Migration(DbVersions.v2, DbVersions.v3) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
         database.doInTransaction {
-            val hasInvalidRecords = exists(
-                """SELECT * FROM schedules s
-LEFT JOIN dictionary as groups on s.groupId = groups.key and groups.dictionaryId = 1 
-LEFT JOIN dictionary as activities on s.activityId = activities.key and activities.dictionaryId = 2
-WHERE groups.key IS NULL OR activities.key IS NULL 
-"""
-            )
-            if (hasInvalidRecords) throw IllegalStateException("cannot denormalize groups and activities")
-
-            execSQL("ALTER TABLE schedules ADD COLUMN `group` TEXT NOT NULL DEFAULT ''")
-            execSQL("ALTER TABLE schedules ADD COLUMN `activity` TEXT NOT NULL DEFAULT ''")
+            execSQL("ALTER TABLE favoriteFilters ADD COLUMN `group` TEXT NOT NULL DEFAULT ''")
+            execSQL("ALTER TABLE favoriteFilters ADD COLUMN `activity` TEXT NOT NULL DEFAULT ''")
             val hasSchedules = exists("SELECT * FROM schedules")
             if (hasSchedules) {
                 execSQL(
-                    """UPDATE schedules
+                    """UPDATE favoriteFilters
                             |   SET [group] = (
-                            |       SELECT dictionary.value
-                            |       FROM dictionary
-                            |       WHERE dictionary.dictionaryId = 1 AND schedules.groupId = dictionary.key
+                            |       SELECT schedules.[group]
+                            |       FROM schedules
+                            |       WHERE schedules.groupId = favoriteFilters.groupId
+                            |       ORDER BY datetime DESC
+                            |       LIMIT 1
                             |   )
                             |;""".trimMargin()
                 )
                 execSQL(
-                    """UPDATE schedules
+                    """UPDATE favoriteFilters
                             |   SET `activity` = (
-                            |       SELECT dictionary.value
-                            |       FROM dictionary
-                            |       WHERE dictionary.dictionaryId = 2 AND schedules.activityId = dictionary.key
+                            |       SELECT schedules.activity
+                            |       FROM schedules
+                            |       WHERE schedules.activityId = favoriteFilters.activityId
+                            |       ORDER BY datetime DESC
+                            |       LIMIT 1
                             |   )
                             |;""".trimMargin()
                 )
             }
-            execSQL(
-                """DROP TABLE dictionary"""
-            )
         }
     }
 }

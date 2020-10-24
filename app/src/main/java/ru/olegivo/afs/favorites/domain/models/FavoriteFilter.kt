@@ -17,21 +17,26 @@
 
 package ru.olegivo.afs.favorites.domain.models
 
+import ru.olegivo.afs.common.getMinutesOfDay
 import ru.olegivo.afs.schedules.domain.models.Schedule
 
 data class FavoriteFilter(
     val groupId: Int,
+    val group: String,
     val activityId: Int,
+    val activity: String,
     val dayOfWeek: Int,
-    val timeOfDay: Long
+    val minutesOfDay: Int
 )
 
 fun Schedule.toFavoriteFilter(): FavoriteFilter {
     return FavoriteFilter(
         groupId = groupId,
+        group = group,
         activityId = activityId,
+        activity = activity,
         dayOfWeek = getDayOfWeek(),
-        timeOfDay = getTimeOfDay()
+        minutesOfDay = datetime.getMinutesOfDay()
     )
 }
 
