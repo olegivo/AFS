@@ -22,20 +22,12 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_schedule_details.buttonReserve
-import kotlinx.android.synthetic.main.fragment_schedule_details.checkBoxAgreement
-import kotlinx.android.synthetic.main.fragment_schedule_details.imageViewIsFavorite
-import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutFio
-import kotlinx.android.synthetic.main.fragment_schedule_details.textInputLayoutPhone
-import kotlinx.android.synthetic.main.fragment_schedule_details.textViewActivity
-import kotlinx.android.synthetic.main.fragment_schedule_details.textViewAgreement
-import kotlinx.android.synthetic.main.fragment_schedule_details.textViewDuty
-import kotlinx.android.synthetic.main.fragment_schedule_details.textViewGroup
-import kotlinx.android.synthetic.main.fragment_schedule_details.textViewSlots
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.presentation.Navigator
+import ru.olegivo.afs.databinding.FragmentScheduleDetailsBinding
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
@@ -50,6 +42,10 @@ class ScheduleDetailsFragment @Inject constructor(
     Fragment(R.layout.fragment_schedule_details),
     ScheduleDetailsContract.View {
 
+    private val viewBinding: FragmentScheduleDetailsBinding by viewBinding(
+        FragmentScheduleDetailsBinding::bind
+    )
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -61,31 +57,31 @@ class ScheduleDetailsFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        imageViewIsFavorite
+        viewBinding.imageViewIsFavorite
 
-        buttonReserve.setOnClickListener {
+        viewBinding.buttonReserve.setOnClickListener {
             presenter.onReserveClicked(
-                checkBoxAgreement.isChecked
+                viewBinding.checkBoxAgreement.isChecked
             )
         }
-        imageViewIsFavorite.setOnClickListener {
+        viewBinding.imageViewIsFavorite.setOnClickListener {
             presenter.onFavoriteClick()
         }
-        textViewAgreement.setOnClickListener {
+        viewBinding.textViewAgreement.setOnClickListener {
             presenter.onAgreementClicked()
         }
     }
 
-    override fun isAgreementAccepted() = checkBoxAgreement.isChecked
+    override fun isAgreementAccepted() = viewBinding.checkBoxAgreement.isChecked
 
     override fun getReserveContacts() =
         ReserveContacts(
-            fio = textInputLayoutFio.editText!!.text.toString(),
-            phone = textInputLayoutPhone.editText!!.text.toString()
+            fio = viewBinding.textInputLayoutFio.editText!!.text.toString(),
+            phone = viewBinding.textInputLayoutPhone.editText!!.text.toString()
         )
 
     override fun showIsFavorite(isFavorite: Boolean) {
-        imageViewIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
+        viewBinding.imageViewIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
     }
 
     override fun onStart() {
@@ -99,18 +95,18 @@ class ScheduleDetailsFragment @Inject constructor(
     }
 
     override fun showScheduleToReserve(sportsActivity: SportsActivity) {
-        textViewGroup.text = sportsActivity.schedule.group
-        textViewActivity.text = sportsActivity.schedule.activity
-        textViewDuty.text = hoursMinutesFormat.format(sportsActivity.schedule.datetime)
+        viewBinding.textViewGroup.text = sportsActivity.schedule.group
+        viewBinding.textViewActivity.text = sportsActivity.schedule.activity
+        viewBinding.textViewDuty.text = hoursMinutesFormat.format(sportsActivity.schedule.datetime)
         sportsActivity.schedule.totalSlots?.let {
-            textViewSlots.text =
+            viewBinding.textViewSlots.text =
                 requireContext().getString(
                     R.string.slots_count,
                     sportsActivity.availableSlots,
                     sportsActivity.schedule.totalSlots
                 )
         } ?: run {
-            textViewSlots.visibility = View.GONE
+            viewBinding.textViewSlots.visibility = View.GONE
         }
     }
 
@@ -143,12 +139,12 @@ class ScheduleDetailsFragment @Inject constructor(
     }
 
     override fun setReserveContacts(reserveContacts: ReserveContacts) {
-        textInputLayoutFio.editText!!.setText(reserveContacts.fio)
-        textInputLayoutPhone.editText!!.setText(reserveContacts.phone)
+        viewBinding.textInputLayoutFio.editText!!.setText(reserveContacts.fio)
+        viewBinding.textInputLayoutPhone.editText!!.setText(reserveContacts.phone)
     }
 
     override fun setAgreementAccepted() {
-        checkBoxAgreement.isChecked = true
+        viewBinding.checkBoxAgreement.isChecked = true
     }
 
     override fun showTheTimeHasGone() {
@@ -168,7 +164,7 @@ class ScheduleDetailsFragment @Inject constructor(
     }
 
     private fun showExitMessage(message: String) {
-        buttonReserve.isEnabled = false
+        viewBinding.buttonReserve.isEnabled = false
         Snackbar.make(
             requireView(),
             message,
