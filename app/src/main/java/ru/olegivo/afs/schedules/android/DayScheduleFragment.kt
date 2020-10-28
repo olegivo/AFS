@@ -23,9 +23,9 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_day_schedule.schedule_recycler_view
-import kotlinx.android.synthetic.main.fragment_day_schedule.swipeRefresh
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.olegivo.afs.R
+import ru.olegivo.afs.databinding.FragmentDayScheduleBinding
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.DayScheduleContract
 import ru.olegivo.afs.schedules.presentation.models.Day
@@ -35,6 +35,8 @@ import javax.inject.Inject
 class DayScheduleFragment @Inject constructor(
     private val presenter: DayScheduleContract.Presenter
 ) : Fragment(R.layout.fragment_day_schedule), DayScheduleContract.View {
+
+    private val viewBinding: FragmentDayScheduleBinding by viewBinding(FragmentDayScheduleBinding::bind)
 
     override var clubId: Int = 0
 
@@ -55,15 +57,15 @@ class DayScheduleFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        schedule_recycler_view.layoutManager = LinearLayoutManager(requireContext())
-        schedule_recycler_view.adapter = sportsActivitiesAdapter
-        swipeRefresh.setColorSchemeResources(
+        viewBinding.scheduleRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        viewBinding.scheduleRecyclerView.adapter = sportsActivitiesAdapter
+        viewBinding.swipeRefresh.setColorSchemeResources(
             android.R.color.holo_blue_bright,
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
             android.R.color.holo_red_light
         )
-        swipeRefresh.setOnRefreshListener {
+        viewBinding.swipeRefresh.setOnRefreshListener {
             presenter.actualizeSchedule()
         }
     }
@@ -87,11 +89,11 @@ class DayScheduleFragment @Inject constructor(
     }
 
     override fun showProgress() {
-        swipeRefresh.isRefreshing = true
+        viewBinding.swipeRefresh.isRefreshing = true
     }
 
     override fun hideProgress() {
-        swipeRefresh.isRefreshing = false
+        viewBinding.swipeRefresh.isRefreshing = false
     }
 
     companion object {

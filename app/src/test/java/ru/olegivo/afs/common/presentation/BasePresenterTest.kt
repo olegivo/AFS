@@ -68,10 +68,22 @@ abstract class BasePresenterTest<TPresenter, TView>(kClass: KClass<TView>) :
         verify(errorReporter).reportError(exception, message)
     }
 
-    protected fun bind() {
+    protected open fun <TContext : Any> bind(
+        context: TContext,
+        prepare: TContext.() -> Unit,
+        verify: TContext.() -> Unit
+    ) {
+        context.prepare()
+
         instance.bindView(view)
             .andTriggerActions()
+
         verifyBindInteractions()
+        context.verify()
+    }
+
+    protected fun bind() {
+        bind(context = Unit, prepare = {}, verify = {})
     }
 
     protected open fun verifyBindInteractions() {

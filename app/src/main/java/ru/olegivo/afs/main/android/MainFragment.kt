@@ -23,16 +23,11 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.fragment_main.activity_main_choose_club_button
-import kotlinx.android.synthetic.main.fragment_main.activity_main_drop_db_button
-import kotlinx.android.synthetic.main.fragment_main.activity_main_favorites_button
-import kotlinx.android.synthetic.main.fragment_main.activity_main_is_stub_reserve_check_box
-import kotlinx.android.synthetic.main.fragment_main.activity_main_reserve_button
-import kotlinx.android.synthetic.main.fragment_main.activity_main_set_default_club_button
 import ru.olegivo.afs.R
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
@@ -42,6 +37,7 @@ import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.Navigator
+import ru.olegivo.afs.databinding.FragmentMainBinding
 import ru.olegivo.afs.favorites.presentation.models.FavoritesDestination
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
@@ -61,13 +57,15 @@ class MainFragment @Inject constructor(
     @Named("io") private val ioScheduler: Scheduler
 ) : Fragment(R.layout.fragment_main) {
 
+    private val viewBinding: FragmentMainBinding by viewBinding(FragmentMainBinding::bind)
+
     private var isStubReserve: Boolean? = null
 
     private val onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _, isChecked ->
         reserveRepository.setStubReserve(isChecked)
             .observeOn(mainScheduler)
-            .doOnSubscribe { activity_main_is_stub_reserve_check_box.isEnabled = false }
-            .doFinally { activity_main_is_stub_reserve_check_box.isEnabled = true }
+            .doOnSubscribe { viewBinding.activityMainIsStubReserveCheckBox.isEnabled = false }
+            .doFinally { viewBinding.activityMainIsStubReserveCheckBox.isEnabled = true }
             .subscribeBy(
                 onError = ::onError
             )
@@ -81,19 +79,19 @@ class MainFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity_main_choose_club_button.setOnClickListener {
+        viewBinding.activityMainChooseClubButton.setOnClickListener {
             onChooseClubClicked()
         }
-        activity_main_favorites_button.setOnClickListener {
+        viewBinding.activityMainFavoritesButton.setOnClickListener {
             onFavoritesClicked()
         }
-        activity_main_reserve_button.setOnClickListener {
+        viewBinding.activityMainReserveButton.setOnClickListener {
             onReserveClicked()
         }
-        activity_main_set_default_club_button.setOnClickListener {
+        viewBinding.activityMainSetDefaultClubButton.setOnClickListener {
             onSetDefaultClubClicked()
         }
-        activity_main_drop_db_button.setOnClickListener {
+        viewBinding.activityMainDropDbButton.setOnClickListener {
             onDropDbBClicked()
         }
         isStubReserve?.let { isStubReserve ->
@@ -110,7 +108,7 @@ class MainFragment @Inject constructor(
             .subscribeBy(
                 onSuccess = { isStubReserve ->
                     this.isStubReserve = isStubReserve
-                    if (activity_main_is_stub_reserve_check_box != null) {
+                    if (viewBinding.activityMainIsStubReserveCheckBox != null) {
                         initIsStubReserve(isStubReserve)
                     }
                 },
@@ -119,18 +117,18 @@ class MainFragment @Inject constructor(
     }
 
     private fun initIsStubReserve(isStubReserve: Boolean) {
-        if (activity_main_is_stub_reserve_check_box.isChecked != isStubReserve) {
-            activity_main_is_stub_reserve_check_box.isChecked = isStubReserve
+        if (viewBinding.activityMainIsStubReserveCheckBox.isChecked != isStubReserve) {
+            viewBinding.activityMainIsStubReserveCheckBox.isChecked = isStubReserve
         }
-        activity_main_is_stub_reserve_check_box.isEnabled = true
-        activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(
+        viewBinding.activityMainIsStubReserveCheckBox.isEnabled = true
+        viewBinding.activityMainIsStubReserveCheckBox.setOnCheckedChangeListener(
             onCheckedChangeListener
         )
     }
 
     private fun disableIsStubReserveCheckBox() {
-        activity_main_is_stub_reserve_check_box.isEnabled = false
-        activity_main_is_stub_reserve_check_box.setOnCheckedChangeListener(null)
+        viewBinding.activityMainIsStubReserveCheckBox.isEnabled = false
+        viewBinding.activityMainIsStubReserveCheckBox.setOnCheckedChangeListener(null)
     }
 
     private fun onDropDbBClicked() {

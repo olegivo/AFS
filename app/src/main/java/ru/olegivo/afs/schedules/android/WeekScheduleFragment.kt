@@ -23,11 +23,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_week_schedule.tabs
-import kotlinx.android.synthetic.main.fragment_week_schedule.view_pager
 import ru.olegivo.afs.R
+import ru.olegivo.afs.databinding.FragmentWeekScheduleBinding
 import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
 import javax.inject.Inject
 import javax.inject.Provider
@@ -36,6 +36,8 @@ class WeekScheduleFragment @Inject constructor(
     private val presenter: WeekScheduleContract.Presenter,
     private val dayScheduleFragmentProvider: Provider<DayScheduleFragment>
 ) : Fragment(R.layout.fragment_week_schedule), WeekScheduleContract.View {
+
+    private val viewBinding: FragmentWeekScheduleBinding by viewBinding(FragmentWeekScheduleBinding::bind)
 
     private lateinit var pagerAdapter: ViewPagerAdapter
     private lateinit var tabLayoutMediator: TabLayoutMediator
@@ -55,10 +57,11 @@ class WeekScheduleFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pagerAdapter = ViewPagerAdapter(requireActivity(), presenter, dayScheduleFragmentProvider)
-        view_pager.adapter = pagerAdapter
-        tabLayoutMediator = TabLayoutMediator(tabs, view_pager) { tab, position ->
-            tab.text = presenter.getDay(position).caption
-        }
+        viewBinding.viewPager.adapter = pagerAdapter
+        tabLayoutMediator =
+            TabLayoutMediator(viewBinding.tabs, viewBinding.viewPager) { tab, position ->
+                tab.text = presenter.getDay(position).caption
+            }
     }
 
     override fun onStart() {
@@ -68,15 +71,15 @@ class WeekScheduleFragment @Inject constructor(
     }
 
     override fun onStop() {
-        view_pager.unregisterOnPageChangeCallback(onPageChangeCallback)
+        viewBinding.viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
         tabLayoutMediator.detach()
         presenter.unbindView()
         super.onStop()
     }
 
     override fun onReady(position: Int) {
-        view_pager.currentItem = position
-        view_pager.registerOnPageChangeCallback(onPageChangeCallback)
+        viewBinding.viewPager.currentItem = position
+        viewBinding.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
     }
 
     override fun showErrorMessage(message: String) {
@@ -84,10 +87,10 @@ class WeekScheduleFragment @Inject constructor(
     }
 
     override fun showProgress() {
-//        swipeRefresh.isRefreshing = true
+//        viewBinding.swipeRefresh.isRefreshing = true
     }
 
     override fun hideProgress() {
-//        swipeRefresh.isRefreshing = false
+//        viewBinding.swipeRefresh.isRefreshing = false
     }
 }

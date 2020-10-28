@@ -42,8 +42,6 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-kapt'
 
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'com.google.firebase.appdistribution'
 
 apply plugin: 'com.google.firebase.crashlytics'

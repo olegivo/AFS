@@ -22,6 +22,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import org.jetbrains.annotations.TestOnly
+import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.BrowserDestination
@@ -36,11 +37,19 @@ import ru.olegivo.afs.schedule.domain.SavedAgreementUseCase
 import ru.olegivo.afs.schedule.domain.SavedReserveContactsUseCase
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
+import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
+import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
+import ru.olegivo.afs.schedules.presentation.models.toDisplay
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
 
-class ScheduleDetailsPresenter @Inject constructor(
+class ScheduleDetailsPresenter
+@Suppress("LongParameterList")
+@Inject
+constructor(
     private val reserveUseCase: ReserveUseCase,
     private val getSportsActivity: GetSportsActivityUseCase,
     private val savedReserveContactsUseCase: SavedReserveContactsUseCase,
@@ -50,12 +59,19 @@ class ScheduleDetailsPresenter @Inject constructor(
     @Named("main") private val mainScheduler: Scheduler,
     private val navigator: Navigator,
     private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase,
+    private val locale: Locale,
+    private val dateProvider: DateProvider,
     errorReporter: ErrorReporter
 ) :
     BasePresenter<ScheduleDetailsContract.View>(errorReporter),
     ScheduleDetailsContract.Presenter {
 
+    private val dateTimeFormat: SimpleDateFormat by lazy {
+        SimpleDateFormat("HH:mm dd MMMM", locale)
+    }
+
     private var sportsActivity: SportsActivity? = null
+    private var sportsActivityDisplay: SportsActivityDisplay? = null
     private var clubId: Int = 0
     private var scheduleId: Long = 0
     private var isFavorite: Boolean = false
@@ -153,13 +169,19 @@ class ScheduleDetailsPresenter @Inject constructor(
     }
 
     private fun start() {
-        sportsActivity.toMaybe()
+        sportsActivityDisplay.toMaybe()
             .switchIfEmpty(
                 Single.defer { getSportsActivity(clubId, scheduleId) }
                     .doOnSuccess {
                         sportsActivity = it
                         isFavorite = it.isFavorite
                     }
+                    .map {
+                        it.toDisplay(
+                            recordingPeriod = it.schedule.getRecordingPeriod()
+                        )
+                    }
+                    .doOnSuccess { sportsActivityDisplay = it }
             )
             .observeOn(mainScheduler)
             .subscribeBy(
@@ -196,6 +218,24 @@ class ScheduleDetailsPresenter @Inject constructor(
             )
             .addToComposite()
     }
+
+    private fun Schedule.getRecordingPeriod() =
+        recordTo?.let { recordTo ->
+            val now = dateProvider.getDate()
+
+            if (recordTo > now) {
+                recordFrom?.let { recordFrom ->
+                    if (recordFrom > now) {
+                        "Доступно с ${dateTimeFormat.format(recordFrom)}"
+                    } else {
+                        null
+                    }
+                }
+                    ?: "Доступно до ${dateTimeFormat.format(recordTo)}"
+            } else {
+                "Закончилась"
+            }
+        }
 
     private fun saveReserveContacts(reserveContacts: ReserveContacts) {
         savedReserveContactsUseCase.saveReserveContacts(reserveContacts)
