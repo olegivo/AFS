@@ -16,7 +16,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:maxLines="4"
-            android:textSize="24sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toStartOf="@+id/imageViewIsFavorite"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:textSize="18sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toStartOf="@+id/imageViewIsFavorite"
             app:layout_constraintStart_toStartOf="@+id/textViewGroup"
             app:layout_constraintTop_toBottomOf="@+id/textViewGroup"
@@ -38,14 +38,31 @@
 
 
     <TextView
+            android:id="@+id/textViewSlotsCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/textViewSlotsCaption"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDutyCaption"
+            tools:visibility="visible"
+            />
+
+    <TextView
             android:id="@+id/textViewSlots"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/textViewSlotsCaption"
             app:layout_constraintTop_toBottomOf="@+id/textViewDutyCaption"
-            tools:text="Мест: 21"
+            tools:text="21/24"
+            tools:visibility="visible"
             />
 
     <TextView
@@ -53,6 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toBottomOf="@+id/textViewDutyCaption"
             app:layout_constraintStart_toEndOf="@+id/textViewDutyCaption"
             app:layout_constraintTop_toTopOf="@+id/textViewDutyCaption"
@@ -66,57 +84,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Начало занятия"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewActivity"
             />
-
-    <Button
-            android:id="@+id/buttonReserve"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Записаться"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutFio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/textInputLayoutPhone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="ФИО"
-                />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutPhone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/checkBoxAgreement"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Телефон"
-                />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
             android:id="@+id/imageViewIsFavorite"
@@ -130,29 +101,143 @@
             app:srcCompat="@drawable/ic_favorite_border_black_24dp"
             />
 
-    <CheckBox
-            android:id="@+id/checkBoxAgreement"
-            android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewRecord"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:textColor="@color/interaction"
-            app:layout_constraintBottom_toTopOf="@+id/buttonReserve"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
-    <TextView
-            android:id="@+id/textViewAgreement"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/agreement"
-            android:textColor="@android:color/holo_blue_dark"
-            app:layout_constraintBottom_toBottomOf="@+id/checkBoxAgreement"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/checkBoxAgreement"
-            app:layout_constraintTop_toTopOf="@+id/checkBoxAgreement"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible"
+            >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+            <TextView
+                    android:id="@+id/textViewRecordingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Запись"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+            <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupRecording"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="textInputLayoutFio,textInputLayoutPhone,checkBoxAgreement,textViewAgreement,buttonReserve"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewRecordingTitle"
+                    tools:visibility="visible"
+                    />
+
+            <TextView
+                    android:id="@+id/textViewRecordingPeriod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_constraintBottom_toTopOf="@id/textInputLayoutFio"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewRecordingTitle"
+                    tools:text="Начнётся в 08:00"
+                    />
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutFio"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintBottom_toTopOf="@id/textInputLayoutPhone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    >
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="ФИО"
+                        />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutPhone"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toTopOf="@+id/checkBoxAgreement"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    >
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Телефон"
+                        />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                    android:id="@+id/checkBoxAgreement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/interaction"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonReserve"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+            <TextView
+                    android:id="@+id/textViewAgreement"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/agreement"
+                    android:textColor="@android:color/holo_blue_dark"
+                    app:layout_constraintBottom_toBottomOf="@+id/checkBoxAgreement"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/checkBoxAgreement"
+                    app:layout_constraintTop_toTopOf="@+id/checkBoxAgreement"
+                    />
+
+            <Button
+                    android:id="@+id/buttonReserve"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Записаться"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

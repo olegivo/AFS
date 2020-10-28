@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
@@ -30,7 +31,7 @@ import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.databinding.FragmentScheduleDetailsBinding
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
-import ru.olegivo.afs.schedules.domain.models.SportsActivity
+import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -81,7 +82,9 @@ class ScheduleDetailsFragment @Inject constructor(
         )
 
     override fun showIsFavorite(isFavorite: Boolean) {
-        viewBinding.imageViewIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
+        viewBinding.imageViewIsFavorite.setImageResource(
+            if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp
+        )
     }
 
     override fun onStart() {
@@ -94,20 +97,18 @@ class ScheduleDetailsFragment @Inject constructor(
         super.onStop()
     }
 
-    override fun showScheduleToReserve(sportsActivity: SportsActivity) {
-        viewBinding.textViewGroup.text = sportsActivity.schedule.group
-        viewBinding.textViewActivity.text = sportsActivity.schedule.activity
-        viewBinding.textViewDuty.text = hoursMinutesFormat.format(sportsActivity.schedule.datetime)
-        sportsActivity.schedule.totalSlots?.let {
-            viewBinding.textViewSlots.text =
-                requireContext().getString(
-                    R.string.slots_count,
-                    sportsActivity.availableSlots,
-                    sportsActivity.schedule.totalSlots
-                )
-        } ?: run {
-            viewBinding.textViewSlots.visibility = View.GONE
+    override fun showScheduleToReserve(sportsActivity: SportsActivityDisplay) {
+        viewBinding.textViewGroup.text = sportsActivity.group
+        viewBinding.textViewActivity.text = sportsActivity.activity
+        viewBinding.textViewDuty.text = hoursMinutesFormat.format(sportsActivity.datetime)
+        viewBinding.cardViewRecord.isVisible = sportsActivity.preEntry
+        sportsActivity.slotsCount?.let {
+            viewBinding.textViewSlots.text = it
+            viewBinding.textViewSlots.isVisible = true
+            viewBinding.textViewSlotsCaption.isVisible = true
         }
+        viewBinding.textViewRecordingPeriod.text = sportsActivity.recordingPeriod
+        viewBinding.groupRecording.isVisible = sportsActivity.hasAvailableSlots
     }
 
     override fun showSuccessReserved() {
@@ -176,13 +177,19 @@ class ScheduleDetailsFragment @Inject constructor(
 
     @SuppressLint("ConstantLocale")
     companion object {
+
         fun getArguments(id: Long, clubId: Int) = Args(id, clubId).toBundle()
 
-        private const val FORMAT = "HH:mm"
+        private val locale = Locale("ru")
 
         private val hoursMinutesFormat: SimpleDateFormat by lazy {
             // TODO: copy paste
-            SimpleDateFormat(FORMAT, Locale.getDefault())
+            SimpleDateFormat("HH:mm", locale)
+        }
+
+        private val dateTimeFormat: SimpleDateFormat by lazy {
+            // TODO: copy paste
+            SimpleDateFormat("HH:mm dd MMMM", locale)
         }
     }
 

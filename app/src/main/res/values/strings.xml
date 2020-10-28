@@ -7,4 +7,5 @@
     <string name="agreement"><u>Ознакомлен с правилами, согласен на обработку персональных данных</u></string>
     <string name="favorite_record_reminder_channel_name">Необходимость записи на занятие</string>
     <string name="favorite_record_reminder_channel_description">Уведомления о необходимости записи на избранные занятия</string>
+    <string name="textViewSlotsCaption">Мест:</string>
 </resources>

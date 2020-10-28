@@ -19,7 +19,7 @@ package ru.olegivo.afs.schedule.presentation
 
 import ru.olegivo.afs.common.presentation.PresentationContract
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
-import ru.olegivo.afs.schedules.domain.models.SportsActivity
+import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
 
 interface ScheduleDetailsContract {
     interface Presenter : PresentationContract.Presenter<View> {
@@ -30,7 +30,7 @@ interface ScheduleDetailsContract {
     }
 
     interface View : PresentationContract.View {
-        fun showScheduleToReserve(sportsActivity: SportsActivity)
+        fun showScheduleToReserve(sportsActivity: SportsActivityDisplay)
         fun showSuccessReserved()
         fun showTryLater()
         fun showTheTimeHasGone()
