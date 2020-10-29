@@ -1,3 +1,4 @@
+[![Build Status](https://app.bitrise.io/app/221f5e0808826a33/status.svg?token=baEZaQ6vspCgdul2JC_7WA&branch=master)](https://app.bitrise.io/app/221f5e0808826a33)
 # AFS
 
 # Sponsors
