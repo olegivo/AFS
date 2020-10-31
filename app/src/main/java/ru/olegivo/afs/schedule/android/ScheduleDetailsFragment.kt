@@ -199,7 +199,7 @@ class ScheduleDetailsFragment @Inject constructor(
     }
 }
 
-private fun ScheduleDetailsFragment.Args.toBundle(): Bundle {
+internal fun ScheduleDetailsFragment.Args.toBundle(): Bundle {
     return Bundle().apply {
         putLong(ScheduleDetailsFragment.Args.Fields.id, id)
         putInt(ScheduleDetailsFragment.Args.Fields.clubId, clubId)
