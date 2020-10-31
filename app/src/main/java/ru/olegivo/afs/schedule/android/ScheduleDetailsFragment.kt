@@ -100,7 +100,7 @@ class ScheduleDetailsFragment @Inject constructor(
     override fun showScheduleToReserve(sportsActivity: SportsActivityDisplay) {
         viewBinding.textViewGroup.text = sportsActivity.group
         viewBinding.textViewActivity.text = sportsActivity.activity
-        viewBinding.textViewDuty.text = hoursMinutesFormat.format(sportsActivity.datetime)
+        viewBinding.textViewDuty.text = sportsActivity.datetime
         viewBinding.cardViewRecord.isVisible = sportsActivity.preEntry
         sportsActivity.slotsCount?.let {
             viewBinding.textViewSlots.text = it

@@ -40,6 +40,7 @@ import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
 import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
 import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomString
+import ru.olegivo.afs.helpers.willComplete
 import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
@@ -107,30 +108,20 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `bindView shows schedule WHEN view bound, has saved reserve contacts, has saved accepted agreement`() {
-        val sportsActivity = createActivity()
-
-        val reserveContacts = createReserveContacts()
-        val isAgreementAccepted = true
         bindView(
             testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts,
-                isAgreementAccepted = isAgreementAccepted
+                reserveContacts = createReserveContacts(),
+                isAgreementAccepted = true
             )
         )
     }
 
     @Test
     fun `bindView shows schedule WHEN view bound, has saved reserve contacts, has saved not accepted agreement`() {
-        val sportsActivity = createActivity()
-
-        val reserveContacts = createReserveContacts()
-        val isAgreementAccepted = false
         bindView(
             testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts,
-                isAgreementAccepted = isAgreementAccepted
+                reserveContacts = createReserveContacts(),
+                isAgreementAccepted = false
             )
         )
     }
@@ -144,19 +135,20 @@ class ScheduleDetailsPresenterTest :
     fun `bindView shows schedule with recordFrom WHEN view bound, recordFrom not passed`() {
         val now = Date(2020, 10, 28, 20, 0)
         given { dateProvider.getDate() }.willReturn(now)
-        val sportsActivity = createActivity().let {
-            it.copy(
-                availableSlots = 1,
-                schedule = it.schedule.copy(
-                    totalSlots = 24,
-                    recordFrom = now.add(hours = 1),
-                    recordTo = now.add(hours = 10)
+        val sportsActivity = createActivity(dateTime = now.add(hours = 2))
+            .let {
+                it.copy(
+                    availableSlots = 1,
+                    schedule = it.schedule.copy(
+                        totalSlots = 24,
+                        recordFrom = now.add(hours = 1),
+                        recordTo = now.add(hours = 3)
+                    )
                 )
-            )
-        }
+            }
         val sportsActivityDisplay = SportsActivityDisplay(
             preEntry = sportsActivity.schedule.preEntry,
-            datetime = sportsActivity.schedule.datetime,
+            datetime = "22:00 28 ноября",
             group = sportsActivity.schedule.group,
             activity = sportsActivity.schedule.activity,
             recordingPeriod = "Доступно с 21:00 28 ноября",
@@ -176,19 +168,20 @@ class ScheduleDetailsPresenterTest :
     fun `bindView shows schedule with recordTo WHEN view bound, recordFrom passed, recordTo not passed`() {
         val now = Date(2020, 10, 28, 21, 0)
         given { dateProvider.getDate() }.willReturn(now)
-        val sportsActivity = createActivity().let {
-            it.copy(
-                availableSlots = 1,
-                schedule = it.schedule.copy(
-                    totalSlots = 24,
-                    recordFrom = now.add(hours = -1),
-                    recordTo = now.add(hours = 1)
+        val sportsActivity = createActivity(dateTime = now.add(hours = 2))
+            .let {
+                it.copy(
+                    availableSlots = 1,
+                    schedule = it.schedule.copy(
+                        totalSlots = 24,
+                        recordFrom = now.add(hours = -1),
+                        recordTo = now.add(hours = 1)
+                    )
                 )
-            )
-        }
+            }
         val sportsActivityDisplay = SportsActivityDisplay(
             preEntry = sportsActivity.schedule.preEntry,
-            datetime = sportsActivity.schedule.datetime,
+            datetime = "23:00 28 ноября",
             group = sportsActivity.schedule.group,
             activity = sportsActivity.schedule.activity,
             recordingPeriod = "Доступно до 22:00 28 ноября",
@@ -205,10 +198,41 @@ class ScheduleDetailsPresenterTest :
     }
 
     @Test
-    fun `unbindView WHEN view bound`() {
-        val sportsActivity = createActivity()
+    fun `bindView shows schedule with recordTo WHEN view bound, availableSlots is null, recordFrom passed, recordTo not passed`() {
+        val now = Date(2020, 10, 28, 21, 0)
+        given { dateProvider.getDate() }.willReturn(now)
+        val sportsActivity = createActivity(dateTime = now.add(hours = 2))
+            .let {
+                it.copy(
+                    availableSlots = null,
+                    schedule = it.schedule.copy(
+                        totalSlots = 24,
+                        recordFrom = now.add(hours = -1),
+                        recordTo = now.add(hours = 1)
+                    )
+                )
+            }
+        val sportsActivityDisplay = SportsActivityDisplay(
+            preEntry = sportsActivity.schedule.preEntry,
+            datetime = "23:00 28 ноября",
+            group = sportsActivity.schedule.group,
+            activity = sportsActivity.schedule.activity,
+            recordingPeriod = "Доступно до 22:00 28 ноября",
+            slotsCount = null,
+            hasAvailableSlots = true
+        )
+        bindView(
+            TestData(
+                sportsActivity = sportsActivity,
+                sportsActivityDisplay = sportsActivityDisplay
+            )
+        )
+        verify(dateProvider).getDate()
+    }
 
-        bindView(TestData(sportsActivity = sportsActivity))
+    @Test
+    fun `unbindView WHEN view bound`() {
+        bindView(TestData())
 
         given(savedReserveContactsUseCase.saveReserveContacts(any()))
             .willReturn { Completable.complete() }
@@ -223,9 +247,7 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `unbindView WHEN view bound, reserve contacts inputed, agreement accepted`() {
-        val sportsActivity = createActivity()
-
-        bindView(TestData(sportsActivity = sportsActivity))
+        bindView(TestData())
 
         val reserveContacts = createReserveContacts()
         given(view.getReserveContacts()).willReturn { reserveContacts }
@@ -245,14 +267,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onReserveClicked show success WHEN reserve success, view bound`() {
-        val sportsActivity = createActivity()
         val reserveContacts = createReserveContacts()
-        bindView(
-            testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
@@ -270,14 +289,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onReserveClicked show try later WHEN error, view bound`() {
-        val sportsActivity = createActivity()
         val reserveContacts = createReserveContacts()
-        bindView(
-            TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         val (fio, phone) = reserveContacts
         val exception = RuntimeException(getRandomString())
@@ -297,14 +313,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onReserveClicked show the time has gone WHEN the time has gone, view bound`() {
-        val sportsActivity = createActivity()
         val reserveContacts = createReserveContacts()
-        bindView(
-            TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
@@ -322,14 +335,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onReserveClicked show has no slots a priori WHEN a priori has no slots, view bound`() {
-        val sportsActivity = createActivity()
         val reserveContacts = createReserveContacts()
-        bindView(
-            testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
@@ -347,14 +357,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onReserveClicked show has no slots a posteriori WHEN a posteriori has no slots, view bound`() {
-        val sportsActivity = createActivity()
         val reserveContacts = createReserveContacts()
-        bindView(
-            testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
@@ -372,14 +379,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onReserveClicked show has already reserved WHEN already reserved, view bound`() {
-        val sportsActivity = createActivity()
         val reserveContacts = createReserveContacts()
-        bindView(
-            testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
@@ -397,14 +401,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onReserveClicked show have to accept agreement WHEN not accepted agreement, view bound`() {
-        val sportsActivity = createActivity()
         val reserveContacts = createReserveContacts()
-        bindView(
-            testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, false))
@@ -422,19 +423,16 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onFavoriteClick show isFavorite true WHEN isFavorite was false, view bound`() {
-        val sportsActivity = createActivity().copy(isFavorite = false)
         val reserveContacts = createReserveContacts()
-        bindView(
-            testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        val testData = TestData(reserveContacts = reserveContacts, isFavorite = false)
+        val sportsActivity = testData.sportsActivity
+
+        bindView(testData = testData)
 
         given(addToFavoritesUseCase.invoke(sportsActivity.schedule))
-            .willReturn { Completable.complete() }
+            .willComplete()
         given(planFavoriteRecordReminderUseCase.invoke(sportsActivity.schedule))
-            .willReturn { Completable.complete() }
+            .willComplete()
 
         instance.onFavoriteClick()
             .andTriggerActions()
@@ -448,15 +446,11 @@ class ScheduleDetailsPresenterTest :
 
     @Test
     fun `onFavoriteClick show isFavorite false WHEN isFavorite was true, view bound`() {
-        val sportsActivity = createActivity().copy(isFavorite = true)
         val reserveContacts = createReserveContacts()
+        val testData = TestData(reserveContacts = reserveContacts, isFavorite = true)
+        val sportsActivity = testData.sportsActivity
 
-        bindView(
-            testData = TestData(
-                sportsActivity = sportsActivity,
-                reserveContacts = reserveContacts
-            )
-        )
+        bindView(testData = testData)
 
         given(removeFromFavoritesUseCase.invoke(sportsActivity.schedule))
             .willReturn { Completable.complete() }
@@ -510,20 +504,30 @@ class ScheduleDetailsPresenterTest :
     }
 
     private data class TestData(
-        val sportsActivity: SportsActivity = createActivity(),
+        val isFavorite: Boolean? = null,
+        val now: Date = Date(2020, 10, 28, 20, 0),
+        val dateTime: Date = now.add(hours = 1),
+        val sportsActivity: SportsActivity = createActivity(
+            dateTime = dateTime,
+            isFavorite = isFavorite
+        ),
         val reserveContacts: ReserveContacts? = null,
         val isAgreementAccepted: Boolean = false,
-        val sportsActivityDisplay: SportsActivityDisplay = sportsActivity.toDisplay(recordingPeriod = null)
-    )
-}
-
-private fun createActivity() = createSportsActivity().let {
-    it.copy(
-        schedule = it.schedule.copy(
-            preEntry = true,
-            totalSlots = null,
-            recordFrom = null,
-            recordTo = null
+        val sportsActivityDisplay: SportsActivityDisplay = sportsActivity.toDisplay(
+            datetime = "21:00 28 ноября",
+            recordingPeriod = null
         )
     )
 }
+
+private fun createActivity(dateTime: Date, isFavorite: Boolean? = null) =
+    createSportsActivity(datetime = dateTime, isFavorite = isFavorite).let {
+        it.copy(
+            schedule = it.schedule.copy(
+                preEntry = true,
+                totalSlots = null,
+                recordFrom = null,
+                recordTo = null
+            )
+        )
+    }

@@ -18,27 +18,30 @@
 package ru.olegivo.afs.schedules.presentation.models
 
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import java.util.Date
 
 data class SportsActivityDisplay(
     val hasAvailableSlots: Boolean,
     val preEntry: Boolean,
-    val datetime: Date,
+    val datetime: String,
     val group: String,
     val activity: String,
     val recordingPeriod: String?,
     val slotsCount: String?
 )
 
-fun SportsActivity.toDisplay(recordingPeriod: String?) =
+fun SportsActivity.toDisplay(datetime: String, recordingPeriod: String?) =
     SportsActivityDisplay(
         hasAvailableSlots = availableSlots.let { it == null || it > 0 },
         preEntry = schedule.preEntry,
-        datetime = schedule.datetime,
+        datetime = datetime,
         group = schedule.group,
         activity = schedule.activity,
         recordingPeriod = recordingPeriod,
-        slotsCount = schedule.totalSlots?.let { totalSlots ->
-            "$availableSlots/$totalSlots"
+        slotsCount = with(schedule) {
+            if (totalSlots != null && availableSlots != null) {
+                "$availableSlots/$totalSlots"
+            } else {
+                null
+            }
         }
     )
