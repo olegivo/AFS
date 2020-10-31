@@ -25,7 +25,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.AndroidSupportInjection
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.databinding.FragmentScheduleDetailsBinding
@@ -48,7 +47,6 @@ class ScheduleDetailsFragment @Inject constructor(
     )
 
     override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
         super.onAttach(context)
         requireArguments().toArgs().also {
             presenter.init(it.id, it.clubId)
