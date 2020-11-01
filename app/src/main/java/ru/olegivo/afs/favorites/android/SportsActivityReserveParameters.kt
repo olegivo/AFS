@@ -38,8 +38,8 @@ fun Intent.getSportsActivityReserveParameters() =
     SportsActivityReserveParameters(
         clubId = getIntExtra("CLUB_ID", 0),
         scheduleId = getLongExtra("SCHEDULE_ID", 0),
-        fio = getStringExtra("FIO"),
-        phone = getStringExtra("PHONE")
+        fio = getStringExtra("FIO")!!,
+        phone = getStringExtra("PHONE")!!
     )
 
 fun SportsActivityReserveParameters.toWorkerParameters() =

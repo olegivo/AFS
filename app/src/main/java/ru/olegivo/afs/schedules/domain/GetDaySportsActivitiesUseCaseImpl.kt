@@ -73,7 +73,7 @@ class GetDaySportsActivitiesUseCaseImpl @Inject constructor(
         return schedules.map {
             SportsActivity(
                 schedule = it,
-                availableSlots = slotsById[it.id] ?: 0,
+                availableSlots = slotsById[it.id],
                 isReserved = currentWeekReservedScheduleIds.contains(it.id),
                 isFavorite = favoritesScheduleIds
                     .contains(it.id)

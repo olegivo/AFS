@@ -36,7 +36,6 @@ class GetSportsActivityUseCaseImpl @Inject constructor(
                         val availableSlots: Int? =
                             slots.singleOrNull { it.id == scheduleId }
                                 ?.slots
-                                ?: 0
                         scheduleRepository.isScheduleReserved(scheduleId)
                             .flatMap { isReserved ->
                                 favoritesRepository.isFavorite(schedule)

@@ -69,6 +69,9 @@ constructor(
     private val dateTimeFormat: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm dd MMMM", locale)
     }
+    private val hoursMinutesFormat: SimpleDateFormat by lazy {
+        SimpleDateFormat("HH:mm", locale)
+    }
 
     private var sportsActivity: SportsActivity? = null
     private var sportsActivityDisplay: SportsActivityDisplay? = null
@@ -178,6 +181,7 @@ constructor(
                     }
                     .map {
                         it.toDisplay(
+                            datetime = dateTimeFormat.format(it.schedule.datetime),
                             recordingPeriod = it.schedule.getRecordingPeriod()
                         )
                     }
