@@ -21,7 +21,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
@@ -42,7 +41,7 @@ class ScheduleDetailsFragment @Inject constructor(
     Fragment(R.layout.fragment_schedule_details),
     ScheduleDetailsContract.View {
 
-    private val viewBinding: FragmentScheduleDetailsBinding by viewBinding(
+    private val viewBinding by viewBinding(
         FragmentScheduleDetailsBinding::bind
     )
 
@@ -55,8 +54,6 @@ class ScheduleDetailsFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewBinding.imageViewIsFavorite
 
         viewBinding.buttonReserve.setOnClickListener {
             presenter.onReserveClicked(
@@ -96,17 +93,7 @@ class ScheduleDetailsFragment @Inject constructor(
     }
 
     override fun showScheduleToReserve(sportsActivity: SportsActivityDisplay) {
-        viewBinding.textViewGroup.text = sportsActivity.group
-        viewBinding.textViewActivity.text = sportsActivity.activity
-        viewBinding.textViewDuty.text = sportsActivity.datetime
-        viewBinding.cardViewRecord.isVisible = sportsActivity.preEntry
-        sportsActivity.slotsCount?.let {
-            viewBinding.textViewSlots.text = it
-            viewBinding.textViewSlots.isVisible = true
-            viewBinding.textViewSlotsCaption.isVisible = true
-        }
-        viewBinding.textViewRecordingPeriod.text = sportsActivity.recordingPeriod
-        viewBinding.groupRecording.isVisible = sportsActivity.hasAvailableSlots
+        viewBinding.bind(sportsActivity)
     }
 
     override fun showSuccessReserved() {
@@ -175,7 +162,6 @@ class ScheduleDetailsFragment @Inject constructor(
 
     @SuppressLint("ConstantLocale")
     companion object {
-
         fun getArguments(id: Long, clubId: Int) = Args(id, clubId).toBundle()
 
         private val locale = Locale("ru")
