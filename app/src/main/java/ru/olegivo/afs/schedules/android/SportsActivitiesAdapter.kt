@@ -78,8 +78,7 @@ class SportsActivitiesAdapter(context: Context, private val onItemClick: (Sports
                 binding.textViewActivity,
                 binding.textViewDuty
             ).forEach {
-                val style = if (item.isFavorite) Typeface.BOLD else Typeface.NORMAL
-                it.setTypeface(it.typeface, style)
+                it.typeface = Typeface.defaultFromStyle(if (item.isFavorite) Typeface.BOLD else Typeface.NORMAL)
             }
 
             binding.root.setOnClickListener { onItemClick(item) }
