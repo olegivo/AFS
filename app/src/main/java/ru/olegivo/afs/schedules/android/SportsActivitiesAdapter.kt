@@ -21,8 +21,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.android.BaseAdapter
@@ -60,15 +60,16 @@ class SportsActivitiesAdapter(context: Context, private val onItemClick: (Sports
             binding.textViewGroup.text = schedule.group
             binding.textViewActivity.text = schedule.activity
             binding.textViewDuty.text = hoursMinutesFormat.format(schedule.datetime)
-            schedule.totalSlots?.let {
+            if (schedule.totalSlots != null && item.availableSlots != null) {
+                binding.textViewSlots.isVisible = true
                 binding.textViewSlots.text =
                     binding.root.context.getString(
                         R.string.slots_count,
                         item.availableSlots,
                         schedule.totalSlots
                     )
-            } ?: run {
-                binding.textViewSlots.visibility = View.GONE
+            } else {
+                binding.textViewSlots.isVisible = false
             }
 
             listOf(
