@@ -39,6 +39,7 @@ import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.databinding.FragmentHomeBinding
 import ru.olegivo.afs.favorites.presentation.models.FavoritesDestination
+import ru.olegivo.afs.home.analytics.HomeAnalytics
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import java.io.File
@@ -56,7 +57,7 @@ class HomeFragment @Inject constructor(
     @Named("main") private val mainScheduler: Scheduler,
     @Named("io") private val ioScheduler: Scheduler
 ) : Fragment(R.layout.fragment_home),
-    ScreenNameProvider {
+    ScreenNameProvider by HomeAnalytics.Screens.Home {
 
     private val viewBinding: FragmentHomeBinding by viewBinding(FragmentHomeBinding::bind)
 
@@ -71,8 +72,6 @@ class HomeFragment @Inject constructor(
                 onError = ::onError
             )
     }
-
-    override val screenName: String = "home"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

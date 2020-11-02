@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.olegivo.afs.R
 import ru.olegivo.afs.databinding.FragmentDayScheduleBinding
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.DayScheduleContract
 import ru.olegivo.afs.schedules.presentation.models.Day
@@ -34,7 +36,9 @@ import javax.inject.Inject
 
 class DayScheduleFragment @Inject constructor(
     private val presenter: DayScheduleContract.Presenter
-) : Fragment(R.layout.fragment_day_schedule), DayScheduleContract.View {
+) : Fragment(R.layout.fragment_day_schedule),
+    ScreenNameProvider by SchedulesAnalytic.Screens.DaySchedule,
+    DayScheduleContract.View {
 
     private val viewBinding: FragmentDayScheduleBinding by viewBinding(FragmentDayScheduleBinding::bind)
 

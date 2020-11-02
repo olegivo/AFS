@@ -22,11 +22,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import ru.olegivo.afs.R
 import ru.olegivo.afs.common.di.ScopedFragmentFactory
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.analytics.models.AnalyticEvent
 import ru.olegivo.afs.favorites.android.getExtraFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.android.putFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
@@ -54,9 +59,29 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
     lateinit var scopedFragmentFactory: ScopedFragmentFactory
 
+    @Inject
+    lateinit var analyticsProvider: AnalyticsProvider
+
     private val navigator: Navigator =
         object : SupportAppNavigator(this, supportFragmentManager, R.id.container) {
         }
+
+    private val fragmentLifecycleCallbacks = object :
+        FragmentManager.FragmentLifecycleCallbacks() {
+
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            super.onFragmentResumed(fm, f)
+            (f as? ScreenNameProvider)?.let { screen ->
+                analyticsProvider.logEvent(
+                    AnalyticEvent.ScreenView(
+                        screenName = screen.screenName,
+                        screenClass = screen.javaClass.simpleName,
+                        parameters = screen.parameters
+                    )
+                ).subscribe()
+            }
+        }
+    }
 
     override fun androidInjector() = androidInjector
 
@@ -67,6 +92,11 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         setContentView(R.layout.activity_main)
         router.newRootScreen(HomeScreen)
         processIntent(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
     }
 
     override fun onNewIntent(intent: Intent?) {

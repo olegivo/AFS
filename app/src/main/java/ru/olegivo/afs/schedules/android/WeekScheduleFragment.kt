@@ -17,7 +17,6 @@
 
 package ru.olegivo.afs.schedules.android
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -25,9 +24,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
-import dagger.android.support.AndroidSupportInjection
 import ru.olegivo.afs.R
 import ru.olegivo.afs.databinding.FragmentWeekScheduleBinding
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
 import javax.inject.Inject
 import javax.inject.Provider
@@ -35,17 +35,14 @@ import javax.inject.Provider
 class WeekScheduleFragment @Inject constructor(
     private val presenter: WeekScheduleContract.Presenter,
     private val dayScheduleFragmentProvider: Provider<DayScheduleFragment>
-) : Fragment(R.layout.fragment_week_schedule), WeekScheduleContract.View {
+) : Fragment(R.layout.fragment_week_schedule),
+    ScreenNameProvider by SchedulesAnalytic.Screens.WeekSchedule,
+    WeekScheduleContract.View {
 
     private val viewBinding: FragmentWeekScheduleBinding by viewBinding(FragmentWeekScheduleBinding::bind)
 
     private lateinit var pagerAdapter: ViewPagerAdapter
     private lateinit var tabLayoutMediator: TabLayoutMediator
-
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
