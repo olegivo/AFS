@@ -15,15 +15,9 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.di
+package ru.olegivo.afs.analytics.data
 
-import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
+interface FirebaseAnalyticsNetworkSource {
 
-@Module(
-    includes = [
-        NetworkModule.ProvidesKtorModule::class,
-        AnalyticsCoreModule::class
-    ]
-)
-interface TestExternalModule
+    fun logEvent(event: String, extra: Map<String, String>)
+}

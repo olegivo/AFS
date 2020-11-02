@@ -15,15 +15,8 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.di
+package ru.olegivo.afs.analytics.models
 
-import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
+data class Event(val name: String, val parameters: Map<String, String> = emptyMap())
 
-@Module(
-    includes = [
-        NetworkModule.ProvidesKtorModule::class,
-        AnalyticsCoreModule::class
-    ]
-)
-interface TestExternalModule
+inline class EventName(val value: String)

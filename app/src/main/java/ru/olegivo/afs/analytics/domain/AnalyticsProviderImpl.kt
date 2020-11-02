@@ -15,15 +15,17 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.di
+package ru.olegivo.afs.analytics.domain
 
-import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
+import io.reactivex.Completable
+import ru.olegivo.afs.analytics.models.AnalyticEvent
+import javax.inject.Inject
 
-@Module(
-    includes = [
-        NetworkModule.ProvidesKtorModule::class,
-        AnalyticsCoreModule::class
-    ]
-)
-interface TestExternalModule
+class AnalyticsProviderImpl @Inject constructor(
+    private val analyticsRepository: AnalyticsRepository,
+    private val eventsFactory: EventsFactory
+) : AnalyticsProvider {
+
+    override fun logEvent(event: AnalyticEvent): Completable =
+        analyticsRepository.logEvent(eventsFactory.createEvent(event))
+}

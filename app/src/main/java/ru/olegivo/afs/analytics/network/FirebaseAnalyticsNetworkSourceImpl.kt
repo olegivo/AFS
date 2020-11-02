@@ -15,15 +15,19 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.di
+package ru.olegivo.afs.analytics.network
 
-import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
+import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
+import javax.inject.Inject
 
-@Module(
-    includes = [
-        NetworkModule.ProvidesKtorModule::class,
-        AnalyticsCoreModule::class
-    ]
-)
-interface TestExternalModule
+class FirebaseAnalyticsNetworkSourceImpl @Inject constructor(
+    private val firebaseAnalytics: FirebaseAnalytics
+) : FirebaseAnalyticsNetworkSource {
+
+    override fun logEvent(event: String, extra: Map<String, String>) =
+        firebaseAnalytics.logEvent(event) {
+            extra.forEach { (key, value) -> param(key, value) }
+        }
+}

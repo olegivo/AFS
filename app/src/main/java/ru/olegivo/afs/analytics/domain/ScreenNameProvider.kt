@@ -15,15 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.di
+package ru.olegivo.afs.analytics.domain
 
-import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
-
-@Module(
-    includes = [
-        NetworkModule.ProvidesKtorModule::class,
-        AnalyticsCoreModule::class
-    ]
-)
-interface TestExternalModule
+interface ScreenNameProvider {
+    val screenName: String
+    val parameters: Map<String, String>
+        get() = emptyMap()
+}

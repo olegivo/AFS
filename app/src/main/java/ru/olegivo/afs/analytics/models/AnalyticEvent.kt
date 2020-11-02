@@ -15,15 +15,19 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.di
+package ru.olegivo.afs.analytics.models
 
-import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
+sealed class AnalyticEvent(
+    val extra: Map<String, String>
+) {
+    class ScreenView(
+        val screenName: String,
+        val screenClass: String? = null,
+        parameters: Map<String, String>
+    ) : AnalyticEvent(parameters)
 
-@Module(
-    includes = [
-        NetworkModule.ProvidesKtorModule::class,
-        AnalyticsCoreModule::class
-    ]
-)
-interface TestExternalModule
+    abstract class Custom(
+        val name: EventName,
+        extra: Map<String, String> = emptyMap()
+    ) : AnalyticEvent(extra)
+}

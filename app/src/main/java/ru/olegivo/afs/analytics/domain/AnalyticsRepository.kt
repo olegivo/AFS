@@ -15,15 +15,12 @@
  * AFS.
  */
 
-package ru.olegivo.afs.common.di
+package ru.olegivo.afs.analytics.domain
 
-import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
+import io.reactivex.Completable
+import ru.olegivo.afs.analytics.models.Event
 
-@Module(
-    includes = [
-        NetworkModule.ProvidesKtorModule::class,
-        AnalyticsCoreModule::class
-    ]
-)
-interface TestExternalModule
+interface AnalyticsRepository {
+
+    fun logEvent(event: Event): Completable
+}
