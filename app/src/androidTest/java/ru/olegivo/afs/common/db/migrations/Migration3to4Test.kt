@@ -23,8 +23,10 @@ import org.junit.Test
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomString
+import ru.olegivo.afs.suite.DbMigrationsTest
 import java.util.Date
 
+@DbMigrationsTest
 class Migration3to4Test :
     BaseMigrationsTest(migration3_4, 3, 4) {
 

@@ -29,7 +29,9 @@ import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
 import ru.olegivo.afs.schedules.network.models.DomainClub
+import ru.olegivo.afs.suite.NetworkTest
 
+@NetworkTest
 class ReserveNetworkSourceImplTest : AuthorizedApiTest() {
 
     @Test

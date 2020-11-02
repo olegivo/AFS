@@ -27,7 +27,9 @@ import ru.olegivo.afs.common.network.AuthorizedApiTest
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
 import ru.olegivo.afs.schedules.network.models.DomainClub
 import ru.olegivo.afs.shared.network.models.Schedules
+import ru.olegivo.afs.suite.NetworkTest
 
+@NetworkTest
 class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
 
     @Test

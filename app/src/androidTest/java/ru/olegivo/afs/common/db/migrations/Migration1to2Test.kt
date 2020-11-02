@@ -25,7 +25,9 @@ import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.repeat
+import ru.olegivo.afs.suite.DbMigrationsTest
 
+@DbMigrationsTest
 class Migration1to2Test :
     BaseMigrationsTest(migration1_2, 1, 2) {
 

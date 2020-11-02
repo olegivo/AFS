@@ -26,7 +26,9 @@ import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
 import ru.olegivo.afs.schedules.db.models.toDb
+import ru.olegivo.afs.suite.DbTest
 
+@DbTest
 class ScheduleDaoTest : AfsDaoTest<ScheduleDao>({ schedules }) {
     @Test
     fun getSchedule_RETURNS_putted_entity() {

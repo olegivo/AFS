@@ -22,7 +22,9 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.network.AuthorizedApiTest
+import ru.olegivo.afs.suite.NetworkTest
 
+@NetworkTest
 class ClubsNetworkSourceImplTest : AuthorizedApiTest() {
 
     @Test

@@ -28,7 +28,9 @@ import ru.olegivo.afs.RxIdlerRule
 import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.main.android.MainActivity
 import ru.olegivo.afs.schedule.data.ReserveRepositoryImpl
+import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 
+@IntegratedIsolatedUITest
 class HomeFragmentTest {
 
     private val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
