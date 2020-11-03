@@ -20,8 +20,10 @@ package ru.olegivo.afs.favorites.domain
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
+import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.Schedule
@@ -33,7 +35,8 @@ class RestoreAllActiveRecordRemindersUseCaseImpl @Inject constructor(
     private val dateProvider: DateProvider,
     private val scheduleReminderNotifier: ScheduleReminderNotifier,
     private val reserveRepository: ReserveRepository,
-    private val errorReporter: ErrorReporter
+    private val errorReporter: ErrorReporter,
+    private val analyticsProvider: AnalyticsProvider
 ) : RestoreAllActiveRecordRemindersUseCase {
 
     override fun invoke(): Completable =
@@ -64,19 +67,21 @@ class RestoreAllActiveRecordRemindersUseCaseImpl @Inject constructor(
                         Single.just(scheduleReminderNotifier::showNotificationToShowDetails)
                     )
 
-                actionSingle.flatMapCompletable { action ->
-                    Completable.concat(
-                        schedules.map {
-                            action(it)
-                                .doOnError { throwable ->
-                                    errorReporter.reportError(
-                                        throwable,
-                                        "Ошибка при попытке формирования уведомления для записи на занятие"
-                                    )
-                                }
-                                .onErrorComplete()
-                        }
-                    )
-                }
+                actionSingle
+                    .flatMapCompletable { action ->
+                        Completable.concat(
+                            schedules.map {
+                                action(it)
+                                    .startWith(analyticsProvider.logEvent(FavoritesAnalytics.RestoreActiveRecordReminder))
+                                    .doOnError { throwable ->
+                                        errorReporter.reportError(
+                                            throwable,
+                                            "Ошибка при попытке формирования уведомления для записи на занятие"
+                                        )
+                                    }
+                                    .onErrorComplete()
+                            }
+                        )
+                    }
             }
 }

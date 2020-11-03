@@ -16,11 +16,23 @@
  */package ru.olegivo.afs.schedule.analytics
 
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.analytics.models.AnalyticEvent
+import ru.olegivo.afs.analytics.models.EventName
 
 object ScheduleDetailsAnalytic {
     object Screens {
         object ScheduleDetails : ScreenNameProvider {
             override val screenName: String = "schedule_details"
+
+            object OnReserveClicked : AnalyticEvent.Custom(EventName("schedule_details_reserve_clicked"))
+
+            object OnRemoveFromFavoritesClicked : AnalyticEvent.Custom(EventName("schedule_details_remove_favorite_clicked"))
+
+            object OnAddToFavoritesClicked : AnalyticEvent.Custom(EventName("schedule_details_add_favorite_clicked"))
+
+            object OnViewAgreementClicked : AnalyticEvent.Custom(EventName("schedule_details_view_agreement_clicked"))
+
+            object SaveAgreementAccepted : AnalyticEvent.Custom(EventName("schedule_details_agreement_accepted"))
         }
     }
 }

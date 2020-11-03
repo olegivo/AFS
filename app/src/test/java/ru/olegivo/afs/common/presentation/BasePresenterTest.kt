@@ -22,6 +22,7 @@ import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Scheduler
 import org.mockito.Mockito
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import kotlin.reflect.KClass
 
@@ -33,22 +34,26 @@ abstract class BasePresenterTest<TPresenter, TView>(kClass: KClass<TView>) :
     override fun createInstance(): TPresenter =
         createPresenter(
             mainScheduler = testScheduler,
-            errorReporter = errorReporter
+            errorReporter = errorReporter,
+            analyticsProvider = analyticsProvider
         )
 
     protected abstract fun createPresenter(
         mainScheduler: Scheduler,
-        errorReporter: ErrorReporter
+        errorReporter: ErrorReporter,
+        analyticsProvider: AnalyticsProvider
     ): TPresenter
 
     //<editor-fold desc="Mocks">
     protected val errorReporter: ErrorReporter = mock()
+    protected val analyticsProvider: AnalyticsProvider = mock()
     protected val view: TView =
         Mockito.mock(kClass.java) // mockito-kotlin cannot use TView as reified type
 
     override fun getAllMocks() = getPresenterMocks().plus(
         elements = arrayOf(
             errorReporter,
+            analyticsProvider,
             view
         )
     )
@@ -66,6 +71,28 @@ abstract class BasePresenterTest<TPresenter, TView>(kClass: KClass<TView>) :
             verify(it).showErrorMessage(message)
         }
         verify(errorReporter).reportError(exception, message)
+    }
+
+    protected class ContextBinder<TContext : Any>(val context: TContext) {
+        lateinit var prepare: TContext.() -> Unit
+        lateinit var verify: TContext.() -> Unit
+
+        fun prepare(block: TContext.() -> Unit) {
+            prepare = block
+        }
+
+        fun verify(block: TContext.() -> Unit) {
+            verify = block
+        }
+    }
+
+    protected fun <TContext : Any> bind(
+        context: TContext,
+        builder: ContextBinder<TContext>.() -> Unit
+    ) {
+        ContextBinder(context).apply(builder).apply {
+            bind(context, prepare = prepare, verify = verify)
+        }
     }
 
     protected open fun <TContext : Any> bind(

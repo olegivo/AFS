@@ -18,15 +18,18 @@
 package ru.olegivo.afs.favorites.domain
 
 import io.reactivex.Completable
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import javax.inject.Inject
 
 class PlanFavoriteRecordReminderUseCaseImpl @Inject constructor(
     private val favoritesRepository: FavoritesRepository,
     private val favoriteAlarmPlanner: FavoriteAlarmPlanner,
-    private val dateProvider: DateProvider
+    private val dateProvider: DateProvider,
+    private val analyticsProvider: AnalyticsProvider
 ) : PlanFavoriteRecordReminderUseCase {
 
     override fun invoke(schedule: Schedule): Completable =
@@ -46,6 +49,7 @@ class PlanFavoriteRecordReminderUseCaseImpl @Inject constructor(
                                     dateFrom = dateFrom,
                                     dateUntil = dateUntil
                                 )
+                                    .startWith(analyticsProvider.logEvent(FavoritesAnalytics.PlanFavoriteRecordReminder))
                                     .andThen(
                                         Completable.defer {
                                             favoriteAlarmPlanner.planFavoriteRecordReminder(schedule)

@@ -16,8 +16,17 @@
  */package ru.olegivo.afs.favorites.analytics
 
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.analytics.models.AnalyticEvent
+import ru.olegivo.afs.analytics.models.EventName
 
 object FavoritesAnalytics {
+
+    object ShowRecordReminder : AnalyticEvent.Custom(EventName("favorite_show_record_reminder"))
+
+    object PlanFavoriteRecordReminder : AnalyticEvent.Custom(EventName("favorite_plan_record_reminder"))
+
+    object RestoreActiveRecordReminder : AnalyticEvent.Custom(EventName("favorite_restore_active_record_reminder"))
+
     object Screens {
         object Favorites : ScreenNameProvider {
             override val screenName: String = "favorites"

@@ -20,6 +20,7 @@ package ru.olegivo.afs.schedules.presentation
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import org.jetbrains.annotations.TestOnly
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
@@ -27,8 +28,7 @@ import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.firstDayOfWeek
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.Navigator
-import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
-import ru.olegivo.afs.schedules.domain.models.SportsActivity
+import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.presentation.models.Day
 import javax.inject.Inject
 import javax.inject.Named
@@ -38,8 +38,9 @@ class WeekSchedulePresenter @Inject constructor(
     private val dateProvider: DateProvider,
     private val navigator: Navigator,
     @Named("main") private val mainScheduler: Scheduler,
-    errorReporter: ErrorReporter
-) : BasePresenter<WeekScheduleContract.View>(errorReporter),
+    errorReporter: ErrorReporter,
+    analyticsProvider: AnalyticsProvider
+) : BasePresenter<WeekScheduleContract.View>(errorReporter, analyticsProvider),
     WeekScheduleContract.Presenter {
 
     private var clubId = 0
@@ -60,16 +61,8 @@ class WeekSchedulePresenter @Inject constructor(
     override fun getDay(position: Int): Day = days[position]
 
     override fun onDayChanged(position: Int) {
+        logEvent(SchedulesAnalytic.Screens.WeekSchedule.OnDaySelected)
         currentDay = position
-    }
-
-    override fun onSportsActivityClicked(sportsActivity: SportsActivity) {
-        navigator.navigateTo(
-            ReserveDestination(
-                sportsActivity.schedule.id,
-                sportsActivity.schedule.clubId
-            )
-        )
     }
 
     @TestOnly

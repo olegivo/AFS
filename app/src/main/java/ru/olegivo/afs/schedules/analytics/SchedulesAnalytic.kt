@@ -18,15 +18,24 @@
 package ru.olegivo.afs.schedules.analytics
 
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.analytics.models.AnalyticEvent
+import ru.olegivo.afs.analytics.models.EventName
 
 object SchedulesAnalytic {
+
+    object ActualizeSchedules : AnalyticEvent.Custom(EventName("schedules_actualize"))
+
     object Screens {
         object WeekSchedule : ScreenNameProvider {
+            object OnDaySelected : AnalyticEvent.Custom(EventName("week_schedule_day_selected"))
+
             override val screenName: String = "schedule_week"
         }
 
         object DaySchedule : ScreenNameProvider {
             override val screenName: String = "schedule_day"
+
+            object OnSportsActivityClicked : AnalyticEvent.Custom(EventName("day_schedule_item_selected"))
         }
     }
 }

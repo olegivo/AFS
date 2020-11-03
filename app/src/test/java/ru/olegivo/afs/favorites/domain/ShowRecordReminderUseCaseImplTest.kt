@@ -26,7 +26,10 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
+import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
 import ru.olegivo.afs.helpers.getRandomLong
+import ru.olegivo.afs.helpers.willComplete
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.createReserveContacts
@@ -36,21 +39,24 @@ class ShowRecordReminderUseCaseImplTest : BaseTestOf<ShowRecordReminderUseCase>(
 
     override fun createInstance() =
         ShowRecordReminderUseCaseImpl(
-            scheduleRepository,
-            scheduleReminderNotifier,
-            reserveRepository
+            scheduleRepository = scheduleRepository,
+            scheduleReminderNotifier = scheduleReminderNotifier,
+            reserveRepository = reserveRepository,
+            analyticsProvider = analyticsProvider
         )
 
     //<editor-fold desc="mocks">
     private val scheduleRepository: ScheduleRepository = mock()
     private val scheduleReminderNotifier: ScheduleReminderNotifier = mock()
     private val reserveRepository: ReserveRepository = mock()
+    private val analyticsProvider: AnalyticsProvider = mock()
 
     override fun getAllMocks() =
         arrayOf(
             scheduleRepository,
             reserveRepository,
-            scheduleReminderNotifier
+            scheduleReminderNotifier,
+            analyticsProvider
         )
     //</editor-fold>
 
@@ -58,6 +64,8 @@ class ShowRecordReminderUseCaseImplTest : BaseTestOf<ShowRecordReminderUseCase>(
     fun `invoke SHOWS record notification to show details WHEN agreement not accepted`() {
         val scheduleId = getRandomLong()
         val schedule = createSchedule()
+        given { analyticsProvider.logEvent(FavoritesAnalytics.ShowRecordReminder) }
+            .willComplete()
         given { scheduleRepository.getSchedule(scheduleId) }
             .willReturn { Single.just(schedule) }
         given { scheduleReminderNotifier.showNotificationToShowDetails(schedule) }
@@ -71,12 +79,15 @@ class ShowRecordReminderUseCaseImplTest : BaseTestOf<ShowRecordReminderUseCase>(
         verify(scheduleRepository).getSchedule(scheduleId)
         verify(reserveRepository).isAgreementAccepted()
         verify(scheduleReminderNotifier).showNotificationToShowDetails(schedule)
+        verify(analyticsProvider).logEvent(FavoritesAnalytics.ShowRecordReminder)
     }
 
     @Test
     fun `invoke SHOWS record notification to show details WHEN agreement accepted, has no reserve contacts`() {
         val scheduleId = getRandomLong()
         val schedule = createSchedule()
+        given { analyticsProvider.logEvent(FavoritesAnalytics.ShowRecordReminder) }
+            .willComplete()
         given { scheduleRepository.getSchedule(scheduleId) }
             .willReturn { Single.just(schedule) }
         given { scheduleReminderNotifier.showNotificationToShowDetails(schedule) }
@@ -93,6 +104,7 @@ class ShowRecordReminderUseCaseImplTest : BaseTestOf<ShowRecordReminderUseCase>(
         verify(reserveRepository).isAgreementAccepted()
         verify(reserveRepository).getReserveContacts()
         verify(scheduleReminderNotifier).showNotificationToShowDetails(schedule)
+        verify(analyticsProvider).logEvent(FavoritesAnalytics.ShowRecordReminder)
     }
 
     @Test
@@ -101,6 +113,8 @@ class ShowRecordReminderUseCaseImplTest : BaseTestOf<ShowRecordReminderUseCase>(
         val schedule = createSchedule()
         val reserveContacts = createReserveContacts()
 
+        given { analyticsProvider.logEvent(FavoritesAnalytics.ShowRecordReminder) }
+            .willComplete()
         given { scheduleRepository.getSchedule(scheduleId) }
             .willReturn { Single.just(schedule) }
         given {
@@ -126,5 +140,6 @@ class ShowRecordReminderUseCaseImplTest : BaseTestOf<ShowRecordReminderUseCase>(
             reserveContacts.fio,
             reserveContacts.phone
         )
+        verify(analyticsProvider).logEvent(FavoritesAnalytics.ShowRecordReminder)
     }
 }

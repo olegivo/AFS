@@ -67,7 +67,7 @@ class AnalyticsProviderImplTest : BaseTestOf<AnalyticsProvider>() {
     }
 
     @Test
-    fun `logEvent SENDS event WHEN ScreenView event`() {
+    fun `logEvent SENDS event WHEN ScreenView event with screenClass`() {
         val testData = TestData(FirebaseEventsFactory.Names.screenView)
 
         val event = AnalyticEvent.ScreenView(
@@ -86,6 +86,28 @@ class AnalyticsProviderImplTest : BaseTestOf<AnalyticsProvider>() {
             mapOf(
                 FirebaseEventsFactory.Parameters.screenName to event.screenName,
                 FirebaseEventsFactory.Parameters.screenClass to event.screenClass!!
+            )
+        )
+    }
+
+    @Test
+    fun `logEvent SENDS event WHEN ScreenView event without screenClass`() {
+        val testData = TestData(FirebaseEventsFactory.Names.screenView)
+
+        val event = AnalyticEvent.ScreenView(
+            screenName = getRandomString(prefix = "name"),
+            parameters = testData.extra
+        )
+
+        instance.logEvent(event)
+            .test().andTriggerActions()
+            .assertComplete()
+            .assertNoErrors()
+
+        verifySent(
+            testData,
+            mapOf(
+                FirebaseEventsFactory.Parameters.screenName to event.screenName
             )
         )
     }

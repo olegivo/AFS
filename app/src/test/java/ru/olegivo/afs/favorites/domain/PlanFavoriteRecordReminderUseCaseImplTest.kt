@@ -24,8 +24,10 @@ import com.nhaarman.mockitokotlin2.willReturn
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
 import ru.olegivo.afs.helpers.willComplete
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 import java.util.Date
@@ -33,19 +35,22 @@ import java.util.Date
 class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordReminderUseCase>() {
     override fun createInstance() =
         PlanFavoriteRecordReminderUseCaseImpl(
-            favoritesRepository,
-            favoriteAlarmPlanner,
-            dateProvider
+            favoritesRepository = favoritesRepository,
+            favoriteAlarmPlanner = favoriteAlarmPlanner,
+            dateProvider = dateProvider,
+            analyticsProvider = analyticsProvider
         )
 
     private val favoritesRepository: FavoritesRepository = mock()
     private val favoriteAlarmPlanner: FavoriteAlarmPlanner = mock()
     private val dateProvider: DateProvider = mock()
+    private val analyticsProvider: AnalyticsProvider = mock()
 
     override fun getAllMocks() = arrayOf(
         favoritesRepository,
         favoriteAlarmPlanner,
-        dateProvider
+        dateProvider,
+        analyticsProvider
     )
 
     @Test
@@ -66,6 +71,8 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
             .willComplete()
         given { favoritesRepository.hasPlannedReminderToRecord(schedule) }
             .willReturn { Single.just(false) }
+        given { analyticsProvider.logEvent(FavoritesAnalytics.PlanFavoriteRecordReminder) }
+            .willComplete()
 
         instance.invoke(schedule)
             .assertSuccess()
@@ -78,6 +85,7 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
             schedule.recordTo!!
         )
         verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
+        verify(analyticsProvider).logEvent(FavoritesAnalytics.PlanFavoriteRecordReminder)
     }
 
     @Test
@@ -99,6 +107,8 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
             .willReturn { Single.just(false) }
         given { favoriteAlarmPlanner.planFavoriteRecordReminder(schedule) }
             .willComplete()
+        given { analyticsProvider.logEvent(FavoritesAnalytics.PlanFavoriteRecordReminder) }
+            .willComplete()
 
         instance.invoke(schedule)
             .assertSuccess()
@@ -111,6 +121,7 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
             schedule.getReminderDateUntil()
         )
         verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
+        verify(analyticsProvider).logEvent(FavoritesAnalytics.PlanFavoriteRecordReminder)
     }
 
     @Test
@@ -132,6 +143,8 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
                 schedule.getReminderDateUntil()
             )
         }.willComplete()
+        given { analyticsProvider.logEvent(FavoritesAnalytics.PlanFavoriteRecordReminder) }
+            .willComplete()
 
         instance.invoke(schedule)
             .assertSuccess()
@@ -144,6 +157,7 @@ class PlanFavoriteRecordReminderUseCaseImplTest : BaseTestOf<PlanFavoriteRecordR
             schedule.getReminderDateUntil()
         )
         verify(favoriteAlarmPlanner).planFavoriteRecordReminder(schedule)
+        verify(analyticsProvider).logEvent(FavoritesAnalytics.PlanFavoriteRecordReminder)
     }
 
     @Test

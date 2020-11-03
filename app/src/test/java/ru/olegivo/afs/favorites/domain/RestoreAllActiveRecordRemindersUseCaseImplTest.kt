@@ -27,26 +27,30 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
+import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
+import ru.olegivo.afs.helpers.willComplete
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.createReserveContacts
 import ru.olegivo.afs.schedules.domain.models.createSchedule
-import java.util.*
+import java.util.Date
 
 class RestoreAllActiveRecordRemindersUseCaseImplTest :
     BaseTestOf<RestoreAllActiveRecordRemindersUseCase>() {
 
     override fun createInstance() =
         RestoreAllActiveRecordRemindersUseCaseImpl(
-            scheduleRepository,
-            favoritesRepository,
-            dateProvider,
-            scheduleReminderNotifier,
-            reserveRepository,
-            errorReporter
+            scheduleRepository = scheduleRepository,
+            favoritesRepository = favoritesRepository,
+            dateProvider = dateProvider,
+            scheduleReminderNotifier = scheduleReminderNotifier,
+            reserveRepository = reserveRepository,
+            errorReporter = errorReporter,
+            analyticsProvider = analyticsProvider
         )
 
     //<editor-fold desc="mocks">
@@ -56,6 +60,7 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
     private val dateProvider: DateProvider = mock()
     private val scheduleReminderNotifier: ScheduleReminderNotifier = mock()
     private val errorReporter: ErrorReporter = mock()
+    private val analyticsProvider: AnalyticsProvider = mock()
 
     override fun getAllMocks() =
         arrayOf(
@@ -64,7 +69,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
             reserveRepository,
             dateProvider,
             scheduleReminderNotifier,
-            errorReporter
+            errorReporter,
+            analyticsProvider
         )
     //</editor-fold>
 
@@ -85,6 +91,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
             .willReturn { Single.just(schedules) }
         given { reserveRepository.isAgreementAccepted() }
             .willReturn { Single.just(false) }
+        given { analyticsProvider.logEvent(FavoritesAnalytics.RestoreActiveRecordReminder) }
+            .willComplete()
 
         instance.invoke()
             .assertSuccess()
@@ -96,6 +104,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
         schedules.forEach {
             verify(scheduleReminderNotifier).showNotificationToShowDetails(it)
         }
+        verify(analyticsProvider, times(schedules.size))
+            .logEvent(FavoritesAnalytics.RestoreActiveRecordReminder)
     }
 
     @Test
@@ -117,6 +127,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
             .willReturn { Single.just(true) }
         given { reserveRepository.getReserveContacts() }
             .willReturn { Maybe.empty() }
+        given { analyticsProvider.logEvent(FavoritesAnalytics.RestoreActiveRecordReminder) }
+            .willComplete()
 
         instance.invoke()
             .assertSuccess()
@@ -129,6 +141,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
         schedules.forEach {
             verify(scheduleReminderNotifier).showNotificationToShowDetails(it)
         }
+        verify(analyticsProvider, times(schedules.size))
+            .logEvent(FavoritesAnalytics.RestoreActiveRecordReminder)
     }
 
     @Test
@@ -157,6 +171,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
             .willReturn { Single.just(true) }
         given { reserveRepository.getReserveContacts() }
             .willReturn { Maybe.just(reserveContacts) }
+        given { analyticsProvider.logEvent(FavoritesAnalytics.RestoreActiveRecordReminder) }
+            .willComplete()
 
         instance.invoke()
             .assertSuccess()
@@ -173,6 +189,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
                 reserveContacts.phone
             )
         }
+        verify(analyticsProvider, times(schedules.size))
+            .logEvent(FavoritesAnalytics.RestoreActiveRecordReminder)
     }
 
     @Test
@@ -193,6 +211,8 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
             .willReturn { Single.just(schedules) }
         given { reserveRepository.isAgreementAccepted() }
             .willReturn { Single.just(false) }
+        given { analyticsProvider.logEvent(FavoritesAnalytics.RestoreActiveRecordReminder) }
+            .willComplete()
 
         instance.invoke()
             .assertSuccess()
@@ -209,5 +229,7 @@ class RestoreAllActiveRecordRemindersUseCaseImplTest :
                 exception,
                 "Ошибка при попытке формирования уведомления для записи на занятие"
             )
+        verify(analyticsProvider, times(schedules.size))
+            .logEvent(FavoritesAnalytics.RestoreActiveRecordReminder)
     }
 }

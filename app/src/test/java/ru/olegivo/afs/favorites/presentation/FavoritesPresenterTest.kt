@@ -23,6 +23,7 @@ import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import org.junit.Test
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenterTest
 import ru.olegivo.afs.extensions.toSingle
@@ -32,11 +33,16 @@ import ru.olegivo.afs.repeat
 class FavoritesPresenterTest :
     BasePresenterTest<FavoritesContract.Presenter, FavoritesContract.View>(FavoritesContract.View::class) {
 
-    override fun createPresenter(mainScheduler: Scheduler, errorReporter: ErrorReporter) =
+    override fun createPresenter(
+        mainScheduler: Scheduler,
+        errorReporter: ErrorReporter,
+        analyticsProvider: AnalyticsProvider
+    ): FavoritesContract.Presenter =
         FavoritesPresenter(
             getFavorites = getFavoritesUseCase,
             mainScheduler = mainScheduler,
-            errorReporter = errorReporter
+            errorReporter = errorReporter,
+            analyticsProvider = analyticsProvider
         )
 
     //<editor-fold desc="Mocks">

@@ -84,3 +84,9 @@ ru/olegivo/afs/clubs/domain/GetCurrentClubUseCaseImpl.*
 ru/olegivo/afs/clubs/domain/GetClubsUseCaseImpl.*
 ru/olegivo/afs/clubs/data/ClubsRepositoryImpl.*
 ru/olegivo/afs/clubs/network/ClubsNetworkSourceImpl.*
+
+// Analytics
+ru/olegivo/afs/**/analytics/*Analytic**
+ru/olegivo/afs/analytics/domain/FirebaseEventsFactory*Parameters*
+ru/olegivo/afs/analytics/domain/ScreenNameProvider*DefaultImpls*
+ru/olegivo/afs/analytics/network/FirebaseAnalyticsNetworkSourceImpl.*
