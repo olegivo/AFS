@@ -17,17 +17,14 @@
 
 package ru.olegivo.afs.common.di
 
+import com.google.firebase.perf.FirebasePerformance
 import dagger.Module
-import ru.olegivo.afs.analytics.di.AnalyticsModule
-import ru.olegivo.afs.preferences.di.PreferencesModule
+import dagger.Provides
 
-@Module(
-    includes = [
-        NetworkModule::class,
-        DbModule::class,
-        PreferencesModule::class,
-        AnalyticsModule::class,
-        PerformanceAnalyticModule::class
-    ]
-)
-interface ExternalModule
+@Module
+object PerformanceAnalyticModule {
+    @Provides
+    fun providesFirebasePerformance(): FirebasePerformance {
+        return FirebasePerformance.getInstance()
+    }
+}
