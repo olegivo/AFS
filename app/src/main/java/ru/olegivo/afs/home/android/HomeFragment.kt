@@ -15,7 +15,7 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.home.android
 
 import android.content.Context
 import android.os.Bundle
@@ -24,11 +24,11 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
-import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import ru.olegivo.afs.R
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
@@ -37,7 +37,7 @@ import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.Navigator
-import ru.olegivo.afs.databinding.FragmentMainBinding
+import ru.olegivo.afs.databinding.FragmentHomeBinding
 import ru.olegivo.afs.favorites.presentation.models.FavoritesDestination
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
@@ -45,7 +45,7 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
 
-class MainFragment @Inject constructor(
+class HomeFragment @Inject constructor(
     private val errorReporter: ErrorReporter,
     private val reserveRepository: ReserveRepository,
     private val getClubs: GetClubsUseCase,
@@ -55,9 +55,10 @@ class MainFragment @Inject constructor(
     private val afsDatabase: AfsDatabase,
     @Named("main") private val mainScheduler: Scheduler,
     @Named("io") private val ioScheduler: Scheduler
-) : Fragment(R.layout.fragment_main) {
+) : Fragment(R.layout.fragment_home),
+    ScreenNameProvider {
 
-    private val viewBinding: FragmentMainBinding by viewBinding(FragmentMainBinding::bind)
+    private val viewBinding: FragmentHomeBinding by viewBinding(FragmentHomeBinding::bind)
 
     private var isStubReserve: Boolean? = null
 
@@ -71,10 +72,7 @@ class MainFragment @Inject constructor(
             )
     }
 
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
+    override val screenName: String = "home"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

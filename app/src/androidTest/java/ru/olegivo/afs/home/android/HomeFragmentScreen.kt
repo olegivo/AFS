@@ -15,13 +15,13 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.home.android
 
 import com.agoda.kakao.check.KCheckBox
 import com.kaspersky.kaspresso.screens.KScreen
 import ru.olegivo.afs.R
 
-object MainFragmentScreen : KScreen<MainFragmentScreen>() {
+object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
     private val isFake = KCheckBox {
         withId(R.id.activity_main_is_stub_reserve_check_box)
     }
@@ -34,6 +34,6 @@ object MainFragmentScreen : KScreen<MainFragmentScreen>() {
         }
     }
 
-    override val layoutId: Int? = R.layout.fragment_main
-    override val viewClass: Class<*>? = MainFragment::class.java
+    override val layoutId: Int? = R.layout.fragment_home
+    override val viewClass: Class<*>? = HomeFragment::class.java
 }

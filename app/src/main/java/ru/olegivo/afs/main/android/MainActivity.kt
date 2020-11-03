@@ -30,6 +30,7 @@ import ru.olegivo.afs.common.di.ScopedFragmentFactory
 import ru.olegivo.afs.favorites.android.getExtraFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.android.putFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
+import ru.olegivo.afs.home.android.HomeScreen
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         supportFragmentManager.fragmentFactory = scopedFragmentFactory
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        router.newRootScreen(MainScreen)
+        router.newRootScreen(HomeScreen)
         processIntent(intent)
     }
 

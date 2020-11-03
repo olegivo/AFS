@@ -15,11 +15,11 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.home.android
 
 import ru.terrakok.cicerone.android.support.FragmentParams
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-object MainScreen : SupportAppScreen() {
-    override fun getFragmentParams() = FragmentParams(MainFragment::class.java)
+object HomeScreen : SupportAppScreen() {
+    override fun getFragmentParams() = FragmentParams(HomeFragment::class.java)
 }

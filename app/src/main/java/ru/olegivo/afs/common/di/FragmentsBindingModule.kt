@@ -22,7 +22,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import ru.olegivo.afs.favorites.android.FavoritesFragment
-import ru.olegivo.afs.main.android.MainFragment
+import ru.olegivo.afs.home.android.HomeFragment
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedules.android.DayScheduleFragment
 import ru.olegivo.afs.schedules.android.WeekScheduleFragment
@@ -32,8 +32,8 @@ interface FragmentsBindingModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(MainFragment::class)
-    fun bindMainFragment(fragment: MainFragment): Fragment
+    @FragmentKey(HomeFragment::class)
+    fun bindHomeFragment(fragment: HomeFragment): Fragment
 
     @Binds
     @IntoMap
