@@ -3,7 +3,7 @@ format_version: '8'
 default_step_lib_source: 'https://github.com/bitrise-io/bitrise-steplib.git'
 project_type: android
 trigger_map:
-  - push_branch: 'master'
+  - push_branch: master
     workflow: empty
   - push_branch: '*'
     workflow: primary
@@ -156,10 +156,6 @@ workflows:
           title: Unit tests coverage
           inputs:
             - gradle_task: testDebugUnitTestCoverageVerification
-      - gradle-runner@1:
-          title: Compile android tests
-          inputs:
-            - gradle_task: compileDebugAndroidTestSources
       - deploy-to-bitrise-io@1:
           title: Uload coverage results
           inputs:
@@ -168,6 +164,46 @@ workflows:
                 $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
             - is_compress: 'true'
       - deploy-to-bitrise-io@1: {}
+      - cache-push@2: {}
+  android tests:
+    steps:
+      - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+      - git-clone@4: {}
+      - cache-pull@2: {}
+      - install-missing-android-tools@2:
+          inputs:
+            - gradlew_path: $GRADLEW_PATH
+      - file-downloader@1:
+          title: Download google-services.json
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/src/debug/google-services.json
+            - source: $BITRISEIO_GOOGLE_SERVICES_JSON_DEBUG_URL
+      - file-downloader@1:
+          title: Download signing.properties
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/signing.properties
+            - source: $BITRISEIO_SIGNING_PROPERTIES_URL
+      - file-downloader@1:
+          title: Download debug keystore
+          inputs:
+            - destination: $PROJECT_LOCATION/$MODULE/AFS.debug.jks
+            - source: $BITRISEIO_SIGNING_KEYSTORE_DEBUG_URL
+      - avd-manager@1:
+          inputs:
+            - api_level: '29'
+      - wait-for-android-emulator@1: {}
+      - gradle-runner@1:
+          title: Run android tests
+          inputs:
+            - gradle_task: connectedDebugAndroidTest
+      - deploy-to-bitrise-io@1:
+          title: Upload android tests results
+          inputs:
+            - zip_name: Android tests
+            - deploy_path: >-
+                $PROJECT_LOCATION/$MODULE/build/reports/androidTests/connected/flavors/debugAndroidTest
+            - is_compress: 'true'
       - cache-push@2: {}
 app:
   envs:
