@@ -23,7 +23,9 @@ import org.junit.Test
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.repeat
+import ru.olegivo.afs.suite.DbMigrationsTest
 
+@DbMigrationsTest
 class Migration3to2Test :
     BaseMigrationsTest(migration3_2, 3, 2) {
 

@@ -25,8 +25,10 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.olegivo.afs.R
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.databinding.FragmentScheduleDetailsBinding
+import ru.olegivo.afs.schedule.analytics.ScheduleDetailsAnalytic
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
 import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
 import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
@@ -39,7 +41,8 @@ class ScheduleDetailsFragment @Inject constructor(
     private val navigator: Navigator
 ) :
     Fragment(R.layout.fragment_schedule_details),
-    ScheduleDetailsContract.View {
+    ScheduleDetailsContract.View,
+    ScreenNameProvider by ScheduleDetailsAnalytic.Screens.ScheduleDetails {
 
     private val viewBinding by viewBinding(
         FragmentScheduleDetailsBinding::bind

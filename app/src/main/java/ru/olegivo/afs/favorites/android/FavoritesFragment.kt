@@ -28,10 +28,13 @@ import ru.olegivo.afs.R
 import ru.olegivo.afs.databinding.FragmentFavoritesBinding
 import ru.olegivo.afs.favorites.presentation.FavoritesContract
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
 import javax.inject.Inject
 
 class FavoritesFragment @Inject constructor(private val presenter: FavoritesContract.Presenter) :
     Fragment(R.layout.fragment_favorites),
+    ScreenNameProvider by FavoritesAnalytics.Screens.Favorites,
     FavoritesContract.View {
 
     private val viewBinding: FragmentFavoritesBinding by viewBinding(FragmentFavoritesBinding::bind)

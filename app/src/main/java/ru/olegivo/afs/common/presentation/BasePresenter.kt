@@ -19,11 +19,14 @@ package ru.olegivo.afs.common.presentation
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
+import ru.olegivo.afs.analytics.models.AnalyticEvent
 import ru.olegivo.afs.common.domain.ErrorReporter
 
 abstract class BasePresenter<TView : PresentationContract.View>
 protected constructor(
-    private val errorReporter: ErrorReporter
+    private val errorReporter: ErrorReporter,
+    private val analyticsProvider: AnalyticsProvider
 ) : PresentationContract.Presenter<TView> {
 
     protected var view: TView? = null
@@ -55,4 +58,12 @@ protected constructor(
             }
         }
     }
+
+    protected fun logEventCompletable(event: AnalyticEvent) =
+        analyticsProvider.logEvent(event)
+
+    protected fun logEvent(event: AnalyticEvent) =
+        logEventCompletable(event)
+            .subscribe()
+            .addToComposite()
 }

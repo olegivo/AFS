@@ -25,31 +25,37 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
 import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
 import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.helpers.willComplete
 import ru.olegivo.afs.randomSubList
+import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 
 class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() {
 
     override fun createInstance(): ActualizeScheduleUseCase = ActualizeScheduleUseCaseImpl(
-        scheduleRepository,
-        favoritesRepository,
-        planFavoriteRecordReminderUseCase,
-        schedulerRule.testScheduler
+        scheduleRepository = scheduleRepository,
+        favoritesRepository = favoritesRepository,
+        planFavoriteRecordReminder = planFavoriteRecordReminderUseCase,
+        computationScheduler = schedulerRule.testScheduler,
+        analyticsProvider = analyticsProvider
     )
 
     //<editor-fold desc="mocks">
     private val scheduleRepository: ScheduleRepository = mock()
     private val favoritesRepository: FavoritesRepository = mock()
     private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase = mock()
+    private val analyticsProvider: AnalyticsProvider = mock()
 
     override fun getAllMocks() = arrayOf(
         scheduleRepository,
         favoritesRepository,
-        planFavoriteRecordReminderUseCase
+        planFavoriteRecordReminderUseCase,
+        analyticsProvider
     )
     //</editor-fold>
 
@@ -67,6 +73,7 @@ class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() 
         }
 
         given(favoritesRepository.getFavoriteFilters()).willReturn { Single.just(favoriteFilters) }
+        given { analyticsProvider.logEvent(SchedulesAnalytic.ActualizeSchedules) }.willComplete()
 
         instance.invoke(clubId)
             .assertSuccess()
@@ -76,5 +83,6 @@ class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() 
         favoriteSchedules.forEach {
             verify(planFavoriteRecordReminderUseCase).invoke(it)
         }
+        verify(analyticsProvider).logEvent(SchedulesAnalytic.ActualizeSchedules)
     }
 }

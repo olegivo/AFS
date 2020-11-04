@@ -22,6 +22,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import org.jetbrains.annotations.TestOnly
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
@@ -30,6 +31,7 @@ import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
 import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
+import ru.olegivo.afs.schedule.analytics.ScheduleDetailsAnalytic
 import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
@@ -61,16 +63,14 @@ constructor(
     private val planFavoriteRecordReminderUseCase: PlanFavoriteRecordReminderUseCase,
     private val locale: Locale,
     private val dateProvider: DateProvider,
-    errorReporter: ErrorReporter
+    errorReporter: ErrorReporter,
+    analyticsProvider: AnalyticsProvider
 ) :
-    BasePresenter<ScheduleDetailsContract.View>(errorReporter),
+    BasePresenter<ScheduleDetailsContract.View>(errorReporter, analyticsProvider),
     ScheduleDetailsContract.Presenter {
 
     private val dateTimeFormat: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm dd MMMM", locale)
-    }
-    private val hoursMinutesFormat: SimpleDateFormat by lazy {
-        SimpleDateFormat("HH:mm", locale)
     }
 
     private var sportsActivity: SportsActivity? = null
@@ -107,6 +107,7 @@ constructor(
     override fun onReserveClicked(
         hasAcceptedAgreement: Boolean
     ) {
+        logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
         val (fio, phone) = view!!.getReserveContacts()!!
         reserveUseCase.reserve(sportsActivity!!, fio, phone, hasAcceptedAgreement)
             .observeOn(mainScheduler)
@@ -131,6 +132,7 @@ constructor(
     }
 
     override fun onAgreementClicked() {
+        logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnViewAgreementClicked)
         navigator.navigateTo(BrowserDestination("http://static.mobifitness.ru/Privacy/privacy.html"))
     }
 
@@ -143,9 +145,15 @@ constructor(
         val isFavorite = sportsActivity.isFavorite
         if (isFavorite) {
             action = removeFromFavorites(sportsActivity.schedule)
+                .startWith(
+                    logEventCompletable(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnRemoveFromFavoritesClicked)
+                )
             errorMessage = "Ошибка при удалении из избранного"
         } else {
             action = addToFavorites(sportsActivity.schedule)
+                .startWith(
+                    logEventCompletable(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnAddToFavoritesClicked)
+                )
             errorMessage = "Ошибка при добавлении в избранное"
         }
 
@@ -251,10 +259,10 @@ constructor(
     }
 
     private fun setAgreementAccepted() {
-        savedAgreementUseCase.setAgreementAccepted()
-            .subscribe(
-                {},
-                {
+        logEventCompletable(ScheduleDetailsAnalytic.Screens.ScheduleDetails.SaveAgreementAccepted)
+            .andThen(savedAgreementUseCase.setAgreementAccepted())
+            .subscribeBy(
+                onError = {
                     onError(
                         it,
                         "Ошибка при сохранении факта принятия соглашения обработки персональных данных"

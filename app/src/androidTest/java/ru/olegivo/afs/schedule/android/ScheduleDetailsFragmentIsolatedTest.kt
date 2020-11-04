@@ -32,7 +32,9 @@ import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.schedule.presentation.ScheduleDetailsContract
 import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
+import ru.olegivo.afs.suite.IsolatedUITest
 
+@IsolatedUITest
 class ScheduleDetailsFragmentIsolatedTest : BaseTest() {
 
     override fun getAllMocks(): Array<Any> = arrayOf(

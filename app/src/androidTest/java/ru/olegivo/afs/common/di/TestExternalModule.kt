@@ -18,10 +18,12 @@
 package ru.olegivo.afs.common.di
 
 import dagger.Module
+import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
 
 @Module(
     includes = [
-        NetworkModule.ProvidesKtorModule::class
+        NetworkModule.ProvidesKtorModule::class,
+        AnalyticsCoreModule::class
     ]
 )
 interface TestExternalModule

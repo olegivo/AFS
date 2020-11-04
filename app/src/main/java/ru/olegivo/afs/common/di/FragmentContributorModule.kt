@@ -21,7 +21,7 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import ru.olegivo.afs.favorites.android.FavoritesFragment
 import ru.olegivo.afs.favorites.di.FavoritesModule
-import ru.olegivo.afs.main.android.MainFragment
+import ru.olegivo.afs.home.android.HomeFragment
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedules.android.DayScheduleFragment
 import ru.olegivo.afs.schedules.android.WeekScheduleFragment
@@ -33,7 +33,7 @@ interface FragmentContributorModule {
 
     @PerFragment
     @ContributesAndroidInjector
-    fun bindMainFragment(): MainFragment
+    fun bindHomeFragment(): HomeFragment
 
     @PerFragment
     @ContributesAndroidInjector

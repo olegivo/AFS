@@ -21,11 +21,13 @@ import com.squareup.moshi.Moshi
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoSet
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -36,6 +38,8 @@ import ru.olegivo.afs.auth.domain.AuthRepository
 import ru.olegivo.afs.auth.network.AccessTokenInterceptor
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.common.network.ApiImpl
+import ru.olegivo.afs.common.network.FirebaseNetworkPerformanceInterceptor
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module(
@@ -43,10 +47,16 @@ import javax.inject.Singleton
         NetworkModule.ProvidesKtorModule::class
     ]
 )
-abstract class NetworkModule {
+interface NetworkModule {
     @Binds
     @Singleton
-    abstract fun provideApi(impl: ApiImpl): Api
+    fun bindApi(impl: ApiImpl): Api
+
+    @Binds
+    @IntoSet
+    fun bindFirebaseNetworkPerformanceInterceptor(
+        firebaseNetworkPerformanceInterceptor: FirebaseNetworkPerformanceInterceptor
+    ): Interceptor
 
     @Module(includes = [ProvidesModule::class])
     object ProvidesKtorModule {
@@ -96,7 +106,10 @@ abstract class NetworkModule {
     @Module
     object ProvidesModule {
         @Provides
-        fun providesOkHttpClient(authRepository: AuthRepository): OkHttpClient {
+        fun providesOkHttpClient(
+            authRepository: AuthRepository,
+            additionalInterceptors: Provider<Set<Interceptor>>
+        ): OkHttpClient {
             val loggingInterceptor = HttpLoggingInterceptor()
                 .apply {
                     level = HttpLoggingInterceptor.Level.BASIC
@@ -108,6 +121,9 @@ abstract class NetworkModule {
             return OkHttpClient.Builder()
                 .addInterceptor(accessTokenInterceptor)
                 .addInterceptor(loggingInterceptor)
+                .apply {
+                    additionalInterceptors.get().forEach { addInterceptor(it) }
+                }
                 .build()
         }
     }

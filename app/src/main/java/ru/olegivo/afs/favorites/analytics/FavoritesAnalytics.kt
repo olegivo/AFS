@@ -13,27 +13,23 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * AFS.
- */
+ */package ru.olegivo.afs.favorites.analytics
 
-package ru.olegivo.afs.main.android
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.analytics.models.AnalyticEvent
+import ru.olegivo.afs.analytics.models.EventName
 
-import com.agoda.kakao.check.KCheckBox
-import com.kaspersky.kaspresso.screens.KScreen
-import ru.olegivo.afs.R
+object FavoritesAnalytics {
 
-object MainFragmentScreen : KScreen<MainFragmentScreen>() {
-    private val isFake = KCheckBox {
-        withId(R.id.activity_main_is_stub_reserve_check_box)
-    }
+    object ShowRecordReminder : AnalyticEvent.Custom(EventName("favorite_show_record_reminder"))
 
-    fun isFakeChecked(expected: Boolean) {
-        if (expected) {
-            isFake.isChecked()
-        } else {
-            isFake.isNotChecked()
+    object PlanFavoriteRecordReminder : AnalyticEvent.Custom(EventName("favorite_plan_record_reminder"))
+
+    object RestoreActiveRecordReminder : AnalyticEvent.Custom(EventName("favorite_restore_active_record_reminder"))
+
+    object Screens {
+        object Favorites : ScreenNameProvider {
+            override val screenName: String = "favorites"
         }
     }
-
-    override val layoutId: Int? = R.layout.fragment_main
-    override val viewClass: Class<*>? = MainFragment::class.java
 }

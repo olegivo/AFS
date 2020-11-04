@@ -21,6 +21,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import ru.olegivo.afs.AfsApplication
+import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
 import ru.olegivo.afs.common.android.worker.di.WorkerBindingModule
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.network.Api
@@ -46,7 +47,8 @@ interface TestAppComponent : AppComponent {
             @BindsInstance app: AfsApplication,
             @BindsInstance api: Api,
             @BindsInstance preferencesDataSource: PreferencesDataSource,
-            @BindsInstance afsDatabase: AfsDatabase
+            @BindsInstance afsDatabase: AfsDatabase,
+            @BindsInstance firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
         ): TestAppComponent
     }
 }

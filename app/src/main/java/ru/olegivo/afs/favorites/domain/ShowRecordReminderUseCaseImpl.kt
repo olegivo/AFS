@@ -20,6 +20,8 @@ package ru.olegivo.afs.favorites.domain
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
+import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import javax.inject.Inject
@@ -27,11 +29,13 @@ import javax.inject.Inject
 class ShowRecordReminderUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleReminderNotifier: ScheduleReminderNotifier,
-    private val reserveRepository: ReserveRepository
+    private val reserveRepository: ReserveRepository,
+    private val analyticsProvider: AnalyticsProvider
 ) : ShowRecordReminderUseCase {
 
     override fun invoke(scheduleId: Long): Completable =
-        scheduleRepository.getSchedule(scheduleId)
+        analyticsProvider.logEvent(FavoritesAnalytics.ShowRecordReminder)
+            .andThen(scheduleRepository.getSchedule(scheduleId))
             .flatMapCompletable { schedule ->
                 reserveRepository.isAgreementAccepted()
                     .flatMapMaybe { isAgreementAccepted ->

@@ -18,13 +18,16 @@
 package ru.olegivo.afs.common.di
 
 import dagger.Module
+import ru.olegivo.afs.analytics.di.AnalyticsModule
 import ru.olegivo.afs.preferences.di.PreferencesModule
 
 @Module(
     includes = [
         NetworkModule::class,
         DbModule::class,
-        PreferencesModule::class
+        PreferencesModule::class,
+        AnalyticsModule::class,
+        PerformanceAnalyticModule::class
     ]
 )
 interface ExternalModule

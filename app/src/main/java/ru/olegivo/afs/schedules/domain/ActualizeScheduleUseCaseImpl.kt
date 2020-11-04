@@ -19,9 +19,12 @@ package ru.olegivo.afs.schedules.domain
 
 import io.reactivex.Completable
 import io.reactivex.Scheduler
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
+import ru.olegivo.afs.extensions.andThen
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
 import ru.olegivo.afs.favorites.domain.models.filterByFavorites
 import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
+import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -29,12 +32,16 @@ class ActualizeScheduleUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository,
     private val favoritesRepository: FavoritesRepository,
     private val planFavoriteRecordReminder: PlanFavoriteRecordReminderUseCase,
-    @Named("computation") private val computationScheduler: Scheduler
+    @Named("computation") private val computationScheduler: Scheduler,
+    private val analyticsProvider: AnalyticsProvider
 ) :
     ActualizeScheduleUseCase {
 
     override fun invoke(clubId: Int): Completable =
         scheduleRepository.actualizeSchedules(clubId)
+            .andThen {
+                analyticsProvider.logEvent(SchedulesAnalytic.ActualizeSchedules)
+            }
             .flatMapCompletable { schedules ->
                 favoritesRepository.getFavoriteFilters()
                     .observeOn(computationScheduler)

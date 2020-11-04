@@ -23,6 +23,7 @@ import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
+import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.di.DaggerTestAppComponent
 import ru.olegivo.afs.common.network.Api
@@ -34,13 +35,15 @@ class InjectRule : TestRule {
         arrayOf(
             afsDatabase,
             preferencesDataSource,
-            api
+            api,
+            firebaseAnalyticsNetworkSource
         )
     }
 
     val afsDatabase: AfsDatabase = mock()
     val preferencesDataSource: PreferencesDataSource = mock()
     val api: Api = mock()
+    val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource = mock()
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
@@ -74,7 +77,8 @@ class InjectRule : TestRule {
                 app = afsApplication,
                 api = api,
                 preferencesDataSource = preferencesDataSource,
-                afsDatabase = afsDatabase
+                afsDatabase = afsDatabase,
+                firebaseAnalyticsNetworkSource = firebaseAnalyticsNetworkSource
             )
             .inject(afsApplication)
     }

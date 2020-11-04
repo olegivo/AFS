@@ -19,6 +19,7 @@ package ru.olegivo.afs.favorites.presentation
 
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.favorites.domain.GetFavoritesUseCase
@@ -29,9 +30,10 @@ import javax.inject.Named
 class FavoritesPresenter @Inject constructor(
     private val getFavorites: GetFavoritesUseCase,
     @Named("main") private val mainScheduler: Scheduler,
-    errorReporter: ErrorReporter
+    errorReporter: ErrorReporter,
+    analyticsProvider: AnalyticsProvider
 ) :
-    BasePresenter<FavoritesContract.View>(errorReporter),
+    BasePresenter<FavoritesContract.View>(errorReporter, analyticsProvider),
     FavoritesContract.Presenter {
 
     override fun bindView(view: FavoritesContract.View) {

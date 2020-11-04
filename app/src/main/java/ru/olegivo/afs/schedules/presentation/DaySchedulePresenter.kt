@@ -19,10 +19,12 @@ package ru.olegivo.afs.schedules.presentation
 
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
+import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import ru.olegivo.afs.schedules.domain.GetDaySportsActivitiesUseCase
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
@@ -35,8 +37,9 @@ class DaySchedulePresenter @Inject constructor(
     private val actualizeSchedule: ActualizeScheduleUseCase,
     private val navigator: Navigator,
     @Named("main") private val mainScheduler: Scheduler,
-    errorReporter: ErrorReporter
-) : BasePresenter<DayScheduleContract.View>(errorReporter),
+    errorReporter: ErrorReporter,
+    analyticsProvider: AnalyticsProvider
+) : BasePresenter<DayScheduleContract.View>(errorReporter, analyticsProvider),
     DayScheduleContract.Presenter {
 
     override fun bindView(view: DayScheduleContract.View) {
@@ -61,6 +64,7 @@ class DaySchedulePresenter @Inject constructor(
     }
 
     override fun onSportsActivityClicked(sportsActivity: SportsActivity) {
+        logEvent(SchedulesAnalytic.Screens.DaySchedule.OnSportsActivityClicked)
         navigator.navigateTo(
             ReserveDestination(
                 sportsActivity.schedule.id,

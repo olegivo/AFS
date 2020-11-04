@@ -15,7 +15,7 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.home.android
 
 import android.content.Context
 import android.os.Bundle
@@ -24,11 +24,11 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
-import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import ru.olegivo.afs.R
+import ru.olegivo.afs.analytics.domain.ScreenNameProvider
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
@@ -37,15 +37,16 @@ import ru.olegivo.afs.clubs.domain.models.Club
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.Navigator
-import ru.olegivo.afs.databinding.FragmentMainBinding
+import ru.olegivo.afs.databinding.FragmentHomeBinding
 import ru.olegivo.afs.favorites.presentation.models.FavoritesDestination
+import ru.olegivo.afs.home.analytics.HomeAnalytics
 import ru.olegivo.afs.schedule.domain.ReserveRepository
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
 
-class MainFragment @Inject constructor(
+class HomeFragment @Inject constructor(
     private val errorReporter: ErrorReporter,
     private val reserveRepository: ReserveRepository,
     private val getClubs: GetClubsUseCase,
@@ -55,9 +56,10 @@ class MainFragment @Inject constructor(
     private val afsDatabase: AfsDatabase,
     @Named("main") private val mainScheduler: Scheduler,
     @Named("io") private val ioScheduler: Scheduler
-) : Fragment(R.layout.fragment_main) {
+) : Fragment(R.layout.fragment_home),
+    ScreenNameProvider by HomeAnalytics.Screens.Home {
 
-    private val viewBinding: FragmentMainBinding by viewBinding(FragmentMainBinding::bind)
+    private val viewBinding: FragmentHomeBinding by viewBinding(FragmentHomeBinding::bind)
 
     private var isStubReserve: Boolean? = null
 
@@ -69,11 +71,6 @@ class MainFragment @Inject constructor(
             .subscribeBy(
                 onError = ::onError
             )
-    }
-
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,7 +141,7 @@ class MainFragment @Inject constructor(
     }
 
     private fun onSetDefaultClubClicked() {
-        setCurrentClub(375)
+        setCurrentClub(DefaultClubId)
             .observeOn(mainScheduler)
             .subscribeBy(
                 onComplete = { showMessage("Выбран клуб по умолчанию") },
@@ -209,30 +206,26 @@ class MainFragment @Inject constructor(
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    private fun deleteDatabaseFile(
-        context: Context,
-        databaseName: String
-    ): Boolean {
-        val databases = File(context.applicationInfo.dataDir + "/databases")
-        val db = File(databases, databaseName)
-        if (db.exists()) {
-            if (db.delete()) {
-                println("$databaseName database deleted")
+    private fun deleteDatabaseFile(context: Context, databaseName: String): Boolean {
+        val databasePath = File(context.applicationInfo.dataDir + "/databases")
+        return delete(File(databasePath, databaseName)) &&
+            delete(File(databasePath, "$databaseName-journal"))
+    }
+
+    private fun delete(file: File): Boolean {
+        if (file.exists()) {
+            if (file.delete()) {
+                println("${file.name} deleted")
             } else {
-                println("Failed to delete $databaseName database")
-                return false
-            }
-        }
-        val journal = File(databases, "$databaseName-journal")
-        if (journal.exists()) {
-            if (journal.delete()) {
-                println("$databaseName database journal deleted")
-            } else {
-                println("Failed to delete $databaseName database journal")
+                println("Failed to delete ${file.name}")
                 return false
             }
         }
 
         return true
+    }
+
+    companion object {
+        private const val DefaultClubId = 375
     }
 }

@@ -15,11 +15,9 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.analytics.data
 
-import ru.terrakok.cicerone.android.support.FragmentParams
-import ru.terrakok.cicerone.android.support.SupportAppScreen
+interface FirebaseAnalyticsNetworkSource {
 
-object MainScreen : SupportAppScreen() {
-    override fun getFragmentParams() = FragmentParams(MainFragment::class.java)
+    fun logEvent(event: String, extra: Map<String, String>)
 }

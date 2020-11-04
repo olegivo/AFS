@@ -29,6 +29,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
@@ -41,6 +42,7 @@ import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
 import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.helpers.willComplete
+import ru.olegivo.afs.schedule.analytics.ScheduleDetailsAnalytic
 import ru.olegivo.afs.schedule.domain.GetSportsActivityUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.ReserveUseCase
@@ -61,7 +63,11 @@ class ScheduleDetailsPresenterTest :
         ScheduleDetailsContract.View::class
     ) {
 
-    override fun createPresenter(mainScheduler: Scheduler, errorReporter: ErrorReporter) =
+    override fun createPresenter(
+        mainScheduler: Scheduler,
+        errorReporter: ErrorReporter,
+        analyticsProvider: AnalyticsProvider
+    ): ScheduleDetailsContract.Presenter =
         ScheduleDetailsPresenter(
             reserveUseCase = reserveUseCase,
             getSportsActivity = getSportsActivityUseCase,
@@ -74,7 +80,8 @@ class ScheduleDetailsPresenterTest :
             planFavoriteRecordReminderUseCase = planFavoriteRecordReminderUseCase,
             locale = Locale("ru"),
             dateProvider = dateProvider,
-            errorReporter = errorReporter
+            errorReporter = errorReporter,
+            analyticsProvider = analyticsProvider
         )
 
     //<editor-fold desc="mocks">
@@ -256,6 +263,8 @@ class ScheduleDetailsPresenterTest :
         given(savedAgreementUseCase.setAgreementAccepted())
             .willReturn { Completable.complete() }
         given(view.isAgreementAccepted()).willReturn { true }
+        given{ analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.SaveAgreementAccepted) }
+            .willComplete()
 
         instance.unbindView().andTriggerActions()
 
@@ -263,6 +272,7 @@ class ScheduleDetailsPresenterTest :
         verify(view).isAgreementAccepted()
         verify(savedReserveContactsUseCase).saveReserveContacts(reserveContacts)
         verify(savedAgreementUseCase).setAgreementAccepted()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.SaveAgreementAccepted)
     }
 
     @Test
@@ -276,6 +286,8 @@ class ScheduleDetailsPresenterTest :
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
             .willReturn { Single.just(ReserveResult.Success) }
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked) }
+            .willComplete()
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -285,6 +297,7 @@ class ScheduleDetailsPresenterTest :
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showSuccessReserved()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
     }
 
     @Test
@@ -299,6 +312,8 @@ class ScheduleDetailsPresenterTest :
         val exception = RuntimeException(getRandomString())
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
             .willReturn { Single.error(exception) }
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked) }
+            .willComplete()
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -309,6 +324,7 @@ class ScheduleDetailsPresenterTest :
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(errorReporter).reportError(exception, "Ошибка при попытке записи на занятие")
         verify(view).showTryLater()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
     }
 
     @Test
@@ -322,6 +338,8 @@ class ScheduleDetailsPresenterTest :
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
             .willReturn { Single.just(ReserveResult.TheTimeHasGone) }
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked) }
+            .willComplete()
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -331,6 +349,7 @@ class ScheduleDetailsPresenterTest :
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showTheTimeHasGone()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
     }
 
     @Test
@@ -344,6 +363,8 @@ class ScheduleDetailsPresenterTest :
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
             .willReturn { Single.just(ReserveResult.NoSlots.APriori) }
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked) }
+            .willComplete()
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -353,6 +374,7 @@ class ScheduleDetailsPresenterTest :
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showHasNoSlotsAPriori()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
     }
 
     @Test
@@ -366,6 +388,8 @@ class ScheduleDetailsPresenterTest :
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
             .willReturn { Single.just(ReserveResult.NoSlots.APosteriori) }
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked) }
+            .willComplete()
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -375,6 +399,7 @@ class ScheduleDetailsPresenterTest :
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showHasNoSlotsAPosteriori()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
     }
 
     @Test
@@ -388,6 +413,8 @@ class ScheduleDetailsPresenterTest :
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, true))
             .willReturn { Single.just(ReserveResult.AlreadyReserved) }
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked) }
+            .willComplete()
 
         instance.onReserveClicked(true)
             .andTriggerActions()
@@ -397,6 +424,7 @@ class ScheduleDetailsPresenterTest :
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, true)
         verify(view).showAlreadyReserved()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
     }
 
     @Test
@@ -410,6 +438,8 @@ class ScheduleDetailsPresenterTest :
         val (fio, phone) = reserveContacts
         given(reserveUseCase.reserve(sportsActivity, fio, phone, false))
             .willReturn { Single.just(ReserveResult.HaveToAcceptAgreement) }
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked) }
+            .willComplete()
 
         instance.onReserveClicked(false)
             .andTriggerActions()
@@ -419,6 +449,7 @@ class ScheduleDetailsPresenterTest :
         verify(view).getReserveContacts()
         verify(reserveUseCase).reserve(sportsActivity, fio, phone, false)
         verify(view).showHaveToAcceptAgreement()
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnReserveClicked)
     }
 
     @Test
@@ -429,6 +460,8 @@ class ScheduleDetailsPresenterTest :
 
         bindView(testData = testData)
 
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnAddToFavoritesClicked) }
+            .willComplete()
         given(addToFavoritesUseCase.invoke(sportsActivity.schedule))
             .willComplete()
         given(planFavoriteRecordReminderUseCase.invoke(sportsActivity.schedule))
@@ -442,6 +475,7 @@ class ScheduleDetailsPresenterTest :
         verify(addToFavoritesUseCase).invoke(sportsActivity.schedule)
         verify(planFavoriteRecordReminderUseCase).invoke(sportsActivity.schedule)
         verify(view).showIsFavorite(true)
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnAddToFavoritesClicked)
     }
 
     @Test
@@ -452,6 +486,8 @@ class ScheduleDetailsPresenterTest :
 
         bindView(testData = testData)
 
+        given { analyticsProvider.logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnRemoveFromFavoritesClicked) }
+            .willComplete()
         given(removeFromFavoritesUseCase.invoke(sportsActivity.schedule))
             .willReturn { Completable.complete() }
 
@@ -462,6 +498,7 @@ class ScheduleDetailsPresenterTest :
             .invoke(sportsActivity.schedule.clubId, sportsActivity.schedule.id)
         verify(removeFromFavoritesUseCase).invoke(sportsActivity.schedule)
         verify(view).showIsFavorite(false)
+        verify(analyticsProvider).logEvent(ScheduleDetailsAnalytic.Screens.ScheduleDetails.OnRemoveFromFavoritesClicked)
     }
 
     private fun bindView(testData: TestData) {

@@ -15,7 +15,7 @@
  * AFS.
  */
 
-package ru.olegivo.afs.main.android
+package ru.olegivo.afs.home.android
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.nhaarman.mockitokotlin2.given
@@ -26,17 +26,19 @@ import org.junit.rules.RuleChain
 import ru.olegivo.afs.InjectRule
 import ru.olegivo.afs.RxIdlerRule
 import ru.olegivo.afs.extensions.toMaybe
+import ru.olegivo.afs.main.android.MainActivity
 import ru.olegivo.afs.schedule.data.ReserveRepositoryImpl
+import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 
-class MainFragmentTest {
+@IntegratedIsolatedUITest
+class HomeFragmentTest {
 
     private val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
     private val injectRule = InjectRule()
     private val rxIdlerRule = RxIdlerRule()
 
     @get:Rule
-    val chain = RuleChain
-        .outerRule(injectRule)
+    val chain = RuleChain.outerRule(injectRule)
         .around(rxIdlerRule)
         .around(activityScenarioRule)!!
 
@@ -47,7 +49,7 @@ class MainFragmentTest {
             .willAnswer {
                 expected.toMaybe()
             }
-        MainFragmentScreen {
+        HomeFragmentScreen {
             isFakeChecked(expected)
         }
 
@@ -61,7 +63,7 @@ class MainFragmentTest {
             .willAnswer {
                 expected.toMaybe()
             }
-        MainFragmentScreen {
+        HomeFragmentScreen {
             isFakeChecked(expected)
         }
         verify(injectRule.preferencesDataSource).getBoolean(ReserveRepositoryImpl.IsStubReserve)

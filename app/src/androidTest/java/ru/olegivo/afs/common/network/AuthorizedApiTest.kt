@@ -32,7 +32,10 @@ open class AuthorizedApiTest : BaseTest() {
     override fun getAllMocks(): Array<Any> = emptyArray()
 
     private fun createKtorApi(authRepository: StubAuthRepository): ApiImpl {
-        val okHttpClient = NetworkModule.ProvidesModule.providesOkHttpClient(authRepository)
+        val okHttpClient = NetworkModule.ProvidesModule.providesOkHttpClient(
+            authRepository = authRepository,
+            additionalInterceptors = { emptySet() }
+        )
         val httpClient = NetworkModule.ProvidesKtorModule.providesHttpClient(okHttpClient, json)
         return ApiImpl(httpClient)
     }
