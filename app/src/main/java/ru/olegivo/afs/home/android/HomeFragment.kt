@@ -141,7 +141,7 @@ class HomeFragment @Inject constructor(
     }
 
     private fun onSetDefaultClubClicked() {
-        setCurrentClub(375)
+        setCurrentClub(DefaultClubId)
             .observeOn(mainScheduler)
             .subscribeBy(
                 onComplete = { showMessage("Выбран клуб по умолчанию") },
@@ -206,30 +206,26 @@ class HomeFragment @Inject constructor(
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    private fun deleteDatabaseFile(
-        context: Context,
-        databaseName: String
-    ): Boolean {
-        val databases = File(context.applicationInfo.dataDir + "/databases")
-        val db = File(databases, databaseName)
-        if (db.exists()) {
-            if (db.delete()) {
-                println("$databaseName database deleted")
+    private fun deleteDatabaseFile(context: Context, databaseName: String): Boolean {
+        val databasePath = File(context.applicationInfo.dataDir + "/databases")
+        return delete(File(databasePath, databaseName)) &&
+            delete(File(databasePath, "$databaseName-journal"))
+    }
+
+    private fun delete(file: File): Boolean {
+        if (file.exists()) {
+            if (file.delete()) {
+                println("${file.name} deleted")
             } else {
-                println("Failed to delete $databaseName database")
-                return false
-            }
-        }
-        val journal = File(databases, "$databaseName-journal")
-        if (journal.exists()) {
-            if (journal.delete()) {
-                println("$databaseName database journal deleted")
-            } else {
-                println("Failed to delete $databaseName database journal")
+                println("Failed to delete ${file.name}")
                 return false
             }
         }
 
         return true
+    }
+
+    companion object {
+        private const val DefaultClubId = 375
     }
 }
