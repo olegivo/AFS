@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
   ~
   ~ This file is part of AFS.
@@ -77,6 +76,11 @@
 
         <meta-data
                 android:name="google_analytics_automatic_screen_reporting_enabled"
+                android:value="false"
+                />
+
+        <meta-data
+                android:name="firebase_performance_collection_enabled"
                 android:value="false"
                 />
 
