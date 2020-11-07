@@ -84,6 +84,7 @@ android {
         all {
             def apiAddress = "https://mobifitness.ru/"
             String debugMode
+            Boolean firebasePerformanceEnabled = false
 
             switch (name) {
                 case "debug":
@@ -92,6 +93,7 @@ android {
                     break
                 case "release":
                     debugMode = 'false'
+                    firebasePerformanceEnabled = true
                     break
             }
 
@@ -104,6 +106,10 @@ android {
                 def file = new File(serviceCredentialsFile)
                 if (!file.exists()) println "firebaseAppDistribution.serviceCredentialsFile not exists: $serviceCredentialsFile"
                 groups = "Alpha"
+            }
+
+            FirebasePerformance {
+                instrumentationEnabled firebasePerformanceEnabled
             }
         }
         release {

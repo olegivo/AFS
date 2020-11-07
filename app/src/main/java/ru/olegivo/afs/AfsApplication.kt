@@ -26,6 +26,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.perf.FirebasePerformance
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import ru.olegivo.afs.common.di.DaggerAppComponent
@@ -62,6 +63,9 @@ class AfsApplication : Application(), HasAndroidInjector, Configuration.Provider
 
         FirebaseCrashlytics.getInstance()
             .setCrashlyticsCollectionEnabled(true/*!BuildConfig.DEBUG*/)
+
+        FirebasePerformance.getInstance()
+            .isPerformanceCollectionEnabled = true
 
         if (!testMode) {
             DaggerAppComponent.factory().create(this).inject(this)
