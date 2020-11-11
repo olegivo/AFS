@@ -41,7 +41,7 @@ class ScheduleDbSourceImpl @Inject constructor(
 ) : ScheduleDbSource {
 
     override fun setScheduleReserved(schedule: Schedule): Completable =
-        reserveDao.addReservedSchedule(ReservedSchedule(schedule.id, schedule.datetime))
+        reserveDao.insert(ReservedSchedule(schedule.id, schedule.datetime))
             .subscribeOn(ioScheduler)
 
     override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> =
@@ -63,7 +63,7 @@ class ScheduleDbSourceImpl @Inject constructor(
             .parallelMapList(computationScheduler) { it.toDb() }
             .observeOn(ioScheduler)
             .flatMapCompletable {
-                scheduleDao.putSchedules(it)
+                scheduleDao.upsert(it)
             }
 
     override fun getSchedule(id: Long): Single<DataSchedule> =

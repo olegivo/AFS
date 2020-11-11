@@ -23,14 +23,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
+import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
-import java.util.*
+import java.util.Date
 
 @Dao
-interface FavoriteDao {
-    @Insert
-    fun addFilter(favoriteFilterEntity: FavoriteFilterEntity): Completable
+interface FavoriteDao : BaseRxDao<FavoriteFilterEntity> {
 
     @Query("select id, groupId, `group`, activityId, activity, dayOfWeek, minutesOfDay from favoriteFilters")
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>

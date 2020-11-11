@@ -33,7 +33,7 @@ class ScheduleDaoTest : AfsDaoTest<ScheduleDao>({ schedules }) {
     @Test
     fun getSchedule_RETURNS_putted_entity() {
         val entity = createDataSchedule().toDb()
-        dao.putSchedules(listOf(entity))
+        dao.upsert(listOf(entity))
             .andThen(dao.getSchedule(entity.id))
             .test()
             .checkSingleValue {
@@ -56,7 +56,7 @@ class ScheduleDaoTest : AfsDaoTest<ScheduleDao>({ schedules }) {
 
         val expected = schedules.filter { it.datetime >= from && it.datetime < until }
 
-        dao.putSchedules(schedules)
+        dao.upsert(schedules)
             .subscribeOn(testScheduler)
             .andThenDeferMaybe {
                 dao.getSchedules(clubId, from, until)

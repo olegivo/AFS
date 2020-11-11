@@ -15,21 +15,16 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.db
+package ru.olegivo.afs.common.db
 
-import androidx.room.Dao
-import androidx.room.Query
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
-import ru.olegivo.afs.schedules.db.models.ReservedSchedule
-import java.util.Date
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import io.reactivex.Completable
 
-@Dao
-abstract class ReserveDao : BaseRxDao<ReservedSchedule> {
+interface BaseRxDao<T> {
+    @Insert
+    fun insert(vararg obj: T): Completable
 
-    @Query("select id from reservedSchedules where datetime >= :from and datetime < :until")
-    abstract fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>>
-
-    @Query("select exists (select * from reservedSchedules where id = :scheduleId)")
-    abstract fun isScheduleReserved(scheduleId: Long): Single<Boolean>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsert(objects: List<T>): Completable
 }
