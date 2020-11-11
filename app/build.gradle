@@ -29,7 +29,7 @@ buildscript {
 
 plugins {
     id 'se.patrikerdes.use-latest-versions' version '0.2.15'
-    id 'com.github.ben-manes.versions' version '0.34.0'
+    id 'com.github.ben-manes.versions' version '0.36.0'
 }
 repositories {
     mavenCentral()
@@ -188,12 +188,12 @@ dependencyUpdates {
 }
 
 dependencies {
-    def assertJVersion = '3.18.0'
+    def assertJVersion = '3.18.1'
     def coroutinesVersion = "1.4.1"
     def daggerVersion = "2.29.1"
     def javaxInjectVersion = '1'
     def jUnitVersion = '4.13.1'
-    def ktorVersion = "1.4.1"
+    def ktorVersion = "1.4.2"
     def mockitoVersion = '3.6.0'
     def moshiVersion = "1.11.0"
     def mockitoKotlinVersion = '2.2.0'
