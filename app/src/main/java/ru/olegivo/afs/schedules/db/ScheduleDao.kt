@@ -18,26 +18,21 @@
 package ru.olegivo.afs.schedules.db
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import java.util.Date
 
 @Dao
-abstract class ScheduleDao {
+abstract class ScheduleDao : BaseRxDao<ScheduleEntity> {
     @Query(
         """select $scheduleFields 
                 from schedules 
                 where datetime >= :from and datetime < :until and clubId = :clubId"""
     )
     abstract fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<ScheduleEntity>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun putSchedules(schedules: List<ScheduleEntity>): Completable
 
     @Query("select $scheduleFields from schedules where id = :id")
     abstract fun getSchedule(id: Long): Single<ScheduleEntity>
