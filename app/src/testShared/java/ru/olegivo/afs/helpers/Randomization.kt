@@ -17,7 +17,7 @@
 
 package ru.olegivo.afs.helpers
 
-import java.util.*
+import java.util.Date
 import kotlin.random.Random
 
 private val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
@@ -37,6 +37,12 @@ fun getRandomString(
 }
 
 fun getRandomBoolean() = Random.nextBoolean()
-fun getRandomInt() = Random.nextInt()
+fun getRandomInt(from: Int? = null, until: Int? = null) =
+    until?.let { u ->
+        from?.let { f ->
+            Random.nextInt(from = f, until = u)
+        } ?: Random.nextInt(until = u)
+    } ?: Random.nextInt()
+
 fun getRandomLong() = Random.nextLong()
 fun getRandomDate() = Date(getRandomLong())

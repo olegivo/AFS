@@ -59,6 +59,25 @@ fun Date.hasCurrentYear(): Boolean =
 fun Date.get(field: Int) =
     toCalendar().get(field)
 
+fun date(
+    years: Int? = null,
+    months: Int? = null,
+    days: Int? = null,
+    hours: Int? = null,
+    minutes: Int? = null,
+    seconds: Int? = null,
+    milliseconds: Int? = null
+) =
+    Date(0L).toCalendar().apply {
+        set(Calendar.YEAR, years ?: 0)
+        set(Calendar.MONTH, months ?: 0)
+        set(Calendar.DAY_OF_MONTH, days ?: 0)
+        set(Calendar.HOUR_OF_DAY, hours ?: 0)
+        set(Calendar.MINUTE, minutes ?: 0)
+        set(Calendar.SECOND, seconds ?: 0)
+        set(Calendar.MILLISECOND, milliseconds ?: 0)
+    }.time
+
 fun Date.toCalendar() = Calendar.getInstance(Locale.GERMANY).apply { time = this@toCalendar }
 
 fun Date.getDateWithoutTime(): Date {
