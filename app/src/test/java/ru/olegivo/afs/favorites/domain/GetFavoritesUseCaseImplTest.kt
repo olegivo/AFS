@@ -29,8 +29,7 @@ import ru.olegivo.afs.favorites.db.FavoriteDao
 import ru.olegivo.afs.favorites.db.FavoritesDbSourceImpl
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
 import ru.olegivo.afs.helpers.checkSingleValue
-import java.util.Calendar
-import java.util.Locale
+import ru.olegivo.afs.repeat
 
 class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
 
@@ -42,8 +41,7 @@ class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
                     ioScheduler = testScheduler,
                     computationScheduler = testScheduler
                 )
-            ),
-            locale = Locale.getDefault()
+            )
         )
     }
 
@@ -55,24 +53,14 @@ class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
 
     @Test
     fun `invoke RETURNS data from db`() {
-        val hours = 13
-        val minutes = 13
-        val minutesOfDay = hours * 60 + minutes
-        val element = createFavoriteFilterEntity().copy(minutesOfDay = minutesOfDay, dayOfWeek = Calendar.FRIDAY)
-        given { favoriteDao.getFavoriteFilters() }.willReturn(listOf(element).toSingle())
+        val list = { createFavoriteFilterEntity() }.repeat(3)
+        given { favoriteDao.getFavoriteFilters() }.willReturn(list.toSingle())
 
         instance.invoke()
             .test().andTriggerActions()
             .assertNoErrors()
-            .checkSingleValue {
-                val actual = it.single()
-                assertThat(actual.activity).isEqualTo(element.activity)
-                assertThat(actual.group).isEqualTo(element.group)
-                assertThat(actual.group).isEqualTo(element.group)
-                val fridayName = Calendar.getInstance().apply {
-                    set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY)
-                }.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT_FORMAT, Locale.getDefault())
-                assertThat(actual.duty).isEqualTo("$fridayName, 13:13")
+            .checkSingleValue { actual ->
+                assertThat(actual.map { it.activityId }).isEqualTo(list.map { it.activityId })
             }
 
         verify(favoriteDao).getFavoriteFilters()

@@ -44,8 +44,8 @@ class FavoritesAdapter(context: Context, private val onItemClick: (FavoritesItem
         RecyclerView.ViewHolder(binding.root) {
 
         fun setData(item: FavoritesItem) {
-            binding.textViewGroup.text = item.group
-            binding.textViewActivity.text = item.activity
+            binding.textViewGroup.text = item.filter.group
+            binding.textViewActivity.text = item.filter.activity
             binding.textViewDuty.text = item.duty
         }
     }

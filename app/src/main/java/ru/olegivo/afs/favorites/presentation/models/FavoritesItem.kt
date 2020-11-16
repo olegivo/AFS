@@ -17,8 +17,9 @@
 
 package ru.olegivo.afs.favorites.presentation.models
 
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
+
 data class FavoritesItem(
-    val group: String,
-    val activity: String,
+    val filter: FavoriteFilter,
     val duty: String
 )

@@ -20,21 +20,34 @@ package ru.olegivo.afs.favorites.presentation
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import ru.olegivo.afs.analytics.domain.AnalyticsProvider
+import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
+import ru.olegivo.afs.common.toCalendar
+import ru.olegivo.afs.common.today
+import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.favorites.domain.GetFavoritesUseCase
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
 
 class FavoritesPresenter @Inject constructor(
     private val getFavorites: GetFavoritesUseCase,
     @Named("main") private val mainScheduler: Scheduler,
+    private val locale: Locale,
     errorReporter: ErrorReporter,
     analyticsProvider: AnalyticsProvider
 ) :
     BasePresenter<FavoritesContract.View>(errorReporter, analyticsProvider),
     FavoritesContract.Presenter {
+
+    private val dateFormat: SimpleDateFormat by lazy {
+        SimpleDateFormat("E, HH:mm", locale)
+    }
 
     override fun bindView(view: FavoritesContract.View) {
         super.bindView(view)
@@ -43,6 +56,9 @@ class FavoritesPresenter @Inject constructor(
 
     private fun start() {
         getFavorites()
+            .mapList {
+                it.toFavoriteItem()
+            }
             .observeOn(mainScheduler)
             .doOnSubscribe { view?.showProgress() }
             .doFinally { view?.hideProgress() }
@@ -54,6 +70,15 @@ class FavoritesPresenter @Inject constructor(
             )
             .addToComposite()
     }
+
+    private fun FavoriteFilter.toFavoriteItem() =
+        FavoritesItem(
+            filter = this,
+            duty = today().toCalendar()
+                .apply { set(Calendar.DAY_OF_WEEK, dayOfWeek) }.time
+                .add(minutes = minutesOfDay)
+                .let { dateFormat.format(it) }
+        )
 
     private fun showResult(favorites: List<FavoritesItem>) {
         view?.showFavorites(favorites)

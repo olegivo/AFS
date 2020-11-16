@@ -18,39 +18,13 @@
 package ru.olegivo.afs.favorites.domain
 
 import io.reactivex.Single
-import ru.olegivo.afs.common.add
-import ru.olegivo.afs.common.toCalendar
-import ru.olegivo.afs.common.today
-import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 
 class GetFavoritesUseCaseImpl @Inject constructor(
-    private val favoritesRepository: FavoritesRepository,
-    private val locale: Locale
+    private val favoritesRepository: FavoritesRepository
 ) : GetFavoritesUseCase {
 
-    private val dateFormat: SimpleDateFormat by lazy {
-        SimpleDateFormat("E, HH:mm", locale)
-    }
-
-    override operator fun invoke(): Single<List<FavoritesItem>> =
+    override operator fun invoke(): Single<List<FavoriteFilter>> =
         favoritesRepository.getFavoriteFilters()
-            .mapList {
-                it.toFavoriteItem()
-            }
-
-    private fun FavoriteFilter.toFavoriteItem() =
-        FavoritesItem(
-            group = group,
-            activity = activity,
-            duty = today().toCalendar()
-                .apply { set(Calendar.DAY_OF_WEEK, dayOfWeek) }.time
-                .add(minutes = minutesOfDay)
-                .let { dateFormat.format(it) }
-        )
 }

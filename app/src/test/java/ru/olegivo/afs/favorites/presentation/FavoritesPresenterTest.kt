@@ -22,13 +22,19 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenterTest
 import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.GetFavoritesUseCase
+import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.repeat
+import java.util.Calendar
+import java.util.Locale
 
 class FavoritesPresenterTest :
     BasePresenterTest<FavoritesContract.Presenter, FavoritesContract.View>(FavoritesContract.View::class) {
@@ -41,6 +47,7 @@ class FavoritesPresenterTest :
         FavoritesPresenter(
             getFavorites = getFavoritesUseCase,
             mainScheduler = mainScheduler,
+            locale = Locale.getDefault(),
             errorReporter = errorReporter,
             analyticsProvider = analyticsProvider
         )
@@ -63,12 +70,37 @@ class FavoritesPresenterTest :
 
     @Test
     fun `bindView SHOWS favorite items WHEN fetch success`() {
-        val favorites = { createFavoriteFilterItem() }.repeat(3)
+        val favorites = { createFavoriteFilter() }.repeat(3)
         given { getFavoritesUseCase.invoke() }.willReturn(favorites.toSingle())
 
         bind()
 
-        verify(view).showFavorites(favorites)
+        val list = view.capture { arg: List<FavoritesItem> -> showFavorites(arg) }
+        assertThat(list.map { it.filter }).containsExactlyElementsOf(favorites)
+    }
+
+    @Test
+    fun `bindView BINDS favorite duty correctly`() {
+        val hours = 13
+        val minutes = 13
+        val minutesOfDay = hours * 60 + minutes
+        val filter = createFavoriteFilter().copy(
+            minutesOfDay = minutesOfDay,
+            dayOfWeek = Calendar.FRIDAY
+        )
+        val favorites = listOf(filter)
+        given { getFavoritesUseCase.invoke() }.willReturn(favorites.toSingle())
+
+        bind()
+
+        val list = view.capture { arg: List<FavoritesItem> -> showFavorites(arg) }
+        assertThat(list.map { it.filter }).containsOnly(filter)
+
+        val actual = list.single()
+        val fridayName = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY)
+        }.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT_FORMAT, Locale.getDefault())
+        assertThat(actual.duty).isEqualTo("$fridayName, 13:13")
     }
 
     override fun verifyBindInteractions() {

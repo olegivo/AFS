@@ -15,13 +15,14 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.presentation
+package ru.olegivo.afs.favorites.presentation.models
 
-import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.getRandomString
 
-fun createFavoriteFilterItem() = FavoritesItem(
-    group = getRandomString(),
-    activity = getRandomString(),
-    duty = getRandomString()
-)
+fun createFavoriteFilterItem(filter: FavoriteFilter = createFavoriteFilter()) =
+    FavoritesItem(
+        filter = filter,
+        duty = getRandomString()
+    )
