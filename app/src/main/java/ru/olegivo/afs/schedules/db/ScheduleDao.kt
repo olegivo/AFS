@@ -22,6 +22,7 @@ import androidx.room.Query
 import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.olegivo.afs.common.db.BaseRxDao
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import java.util.Date
 
@@ -39,6 +40,22 @@ abstract class ScheduleDao : BaseRxDao<ScheduleEntity> {
 
     @Query("select $scheduleFields from schedules where id in (:ids)")
     abstract fun getSchedules(ids: List<Long>): Single<List<ScheduleEntity>>
+
+    @Query("select $scheduleFields from schedules where clubId = :clubId and groupId = :groupId and activityId = :activityId")
+    abstract fun filterSchedules(
+        clubId: Int,
+        groupId: Int,
+        activityId: Int
+    ): Single<List<ScheduleEntity>>
+
+    fun filterSchedules(favoriteFilter: FavoriteFilter, clubId: Int) =
+        with(favoriteFilter) {
+            filterSchedules(
+                clubId = clubId,
+                groupId = groupId,
+                activityId = activityId
+            )
+        }
 
     companion object {
         private const val scheduleFields =

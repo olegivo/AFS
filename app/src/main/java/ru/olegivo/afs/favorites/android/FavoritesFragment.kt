@@ -40,7 +40,7 @@ class FavoritesFragment @Inject constructor(private val presenter: FavoritesCont
     private val viewBinding: FragmentFavoritesBinding by viewBinding(FragmentFavoritesBinding::bind)
 
     private val favoritesAdapter: FavoritesAdapter by lazy {
-        FavoritesAdapter(requireContext(), {})
+        FavoritesAdapter(requireContext()) { presenter.onItemClick(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -15,21 +15,11 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.presentation
+package ru.olegivo.afs.favorites.domain
 
-import ru.olegivo.afs.common.presentation.PresentationContract
-import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import io.reactivex.Maybe
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 
-interface FavoritesContract {
-    interface Presenter : PresentationContract.Presenter<View> {
-        fun onItemClick(favoritesItem: FavoritesItem)
-    }
-
-    interface View :
-        PresentationContract.View,
-        PresentationContract.ErrorDisplay,
-        PresentationContract.ViewWithProgress {
-
-        fun showFavorites(favorites: List<FavoritesItem>)
-    }
+interface GetClosestSportsActivityUseCase {
+    operator fun invoke(favoriteFilter: FavoriteFilter, clubId: Int): Maybe<Long>
 }

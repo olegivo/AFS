@@ -23,12 +23,15 @@ import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.ErrorReporter
 import ru.olegivo.afs.common.presentation.BasePresenter
+import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.common.toCalendar
 import ru.olegivo.afs.common.today
 import ru.olegivo.afs.extensions.mapList
+import ru.olegivo.afs.favorites.domain.GetClosestSportsActivityUseCase
 import ru.olegivo.afs.favorites.domain.GetFavoritesUseCase
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -37,8 +40,10 @@ import javax.inject.Named
 
 class FavoritesPresenter @Inject constructor(
     private val getFavorites: GetFavoritesUseCase,
+    private val getClosestSportsActivity: GetClosestSportsActivityUseCase,
     @Named("main") private val mainScheduler: Scheduler,
     private val locale: Locale,
+    private val navigator: Navigator,
     errorReporter: ErrorReporter,
     analyticsProvider: AnalyticsProvider
 ) :
@@ -52,6 +57,23 @@ class FavoritesPresenter @Inject constructor(
     override fun bindView(view: FavoritesContract.View) {
         super.bindView(view)
         start()
+    }
+
+    override fun onItemClick(favoritesItem: FavoritesItem) {
+        val clubId = favoritesItem.filter.clubId
+        getClosestSportsActivity(favoriteFilter = favoritesItem.filter, clubId = clubId)
+            .observeOn(mainScheduler)
+            .subscribeBy(
+                onSuccess = {
+                    navigator.navigateTo(
+                        ReserveDestination(
+                            id = it,
+                            clubId = clubId
+                        )
+                    )
+                }
+            )
+            .addToComposite()
     }
 
     private fun start() {
