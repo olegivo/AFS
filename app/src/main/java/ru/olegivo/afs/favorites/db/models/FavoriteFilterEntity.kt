@@ -25,6 +25,7 @@ import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 data class FavoriteFilterEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val clubId: Int,
     val groupId: Int,
     val group: String,
     val activityId: Int,
@@ -34,6 +35,7 @@ data class FavoriteFilterEntity(
 )
 
 fun FavoriteFilter.toDb() = FavoriteFilterEntity(
+    clubId = clubId,
     groupId = groupId,
     group = group,
     activityId = activityId,
@@ -44,6 +46,7 @@ fun FavoriteFilter.toDb() = FavoriteFilterEntity(
 
 fun FavoriteFilterEntity.toDomain() =
     FavoriteFilter(
+        clubId = clubId,
         groupId = groupId,
         group = group,
         activityId = activityId,

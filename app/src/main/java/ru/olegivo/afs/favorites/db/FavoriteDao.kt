@@ -31,7 +31,7 @@ import java.util.Date
 @Dao
 interface FavoriteDao : BaseRxDao<FavoriteFilterEntity> {
 
-    @Query("select id, groupId, `group`, activityId, activity, dayOfWeek, minutesOfDay from favoriteFilters")
+    @Query("select id, clubId, groupId, `group`, activityId, activity, dayOfWeek, minutesOfDay from favoriteFilters")
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
 
     @Query(

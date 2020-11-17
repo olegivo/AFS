@@ -23,6 +23,7 @@ import ru.olegivo.afs.helpers.getRandomString
 
 fun createFavoriteFilter(): FavoriteFilter =
     FavoriteFilter(
+        clubId = getRandomInt(),
         groupId = getRandomInt(),
         group = getRandomString(),
         activityId = getRandomInt(),

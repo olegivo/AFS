@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
- *  
+ *
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -15,18 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.db.models
+package ru.olegivo.afs.common.db.migrations
 
-import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.helpers.getRandomString
+import android.database.Cursor
 
-fun createFavoriteFilterEntity() =
-    FavoriteFilterEntity(
-        clubId = getRandomInt(),
-        groupId = getRandomInt(),
-        group = getRandomString(),
-        activityId = getRandomInt(),
-        activity = getRandomString(),
-        dayOfWeek = getRandomInt(),
-        minutesOfDay = getRandomInt()
-    )
+fun Cursor.getInt(columnName: String) = getInt(getColumnIndex(columnName))
+fun Cursor.getLong(columnName: String) = getLong(getColumnIndex(columnName))
+fun Cursor.getString(columnName: String) = getString(getColumnIndex(columnName))
