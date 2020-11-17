@@ -73,7 +73,7 @@ class Migration3to2Test :
                 )
             }
         }
-        val expected = favorites.map { it.copy(group = "", activity = "") }
+        val expected = favorites.map { it.copy(group = "", activity = "", clubId = 0) }
         assertThat(expected).isEqualTo(result)
     }
 }
