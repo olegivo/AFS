@@ -20,15 +20,13 @@ package ru.olegivo.afs.common.db.migrations
 import android.content.ContentValues
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import ru.olegivo.afs.common.add
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.suite.DbMigrationsTest
-import java.util.Date
 
 @DbMigrationsTest
-class Migration3to4Test :
-    BaseMigrationsTest(migration3_4) {
+class Migration5to4Test :
+    BaseMigrationsTest(migration5_4) {
 
     @Test
     fun migrate_SUCCESS_WHEN_has_no_favorites() {
@@ -39,15 +37,15 @@ class Migration3to4Test :
 
     @Test
     fun migrate_SUCCESS_WHEN_has_favorites() {
-        val time = Date(0L).add(hours = 13, minutes = 13)
-
         val favoriteValues = ContentValues().apply {
+            put("id", getRandomInt())
+            put("clubId", getRandomInt())
             put("groupId", getRandomInt())
             put("`group`", getRandomString())
             put("activityId", getRandomInt())
             put("activity", getRandomString())
             put("dayOfWeek", getRandomInt())
-            put("timeOfDay", time.time.toInt())
+            put("minutesOfDay", getRandomInt())
         }
 
         prepareOld {
@@ -58,7 +56,21 @@ class Migration3to4Test :
 
         query("SELECT * FROM favoriteFilters") {
             moveToFirst()
-            assertThat(getInt("minutesOfDay")).describedAs("$time").isEqualTo(13 * 60 + 13)
+            assertThat(columnNames)
+                .doesNotContain("clubId")
+                .hasSize(7)
+
+            for (columnName in (favoriteValues.keySet().toList() - "clubId")) {
+                val originValue = favoriteValues[columnName]
+                val dbColumnName = columnName.replace("`", "")
+                val value = when (originValue) {
+                    is Int -> getInt(dbColumnName)
+                    is Long -> getLong(dbColumnName)
+                    is String -> getString(dbColumnName)
+                    else -> TODO("unknown type of $originValue in column $dbColumnName")
+                }
+                assertThat(value).isEqualTo(originValue)
+            }
         }
     }
 }

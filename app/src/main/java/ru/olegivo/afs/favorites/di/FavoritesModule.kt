@@ -30,6 +30,8 @@ import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCase
 import ru.olegivo.afs.favorites.domain.AddToFavoritesUseCaseImpl
 import ru.olegivo.afs.favorites.domain.FavoriteAlarmPlanner
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
+import ru.olegivo.afs.favorites.domain.GetClosestSportsActivityUseCase
+import ru.olegivo.afs.favorites.domain.GetClosestSportsActivityUseCaseImpl
 import ru.olegivo.afs.favorites.domain.GetFavoritesUseCase
 import ru.olegivo.afs.favorites.domain.GetFavoritesUseCaseImpl
 import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
@@ -48,6 +50,9 @@ import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCaseImpl
 interface FavoritesModule {
     @Binds
     fun bindAddToFavoritesUseCase(impl: AddToFavoritesUseCaseImpl): AddToFavoritesUseCase
+
+    @Binds
+    fun bindGetClosestSportsActivityUseCase(impl: GetClosestSportsActivityUseCaseImpl): GetClosestSportsActivityUseCase
 
     @Binds
     fun bindRestoreAllActiveRecordRemindersUseCase(impl: RestoreAllActiveRecordRemindersUseCaseImpl):

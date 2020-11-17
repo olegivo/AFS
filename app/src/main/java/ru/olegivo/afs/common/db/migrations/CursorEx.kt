@@ -15,13 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.presentation
+package ru.olegivo.afs.common.db.migrations
 
-import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
-import ru.olegivo.afs.helpers.getRandomString
+import android.database.Cursor
 
-fun createFavoriteFilterItem() = FavoritesItem(
-    group = getRandomString(),
-    activity = getRandomString(),
-    duty = getRandomString()
-)
+fun Cursor.getInt(columnName: String) = getInt(getColumnIndex(columnName))
+fun Cursor.getLong(columnName: String) = getLong(getColumnIndex(columnName))
+fun Cursor.getString(columnName: String) = getString(getColumnIndex(columnName))

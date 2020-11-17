@@ -27,7 +27,7 @@ import ru.olegivo.afs.suite.DbMigrationsTest
 
 @DbMigrationsTest
 class Migration3to2Test :
-    BaseMigrationsTest(migration3_2, 3, 2) {
+    BaseMigrationsTest(migration3_2) {
 
     @Test
     fun migrate_SUCCESS_WHEN_has_no_favorites() {
@@ -62,6 +62,7 @@ class Migration3to2Test :
             while (moveToNext()) {
                 result.add(
                     FavoriteFilter(
+                        clubId = 0, // added in future versions
                         groupId = getInt("groupId"),
                         group = "",
                         activityId = getInt("activityId"),

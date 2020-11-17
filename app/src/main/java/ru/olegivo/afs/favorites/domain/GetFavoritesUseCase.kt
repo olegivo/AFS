@@ -18,8 +18,8 @@
 package ru.olegivo.afs.favorites.domain
 
 import io.reactivex.Single
-import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 
 interface GetFavoritesUseCase {
-    operator fun invoke(): Single<List<FavoritesItem>>
+    operator fun invoke(): Single<List<FavoriteFilter>>
 }

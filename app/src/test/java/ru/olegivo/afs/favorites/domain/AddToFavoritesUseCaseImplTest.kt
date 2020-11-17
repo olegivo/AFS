@@ -43,6 +43,7 @@ class AddToFavoritesUseCaseImplTest : BaseTestOf<AddToFavoritesUseCase>() {
     fun `invoke ADDS favorites filter`() {
         val schedule = createSchedule()
         val expectedFilter = FavoriteFilter(
+            clubId = schedule.clubId,
             groupId = schedule.groupId,
             group = schedule.group,
             activityId = schedule.activityId,

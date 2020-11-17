@@ -19,10 +19,11 @@ package ru.olegivo.afs.favorites.presentation
 
 import ru.olegivo.afs.common.presentation.PresentationContract
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
-import java.util.*
 
 interface FavoritesContract {
-    interface Presenter : PresentationContract.Presenter<View>
+    interface Presenter : PresentationContract.Presenter<View> {
+        fun onItemClick(favoritesItem: FavoritesItem)
+    }
 
     interface View :
         PresentationContract.View,

@@ -15,16 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.domain
+package ru.olegivo.afs.common.db.migrations
 
-import io.reactivex.Single
-import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import javax.inject.Inject
+import java.util.Date
 
-class GetFavoritesUseCaseImpl @Inject constructor(
-    private val favoritesRepository: FavoritesRepository
-) : GetFavoritesUseCase {
-
-    override operator fun invoke(): Single<List<FavoriteFilter>> =
-        favoritesRepository.getFavoriteFilters()
+object MigrationsEnvironment {
+    var predefinedDate: Date? = null
 }

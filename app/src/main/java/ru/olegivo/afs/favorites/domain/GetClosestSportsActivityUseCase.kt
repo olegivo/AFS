@@ -17,14 +17,9 @@
 
 package ru.olegivo.afs.favorites.domain
 
-import io.reactivex.Single
+import io.reactivex.Maybe
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import javax.inject.Inject
 
-class GetFavoritesUseCaseImpl @Inject constructor(
-    private val favoritesRepository: FavoritesRepository
-) : GetFavoritesUseCase {
-
-    override operator fun invoke(): Single<List<FavoriteFilter>> =
-        favoritesRepository.getFavoriteFilters()
+interface GetClosestSportsActivityUseCase {
+    operator fun invoke(favoriteFilter: FavoriteFilter, clubId: Int): Maybe<Long>
 }

@@ -15,16 +15,14 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.domain
+package ru.olegivo.afs.favorites.presentation.models
 
-import io.reactivex.Single
+import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import javax.inject.Inject
+import ru.olegivo.afs.helpers.getRandomString
 
-class GetFavoritesUseCaseImpl @Inject constructor(
-    private val favoritesRepository: FavoritesRepository
-) : GetFavoritesUseCase {
-
-    override operator fun invoke(): Single<List<FavoriteFilter>> =
-        favoritesRepository.getFavoriteFilters()
-}
+fun createFavoriteFilterItem(filter: FavoriteFilter = createFavoriteFilter()) =
+    FavoritesItem(
+        filter = filter,
+        duty = getRandomString()
+    )

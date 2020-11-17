@@ -38,14 +38,15 @@ class FavoritesAdapter(context: Context, private val onItemClick: (FavoritesItem
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: FavoritesItem) =
-        (holder as FavoriteViewHolder).setData(item)
+        (holder as FavoriteViewHolder).bind(item, onItemClick)
 
     class FavoriteViewHolder(private val binding: RowFavoritesItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun setData(item: FavoritesItem) {
-            binding.textViewGroup.text = item.group
-            binding.textViewActivity.text = item.activity
+        fun bind(item: FavoritesItem, onItemClick: (FavoritesItem) -> Unit) {
+            binding.root.setOnClickListener { onItemClick(item) }
+            binding.textViewGroup.text = item.filter.group
+            binding.textViewActivity.text = item.filter.activity
             binding.textViewDuty.text = item.duty
         }
     }
