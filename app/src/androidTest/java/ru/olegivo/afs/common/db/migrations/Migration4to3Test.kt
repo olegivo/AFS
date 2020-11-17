@@ -28,7 +28,7 @@ import java.util.Date
 
 @DbMigrationsTest
 class Migration4to3Test :
-    BaseMigrationsTest(migration4_3, 4, 3) {
+    BaseMigrationsTest(migration4_3) {
 
     @Test
     fun migrate_SUCCESS_WHEN_has_no_favorites() {

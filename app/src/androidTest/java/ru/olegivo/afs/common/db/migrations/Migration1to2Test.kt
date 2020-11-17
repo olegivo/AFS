@@ -29,7 +29,7 @@ import ru.olegivo.afs.suite.DbMigrationsTest
 
 @DbMigrationsTest
 class Migration1to2Test :
-    BaseMigrationsTest(migration1_2, 1, 2) {
+    BaseMigrationsTest(migration1_2) {
 
     @Test
     fun migrate_SUCCESS_WHEN_has_no_schedules() {

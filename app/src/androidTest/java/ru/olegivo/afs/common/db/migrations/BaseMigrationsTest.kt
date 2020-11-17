@@ -32,8 +32,8 @@ import ru.olegivo.afs.common.db.AfsDatabase
 
 abstract class BaseMigrationsTest(
     private val migration: Migration,
-    private val versionFrom: Int,
-    private val versionTo: Int
+    private val versionFrom: Int = migration.startVersion,
+    private val versionTo: Int = migration.endVersion
 ) {
     protected lateinit var db: SupportSQLiteDatabase
 
@@ -82,9 +82,5 @@ abstract class BaseMigrationsTest(
 
     companion object {
         private const val TEST_DB_NAME = "test-db"
-
-        fun Cursor.getInt(columnName: String) = getInt(getColumnIndex(columnName))
-        fun Cursor.getLong(columnName: String) = getLong(getColumnIndex(columnName))
-        fun Cursor.getString(columnName: String) = getString(getColumnIndex(columnName))
     }
 }

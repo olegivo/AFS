@@ -21,6 +21,7 @@ import ru.olegivo.afs.common.getMinutesOfDay
 import ru.olegivo.afs.schedules.domain.models.Schedule
 
 data class FavoriteFilter(
+    val clubId: Int,
     val groupId: Int,
     val group: String,
     val activityId: Int,
@@ -31,6 +32,7 @@ data class FavoriteFilter(
 
 fun Schedule.toFavoriteFilter(): FavoriteFilter {
     return FavoriteFilter(
+        clubId = clubId,
         groupId = groupId,
         group = group,
         activityId = activityId,
