@@ -170,6 +170,8 @@ workflows:
       - gradle-runner@1:
           title: Run android tests
           inputs:
+            - gradle_options: >-
+                --stacktrace --no-daemon -e notAnnotation ru.olegivo.afs.suite.NetworkTest
             - gradle_task: connectedDebugAndroidTest
       - deploy-to-bitrise-io@1:
           title: Upload android tests results
