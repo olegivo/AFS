@@ -21,11 +21,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import ru.olegivo.afs.R
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.common.android.doOnApplyWindowInsets
 import ru.olegivo.afs.common.presentation.Navigator
 import ru.olegivo.afs.databinding.FragmentScheduleDetailsBinding
 import ru.olegivo.afs.schedule.analytics.ScheduleDetailsAnalytic
@@ -68,6 +70,19 @@ class ScheduleDetailsFragment @Inject constructor(
         }
         viewBinding.textViewAgreement.setOnClickListener {
             presenter.onAgreementClicked()
+        }
+
+        viewBinding.toolbarLayout.appbarLayout.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                top = padding.top + insets.systemWindowInsetTop
+            )
+            insets
+        }
+        viewBinding.root.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                bottom = padding.bottom + insets.systemWindowInsetBottom
+            )
+            insets
         }
     }
 

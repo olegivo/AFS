@@ -21,12 +21,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.olegivo.afs.R
 import ru.olegivo.afs.databinding.FragmentDayScheduleBinding
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.common.android.doOnApplyWindowInsets
 import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.DayScheduleContract
@@ -71,6 +73,13 @@ class DayScheduleFragment @Inject constructor(
         )
         viewBinding.swipeRefresh.setOnRefreshListener {
             presenter.actualizeSchedule()
+        }
+
+        viewBinding.scheduleRecyclerView.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                bottom = padding.bottom + insets.systemWindowInsetBottom
+            )
+            insets
         }
     }
 

@@ -20,6 +20,7 @@ package ru.olegivo.afs.home.android
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -29,6 +30,7 @@ import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import ru.olegivo.afs.R
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.common.android.doOnApplyWindowInsets
 import ru.olegivo.afs.clubs.android.ChooseClubDialog
 import ru.olegivo.afs.clubs.domain.GetClubsUseCase
 import ru.olegivo.afs.clubs.domain.GetCurrentClubUseCase
@@ -75,6 +77,13 @@ class HomeFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewBinding.root.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                bottom = padding.bottom + insets.systemWindowInsetBottom
+            )
+            insets
+        }
 
         viewBinding.activityMainChooseClubButton.setOnClickListener {
             onChooseClubClicked()

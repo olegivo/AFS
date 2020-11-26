@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <!--
   ~ Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
   ~
@@ -16,7 +18,23 @@
   ~ AFS.
   -->
 
-<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/container"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        tools:showIn="@layout/fragment_schedule_details"
+        >
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            tools:title="Title"
+            tools:subtitle="subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            />
+
+</com.google.android.material.appbar.AppBarLayout>
+
+    

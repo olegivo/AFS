@@ -24,8 +24,9 @@ import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
 fun FragmentScheduleDetailsBinding.bind(
     sportsActivity: SportsActivityDisplay
 ) {
-    textViewGroup.text = sportsActivity.group
-    textViewActivity.text = sportsActivity.activity
+    toolbarLayout.toolbar.title = sportsActivity.group
+    toolbarLayout.toolbar.subtitle = sportsActivity.activity
+
     textViewDuty.text = sportsActivity.datetime
     cardViewRecord.isVisible = sportsActivity.preEntry
     sportsActivity.slotsCount?.let {
