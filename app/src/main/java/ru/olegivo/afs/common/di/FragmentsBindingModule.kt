@@ -26,6 +26,7 @@ import ru.olegivo.afs.home.android.HomeFragment
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedules.android.DayScheduleFragment
 import ru.olegivo.afs.schedules.android.WeekScheduleFragment
+import ru.olegivo.afs.settings.android.SettingsFragment
 
 @Module
 interface FragmentsBindingModule {
@@ -34,6 +35,11 @@ interface FragmentsBindingModule {
     @IntoMap
     @FragmentKey(HomeFragment::class)
     fun bindHomeFragment(fragment: HomeFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(SettingsFragment::class)
+    fun bindSettingsFragment(fragment: SettingsFragment): Fragment
 
     @Binds
     @IntoMap

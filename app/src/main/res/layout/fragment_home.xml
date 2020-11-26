@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
   ~
   ~ This file is part of AFS.
@@ -21,65 +20,46 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".main.android.MainActivity"
         >
 
-    <LinearLayout
+    <Button
+            android:id="@+id/settings_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:orientation="vertical"
+            android:text="@string/fragment_home_settings_button_text"
+            app:layout_constraintBottom_toTopOf="@+id/favorites_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteX="0dp"
+            />
+
+    <Button
+            android:id="@+id/favorites_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/fragment_home_favorites_button_text"
+            app:layout_constraintBottom_toTopOf="@+id/schedules_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteX="0dp"
+            />
+
+    <Button
+            android:id="@+id/schedules_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/fragment_home_schedules_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            >
-
-        <Button
-                android:id="@+id/activity_main_drop_db_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Удалить БД"
-                />
-
-        <Button
-                android:id="@+id/activity_main_choose_club_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/activity_main_choose_club_button_text"
-                />
-
-        <Button
-                android:id="@+id/activity_main_set_default_club_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Выбрать дефолтный клуб"
-                />
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/activity_main_is_stub_reserve_check_box"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:text="Fake reserve"
-                />
-
-        <Button
-                android:id="@+id/activity_main_favorites_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/activity_main_favorites_button_text"
-                />
-
-        <Button
-                android:id="@+id/activity_main_reserve_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/activity_main_reserve_button_text"
-                />
-    </LinearLayout>
+            />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

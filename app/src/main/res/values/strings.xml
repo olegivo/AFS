@@ -1,11 +1,32 @@
+<!--
+  ~ Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+  ~
+  ~ This file is part of AFS.
+  ~
+  ~ AFS is free software: you can redistribute it and/or modify
+  ~ it under the terms of the MIT License.
+  ~
+  ~ AFS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ AFS.
+  -->
+
 <resources>
     <string name="app_name">AFS</string>
-    <string name="activity_main_choose_club_button_text">Choose club</string>
-    <string name="activity_main_favorites_button_text">Favorites</string>
-    <string name="activity_main_reserve_button_text">Reserve</string>
+    <string name="fragment_settings_choose_club_button_text">Choose club</string>
+    <string name="fragment_home_favorites_button_text">Favorites</string>
+    <string name="fragment_home_schedules_button_text">Reserve</string>
     <string name="slots_count">Мест: %d/%d</string>
     <string name="agreement"><u>Ознакомлен с правилами, согласен на обработку персональных данных</u></string>
     <string name="favorite_record_reminder_channel_name">Необходимость записи на занятие</string>
     <string name="favorite_record_reminder_channel_description">Уведомления о необходимости записи на избранные занятия</string>
     <string name="textViewSlotsCaption">Мест:</string>
+    <string name="fragment_settings_fake_reserve_checkbox_title">Fake reserve</string>
+    <string name="fragment_settings_set_default_club_button_text">Выбрать дефолтный клуб</string>
+    <string name="fragment_settings_drop_db_button_text">Удалить БД</string>
+    <string name="fragment_home_settings_button_text">Settings</string>
 </resources>
