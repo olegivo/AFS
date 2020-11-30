@@ -15,23 +15,32 @@
  * AFS.
  */
 
-package ru.olegivo.afs.home.android
+package ru.olegivo.afs.common.android
 
-import com.agoda.kakao.text.KButton
-import com.kaspersky.kaspresso.screens.KScreen
-import ru.olegivo.afs.R
+import org.junit.After
+import org.junit.Rule
+import ru.olegivo.afs.ExternalDependencies
+import ru.olegivo.afs.ExternalDependenciesImpl
 
-object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
-    private val settingsButton = KButton {
-        withId(R.id.settings_button)
+abstract class BaseIntegratedIsolatedUITest<T>(
+    externalDependencies: ExternalDependencies = ExternalDependenciesImpl()
+) : ExternalDependencies by externalDependencies
+    where T : ChainRueHolder {
+
+    protected var fixture: T
+
+    @get:Rule
+    val ruleChain
+        get() = fixture.chain
+
+    init {
+        fixture = createFixture()
     }
 
-    fun clickSettingsButton() {
-        settingsButton {
-            click()
-        }
+    @After
+    fun tearDown() {
+        checkNotVerifiedMocks()
     }
 
-    override val layoutId: Int = R.layout.fragment_home
-    override val viewClass = HomeFragment::class.java
+    protected abstract fun createFixture(): T
 }

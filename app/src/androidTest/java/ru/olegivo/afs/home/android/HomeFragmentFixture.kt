@@ -17,21 +17,20 @@
 
 package ru.olegivo.afs.home.android
 
-import com.agoda.kakao.text.KButton
-import com.kaspersky.kaspresso.screens.KScreen
-import ru.olegivo.afs.R
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import org.junit.rules.RuleChain
+import ru.olegivo.afs.ExternalDependencies
+import ru.olegivo.afs.InjectRule
+import ru.olegivo.afs.RxIdlerRule
+import ru.olegivo.afs.common.android.ChainRueHolder
+import ru.olegivo.afs.main.android.MainActivity
 
-object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
-    private val settingsButton = KButton {
-        withId(R.id.settings_button)
-    }
+class HomeFragmentFixture(externalDependencies: ExternalDependencies) : ChainRueHolder {
+    private val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+    private val injectRule = InjectRule(externalDependencies)
+    private val rxIdlerRule = RxIdlerRule()
 
-    fun clickSettingsButton() {
-        settingsButton {
-            click()
-        }
-    }
-
-    override val layoutId: Int = R.layout.fragment_home
-    override val viewClass = HomeFragment::class.java
+    override val chain = RuleChain.outerRule(injectRule)
+        .around(rxIdlerRule)
+        .around(activityScenarioRule)!!
 }

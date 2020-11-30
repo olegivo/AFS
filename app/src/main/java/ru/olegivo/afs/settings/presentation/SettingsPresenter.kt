@@ -68,6 +68,7 @@ class SettingsPresenter @Inject constructor(
         reserveRepository.setStubReserve(isChecked)
             .observeOn(mainScheduler)
             .doOnSubscribe { view?.disableIsStubReserveCheckBox() }
+            .doOnComplete { isStubReserve = isChecked }
             .doFinally { view?.enableIsStubReserveCheckBox(isStubReserve ?: false) }
             .subscribeBy(onError = { onError(it, "Failed to set stub reserve") })
             .addToComposite()

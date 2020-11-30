@@ -15,23 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs.home.android
+package ru.olegivo.afs.common.android
 
-import com.agoda.kakao.text.KButton
-import com.kaspersky.kaspresso.screens.KScreen
-import ru.olegivo.afs.R
+import org.junit.rules.RuleChain
 
-object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
-    private val settingsButton = KButton {
-        withId(R.id.settings_button)
-    }
-
-    fun clickSettingsButton() {
-        settingsButton {
-            click()
-        }
-    }
-
-    override val layoutId: Int = R.layout.fragment_home
-    override val viewClass = HomeFragment::class.java
+interface ChainRueHolder {
+    val chain: RuleChain
 }

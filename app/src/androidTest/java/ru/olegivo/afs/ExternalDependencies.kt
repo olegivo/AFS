@@ -15,23 +15,18 @@
  * AFS.
  */
 
-package ru.olegivo.afs.home.android
+package ru.olegivo.afs
 
-import com.agoda.kakao.text.KButton
-import com.kaspersky.kaspresso.screens.KScreen
-import ru.olegivo.afs.R
+import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
+import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
-object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
-    private val settingsButton = KButton {
-        withId(R.id.settings_button)
-    }
-
-    fun clickSettingsButton() {
-        settingsButton {
-            click()
-        }
-    }
-
-    override val layoutId: Int = R.layout.fragment_home
-    override val viewClass = HomeFragment::class.java
+interface ExternalDependencies {
+    val afsDatabase: AfsDatabase
+    val preferencesDataSource: PreferencesDataSource
+    val api: Api
+    val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
+    fun checkNotVerifiedMocks()
+    fun resetMocks()
 }

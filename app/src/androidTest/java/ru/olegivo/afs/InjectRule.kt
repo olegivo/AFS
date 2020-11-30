@@ -17,33 +17,14 @@
 
 package ru.olegivo.afs
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
-import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
-import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.di.DaggerTestAppComponent
-import ru.olegivo.afs.common.network.Api
-import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
-class InjectRule : TestRule {
-
-    private val mocks: Array<Any> by lazy {
-        arrayOf(
-            afsDatabase,
-            preferencesDataSource,
-            api,
-            firebaseAnalyticsNetworkSource
-        )
-    }
-
-    val afsDatabase: AfsDatabase = mock()
-    val preferencesDataSource: PreferencesDataSource = mock()
-    val api: Api = mock()
-    val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource = mock()
+class InjectRule(externalDependencies: ExternalDependencies) :
+    TestRule,
+    ExternalDependencies by externalDependencies {
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
@@ -57,14 +38,6 @@ class InjectRule : TestRule {
                 checkNotVerifiedMocks()
             }
         }
-    }
-
-    private fun checkNotVerifiedMocks() {
-        verifyNoMoreInteractions(*mocks)
-    }
-
-    private fun resetMocks() {
-        reset(*mocks)
     }
 
     private fun inject() {

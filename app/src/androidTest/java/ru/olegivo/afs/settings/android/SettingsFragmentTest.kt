@@ -15,32 +15,41 @@
  * AFS.
  */
 
-package ru.olegivo.afs.home.android
+package ru.olegivo.afs.settings.android
 
+import org.junit.Before
 import org.junit.Test
 import ru.olegivo.afs.common.android.BaseIntegratedIsolatedUITest
-import ru.olegivo.afs.helpers.getRandomBoolean
-import ru.olegivo.afs.settings.android.SettingsFragmentFixture
-import ru.olegivo.afs.settings.android.SettingsFragmentScreen
 import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 
 @IntegratedIsolatedUITest
-class HomeFragmentTest : BaseIntegratedIsolatedUITest<HomeFragmentFixture>() {
+class SettingsFragmentTest : BaseIntegratedIsolatedUITest<SettingsFragmentFixture>() {
 
-    private val settingsFragmentFixture =
-        SettingsFragmentFixture(this, homeFragmentFixture = fixture)
+    @Before
+    fun setUp() {
+    }
 
-    override fun createFixture() = HomeFragmentFixture(this)
+    override fun createFixture() = SettingsFragmentFixture(this)
 
     @Test
-    fun settings_button_navigates_to_settings_screen() {
-        settingsFragmentFixture.prepareStubReserveResponse(getRandomBoolean())
-        HomeFragmentScreen {
-            clickSettingsButton()
-        }
+    fun is_fake_checked_when_has_saved_true() {
+        val expected = true
+        fixture.prepare(isStubReserveResponse = expected)
+
         SettingsFragmentScreen {
-            assertScreenShown()
+            isFakeChecked(expected)
         }
-        settingsFragmentFixture.checkStubReserve()
+        fixture.checkStubReserve()
+    }
+
+    @Test
+    fun is_fake_unchecked_when_has_saved_false() {
+        val expected = false
+        fixture.prepare(isStubReserveResponse = expected)
+
+        SettingsFragmentScreen {
+            isFakeChecked(expected)
+        }
+        fixture.checkStubReserve()
     }
 }
