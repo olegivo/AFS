@@ -17,14 +17,26 @@
 
 package ru.olegivo.afs
 
-import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
-import ru.olegivo.afs.common.db.AfsDatabase
-import ru.olegivo.afs.common.network.Api
-import ru.olegivo.afs.preferences.data.PreferencesDataSource
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 
-interface ExternalDependencies : MocksHolder {
-    val afsDatabase: AfsDatabase
-    val preferencesDataSource: PreferencesDataSource
-    val api: Api
-    val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
+class MocksHolderImpl : MocksHolder {
+    private val mocks = mutableListOf<Any>()
+
+    override fun checkNotVerifiedMocks() {
+        mocks.forEach { verifyNoMoreInteractions(it) }
+    }
+
+    override fun resetMocks() {
+        mocks.forEach { reset(it) }
+    }
+
+    override fun addMocks(vararg mocksToAdd: Any) {
+        mocksToAdd.forEach { mocks.add(it) }
+    }
+
+    override fun resetWhenNoMoreInteraction(mock: Any) {
+        verifyNoMoreInteractions(mock)
+        reset(mock)
+    }
 }

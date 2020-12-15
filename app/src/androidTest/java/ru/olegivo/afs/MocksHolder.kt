@@ -17,14 +17,9 @@
 
 package ru.olegivo.afs
 
-import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
-import ru.olegivo.afs.common.db.AfsDatabase
-import ru.olegivo.afs.common.network.Api
-import ru.olegivo.afs.preferences.data.PreferencesDataSource
-
-interface ExternalDependencies : MocksHolder {
-    val afsDatabase: AfsDatabase
-    val preferencesDataSource: PreferencesDataSource
-    val api: Api
-    val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
+interface MocksHolder {
+    fun checkNotVerifiedMocks()
+    fun resetMocks()
+    fun addMocks(vararg mocksToAdd: Any)
+    fun resetWhenNoMoreInteraction(mock: Any)
 }
