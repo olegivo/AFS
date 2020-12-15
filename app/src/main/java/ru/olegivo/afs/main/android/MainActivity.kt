@@ -21,17 +21,20 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import ru.olegivo.afs.R
-import ru.olegivo.afs.common.di.ScopedFragmentFactory
 import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
 import ru.olegivo.afs.analytics.models.AnalyticEvent
+import ru.olegivo.afs.common.di.ScopedFragmentFactory
+import ru.olegivo.afs.databinding.ActivityMainBinding
 import ru.olegivo.afs.favorites.android.getExtraFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.android.putFavoriteRecordReminderParameters
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
@@ -62,6 +65,8 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
     lateinit var analyticsProvider: AnalyticsProvider
 
+    private val viewBinding by viewBinding(ActivityMainBinding::bind, R.id.container)
+
     private val navigator: Navigator =
         object : SupportAppNavigator(this, supportFragmentManager, R.id.container) {
         }
@@ -90,6 +95,11 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         supportFragmentManager.fragmentFactory = scopedFragmentFactory
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewBinding.container.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
         router.newRootScreen(HomeScreen)
         processIntent(intent)
     }

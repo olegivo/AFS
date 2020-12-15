@@ -17,55 +17,30 @@
 
 package ru.olegivo.afs.home.android
 
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
-import ru.olegivo.afs.InjectRule
-import ru.olegivo.afs.RxIdlerRule
-import ru.olegivo.afs.extensions.toMaybe
-import ru.olegivo.afs.main.android.MainActivity
-import ru.olegivo.afs.schedule.data.ReserveRepositoryImpl
+import ru.olegivo.afs.common.android.BaseIntegratedIsolatedUITest
+import ru.olegivo.afs.helpers.getRandomBoolean
+import ru.olegivo.afs.settings.android.SettingsFragmentFixture
+import ru.olegivo.afs.settings.android.SettingsFragmentScreen
 import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 
 @IntegratedIsolatedUITest
-class HomeFragmentTest {
+class HomeFragmentTest : BaseIntegratedIsolatedUITest<HomeFragmentFixture>() {
 
-    private val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
-    private val injectRule = InjectRule()
-    private val rxIdlerRule = RxIdlerRule()
+    private val settingsFragmentFixture =
+        SettingsFragmentFixture(this, homeFragmentFixture = fixture)
 
-    @get:Rule
-    val chain = RuleChain.outerRule(injectRule)
-        .around(rxIdlerRule)
-        .around(activityScenarioRule)!!
+    override fun createFixture() = HomeFragmentFixture(this)
 
     @Test
-    fun is_fake_checked_when_has_saved_true() {
-        val expected = true
-        given { injectRule.preferencesDataSource.getBoolean(ReserveRepositoryImpl.IsStubReserve) }
-            .willAnswer {
-                expected.toMaybe()
-            }
+    fun settings_button_navigates_to_settings_screen() {
+        settingsFragmentFixture.prepareStubReserveResponse(getRandomBoolean())
         HomeFragmentScreen {
-            isFakeChecked(expected)
+            clickSettingsButton()
         }
-
-        verify(injectRule.preferencesDataSource).getBoolean(ReserveRepositoryImpl.IsStubReserve)
-    }
-
-    @Test
-    fun is_fake_unchecked_when_has_saved_false() {
-        val expected = false
-        given { injectRule.preferencesDataSource.getBoolean(ReserveRepositoryImpl.IsStubReserve) }
-            .willAnswer {
-                expected.toMaybe()
-            }
-        HomeFragmentScreen {
-            isFakeChecked(expected)
+        SettingsFragmentScreen {
+            assertScreenShown()
         }
-        verify(injectRule.preferencesDataSource).getBoolean(ReserveRepositoryImpl.IsStubReserve)
+        settingsFragmentFixture.checkStubReserve()
     }
 }

@@ -22,11 +22,14 @@ import dagger.android.ContributesAndroidInjector
 import ru.olegivo.afs.favorites.android.FavoritesFragment
 import ru.olegivo.afs.favorites.di.FavoritesModule
 import ru.olegivo.afs.home.android.HomeFragment
+import ru.olegivo.afs.home.di.HomeModule
 import ru.olegivo.afs.schedule.android.ScheduleDetailsFragment
 import ru.olegivo.afs.schedules.android.DayScheduleFragment
 import ru.olegivo.afs.schedules.android.WeekScheduleFragment
 import ru.olegivo.afs.schedules.di.SchedulesModule
 import ru.olegivo.afs.schedules.di.WeekScheduleModule
+import ru.olegivo.afs.settings.android.SettingsFragment
+import ru.olegivo.afs.settings.di.SettingsModule
 
 @Module
 interface FragmentContributorModule {
@@ -34,6 +37,10 @@ interface FragmentContributorModule {
     @PerFragment
     @ContributesAndroidInjector
     fun bindHomeFragment(): HomeFragment
+
+    @PerFragment
+    @ContributesAndroidInjector
+    fun bindSettingsFragment(): SettingsFragment
 
     @PerFragment
     @ContributesAndroidInjector
@@ -54,6 +61,8 @@ interface FragmentContributorModule {
     @PerFragment
     @ContributesAndroidInjector(
         modules = [
+            HomeModule::class,
+            SettingsModule::class,
             WeekScheduleModule::class,
             SchedulesModule::class,
             FavoritesModule::class,

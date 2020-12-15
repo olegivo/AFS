@@ -49,6 +49,7 @@ abstract class BaseTest(
 
     @After
     open fun tearDown() {
+        andTriggerActions()
         if (mocks.isNotEmpty()) verifyNoMoreInteractions(*mocks)
     }
 

@@ -26,6 +26,8 @@ import ru.olegivo.afs.schedule.android.ReserveScreen
 import ru.olegivo.afs.schedule.presentation.models.ReserveDestination
 import ru.olegivo.afs.schedules.android.ScheduleScreen
 import ru.olegivo.afs.schedules.presentation.models.ScheduleDestination
+import ru.olegivo.afs.settings.android.SettingsScreen
+import ru.olegivo.afs.settings.navigation.SettingsDestination
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.Screen
 import javax.inject.Inject
@@ -37,6 +39,7 @@ class NavigatorImpl @Inject constructor(val router: Router) : Navigator {
             is ScheduleDestination -> ScheduleScreen(destination)
             is BrowserDestination -> BrowserScreen(destination)
             is FavoritesDestination -> FavoritesScreen(destination)
+            is SettingsDestination -> SettingsScreen(destination)
             else -> TODO("Not implemented ($destination)")
         }
         router.navigateTo(screen)

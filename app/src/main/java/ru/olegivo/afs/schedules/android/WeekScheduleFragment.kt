@@ -20,13 +20,15 @@ package ru.olegivo.afs.schedules.android
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import ru.olegivo.afs.R
-import ru.olegivo.afs.databinding.FragmentWeekScheduleBinding
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.common.android.doOnApplyWindowInsets
+import ru.olegivo.afs.databinding.FragmentWeekScheduleBinding
 import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.presentation.WeekScheduleContract
 import javax.inject.Inject
@@ -53,12 +55,22 @@ class WeekScheduleFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewBinding.toolbarLayout.toolbar.title = "Schedules"
+
         pagerAdapter = ViewPagerAdapter(requireActivity(), presenter, dayScheduleFragmentProvider)
         viewBinding.viewPager.adapter = pagerAdapter
         tabLayoutMediator =
             TabLayoutMediator(viewBinding.tabs, viewBinding.viewPager) { tab, position ->
                 tab.text = presenter.getDay(position).caption
             }
+
+        viewBinding.toolbarLayout.appbarLayout.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                top = padding.top + insets.systemWindowInsetTop
+            )
+            insets
+        }
     }
 
     override fun onStart() {

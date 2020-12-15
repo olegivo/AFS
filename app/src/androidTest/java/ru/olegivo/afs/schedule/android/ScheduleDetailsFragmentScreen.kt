@@ -23,14 +23,14 @@ import com.agoda.kakao.common.views.KView
 import com.agoda.kakao.edit.KTextInputLayout
 import com.agoda.kakao.text.KButton
 import com.agoda.kakao.text.KTextView
+import com.agoda.kakao.toolbar.KToolbar
 import com.kaspersky.kaspresso.screens.KScreen
 import ru.olegivo.afs.R
 import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
 
 object ScheduleDetailsFragmentScreen : KScreen<ScheduleDetailsFragmentScreen>() {
+    private val toolbar = KToolbar { withId(R.id.toolbar) }
     private val textViewDuty = KTextView { withId(R.id.textViewDuty) }
-    private val textViewGroup = KTextView { withId(R.id.textViewGroup) }
-    private val textViewActivity = KTextView { withId(R.id.textViewActivity) }
     private val cardViewRecord = KView { withId(R.id.cardViewRecord) }
     private val textViewRecordingTitle = KTextView { withId(R.id.textViewRecordingTitle) }
     private val textViewRecordingPeriod = KTextView { withId(R.id.textViewRecordingPeriod) }
@@ -42,17 +42,17 @@ object ScheduleDetailsFragmentScreen : KScreen<ScheduleDetailsFragmentScreen>() 
     private val textViewSlotsCaption = KTextView { withId(R.id.textViewSlotsCaption) }
     private val buttonReserve = KButton { withId(R.id.buttonReserve) }
 
-    override val layoutId: Int? = R.layout.fragment_schedule_details
-    override val viewClass: Class<*>? = ScheduleDetailsFragment::class.java
+    override val layoutId = R.layout.fragment_schedule_details
+    override val viewClass = ScheduleDetailsFragment::class.java
 
     fun shouldDisplayDatetime(sportsActivity: SportsActivityDisplay) =
         textViewDuty.containsText(sportsActivity.datetime)
 
     fun shouldDisplayGroup(sportsActivity: SportsActivityDisplay) =
-        textViewGroup.containsText(sportsActivity.group)
+        toolbar.hasTitle(sportsActivity.group)
 
     fun shouldDisplayActivity(sportsActivity: SportsActivityDisplay) =
-        textViewActivity.containsText(sportsActivity.activity)
+        toolbar.hasSubtitle(sportsActivity.activity)
 
     fun shouldDisplayRecording(isVisible: Boolean, sportsActivity: SportsActivityDisplay? = null) {
         cardViewRecord.shouldDisplay(isVisible)

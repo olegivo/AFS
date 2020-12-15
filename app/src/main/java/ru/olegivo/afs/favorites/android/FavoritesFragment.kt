@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -29,6 +30,7 @@ import ru.olegivo.afs.databinding.FragmentFavoritesBinding
 import ru.olegivo.afs.favorites.presentation.FavoritesContract
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
+import ru.olegivo.afs.common.android.doOnApplyWindowInsets
 import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
 import javax.inject.Inject
 
@@ -45,8 +47,24 @@ class FavoritesFragment @Inject constructor(private val presenter: FavoritesCont
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewBinding.toolbarLayout.toolbar.title = "Favorites"
+
         viewBinding.favoritesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.favoritesRecyclerView.adapter = favoritesAdapter
+
+        viewBinding.toolbarLayout.appbarLayout.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                top = padding.top + insets.systemWindowInsetTop
+            )
+            insets
+        }
+        viewBinding.favoritesRecyclerView.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                bottom = padding.bottom + insets.systemWindowInsetBottom
+            )
+            insets
+        }
     }
 
     override fun onStart() {

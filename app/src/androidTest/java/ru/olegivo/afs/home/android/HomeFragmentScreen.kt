@@ -17,23 +17,21 @@
 
 package ru.olegivo.afs.home.android
 
-import com.agoda.kakao.check.KCheckBox
+import com.agoda.kakao.text.KButton
 import com.kaspersky.kaspresso.screens.KScreen
 import ru.olegivo.afs.R
 
 object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
-    private val isFake = KCheckBox {
-        withId(R.id.activity_main_is_stub_reserve_check_box)
+    private val settingsButton = KButton {
+        withId(R.id.settings_button)
     }
 
-    fun isFakeChecked(expected: Boolean) {
-        if (expected) {
-            isFake.isChecked()
-        } else {
-            isFake.isNotChecked()
+    fun clickSettingsButton() {
+        settingsButton {
+            click()
         }
     }
 
-    override val layoutId: Int? = R.layout.fragment_home
-    override val viewClass: Class<*>? = HomeFragment::class.java
+    override val layoutId: Int = R.layout.fragment_home
+    override val viewClass = HomeFragment::class.java
 }
