@@ -25,6 +25,9 @@ object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
     private val settingsButton = KButton {
         withId(R.id.settings_button)
     }
+    private val favoritesButton = KButton {
+        withId(R.id.favorites_button)
+    }
 
     fun clickSettingsButton() {
         settingsButton {
@@ -32,8 +35,18 @@ object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
         }
     }
 
+    fun clickFavoritesButton() {
+        favoritesButton {
+            click()
+        }
+    }
+
     fun assertSettingsButtonShown() {
         settingsButton { isVisible() }
+    }
+
+    fun assertFavoritesButtonShown() {
+        favoritesButton { isVisible() }
     }
 
     override val layoutId: Int = R.layout.fragment_home

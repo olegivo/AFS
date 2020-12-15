@@ -17,7 +17,6 @@
 
 package ru.olegivo.afs.settings.android
 
-import org.junit.Before
 import org.junit.Test
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.BaseIntegratedIsolatedUITest
@@ -26,10 +25,6 @@ import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 @IntegratedIsolatedUITest
 class SettingsFragmentTest :
     BaseIntegratedIsolatedUITest<SettingsFragmentFixture, SettingsFragmentScreen>() {
-
-    @Before
-    fun setUp() {
-    }
 
     override fun createFixture(externalDependencies: ExternalDependencies) =
         SettingsFragmentFixture(externalDependencies)

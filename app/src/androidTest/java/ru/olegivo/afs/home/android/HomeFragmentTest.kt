@@ -32,6 +32,7 @@ class HomeFragmentTest : BaseIntegratedIsolatedUITest<HomeFragmentFixture, HomeF
     fun screen_shows() {
         fixture.screen {
             assertSettingsButtonShown()
+            assertFavoritesButtonShown()
         }
     }
 }
