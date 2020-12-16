@@ -19,6 +19,6 @@ package ru.olegivo.afs.common.android
 
 import org.junit.rules.RuleChain
 
-interface ChainRueHolder {
+interface ChainRuleHolder {
     val chain: RuleChain
 }

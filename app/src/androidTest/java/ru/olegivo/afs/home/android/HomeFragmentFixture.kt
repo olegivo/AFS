@@ -22,10 +22,10 @@ import org.junit.rules.RuleChain
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.InjectRule
 import ru.olegivo.afs.RxIdlerRule
-import ru.olegivo.afs.common.android.ChainRueHolder
+import ru.olegivo.afs.common.android.ChainRuleHolder
 import ru.olegivo.afs.main.android.MainActivity
 
-class HomeFragmentFixture(externalDependencies: ExternalDependencies) : ChainRueHolder {
+class HomeFragmentFixture(externalDependencies: ExternalDependencies) : ChainRuleHolder {
     private val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
     private val injectRule = InjectRule(externalDependencies)
     private val rxIdlerRule = RxIdlerRule()

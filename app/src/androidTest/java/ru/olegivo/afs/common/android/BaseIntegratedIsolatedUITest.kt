@@ -24,8 +24,10 @@ import ru.olegivo.afs.ExternalDependenciesImpl
 
 abstract class BaseIntegratedIsolatedUITest<T>(
     externalDependencies: ExternalDependencies = ExternalDependenciesImpl()
-) : ExternalDependencies by externalDependencies
-    where T : ChainRueHolder {
+) :
+    ExternalDependencies by externalDependencies
+
+    where T : ChainRuleHolder {
 
     protected var fixture: T
 
