@@ -24,12 +24,12 @@ import io.reactivex.observers.BaseTestConsumer
 import io.reactivex.schedulers.TestScheduler
 import ru.olegivo.afs.helpers.getSingleValue
 
-class RxHelperImpl :
-    RxHelper {
+class RxHelperImpl(private val strategy: RxHelper.SchedulerSubstitutionStrategy) : RxHelper {
 
-    val schedulerRule = RxSchedulerRule()
+    override val rxSchedulerRule = RxSchedulerRule(strategy = strategy)
+
     override val testScheduler: TestScheduler
-        get() = schedulerRule.testScheduler
+        get() = (strategy as RxHelper.SchedulerSubstitutionStrategy.TestSchedulerHolder).testScheduler
 
     override fun <T> Single<T>.assertResult(block: (T) -> Unit): Unit =
         test().andTriggerActions()
