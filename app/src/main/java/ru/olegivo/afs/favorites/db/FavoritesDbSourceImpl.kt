@@ -20,6 +20,7 @@ package ru.olegivo.afs.favorites.db
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.favorites.db.models.toDb
@@ -45,7 +46,14 @@ class FavoritesDbSourceImpl @Inject constructor(
             }
 
     override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
-        with(favoriteFilter) { favoriteDao.removeFilter(groupId, activityId, dayOfWeek, minutesOfDay) }
+        with(favoriteFilter) {
+            favoriteDao.removeFilter(
+                groupId = groupId,
+                activityId = activityId,
+                dayOfWeek = dayOfWeek,
+                minutesOfDay = minutesOfDay
+            )
+        }
             .subscribeOn(ioScheduler)
 
     override fun exist(favoriteFilter: FavoriteFilter): Single<Boolean> =
@@ -77,5 +85,5 @@ class FavoritesDbSourceImpl @Inject constructor(
         favoriteDao.getFavoriteFilters()
             .subscribeOn(ioScheduler)
             .observeOn(computationScheduler)
-            .map { list -> list.map { it.toDomain() } }
+            .mapList { it.toDomain() }
 }
