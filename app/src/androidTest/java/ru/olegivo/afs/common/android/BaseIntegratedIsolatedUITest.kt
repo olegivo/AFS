@@ -18,31 +18,34 @@
 package ru.olegivo.afs.common.android
 
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
+import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.ExternalDependenciesImpl
 
-abstract class BaseIntegratedIsolatedUITest<T>(
+abstract class BaseIntegratedIsolatedUITest<TFixture, TScreen>(
     externalDependencies: ExternalDependencies = ExternalDependenciesImpl()
 ) :
     ExternalDependencies by externalDependencies
+    where TFixture : ChainRuleHolder, TFixture : BaseFixture<TScreen> {
 
-    where T : ChainRuleHolder {
-
-    protected var fixture: T
+    protected val fixture: TFixture by lazy { createFixture(externalDependencies) }
 
     @get:Rule
     val ruleChain
         get() = fixture.chain
 
-    init {
-        fixture = createFixture()
+    @Before
+    fun setUp() {
+        resetMocks()
     }
 
     @After
     fun tearDown() {
+        triggerActions()
         checkNotVerifiedMocks()
     }
 
-    protected abstract fun createFixture(): T
+    protected abstract fun createFixture(externalDependencies: ExternalDependencies): TFixture
 }

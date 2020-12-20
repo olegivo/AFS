@@ -19,18 +19,20 @@ package ru.olegivo.afs.home.android
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.rules.RuleChain
+import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.InjectRule
-import ru.olegivo.afs.RxIdlerRule
 import ru.olegivo.afs.common.android.ChainRuleHolder
 import ru.olegivo.afs.main.android.MainActivity
 
-class HomeFragmentFixture(externalDependencies: ExternalDependencies) : ChainRuleHolder {
+class HomeFragmentFixture(externalDependencies: ExternalDependencies) :
+    BaseFixture<HomeFragmentScreen>(externalDependencies, HomeFragmentScreen),
+    ChainRuleHolder {
+
     private val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
     private val injectRule = InjectRule(externalDependencies)
-    private val rxIdlerRule = RxIdlerRule()
 
     override val chain = RuleChain.outerRule(injectRule)
-        .around(rxIdlerRule)
+        .around(rxSchedulerRule)
         .around(activityScenarioRule)!!
 }

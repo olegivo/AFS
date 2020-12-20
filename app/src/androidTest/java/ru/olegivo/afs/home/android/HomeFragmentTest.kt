@@ -18,29 +18,20 @@
 package ru.olegivo.afs.home.android
 
 import org.junit.Test
+import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.BaseIntegratedIsolatedUITest
-import ru.olegivo.afs.helpers.getRandomBoolean
-import ru.olegivo.afs.settings.android.SettingsFragmentFixture
-import ru.olegivo.afs.settings.android.SettingsFragmentScreen
 import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 
 @IntegratedIsolatedUITest
-class HomeFragmentTest : BaseIntegratedIsolatedUITest<HomeFragmentFixture>() {
+class HomeFragmentTest : BaseIntegratedIsolatedUITest<HomeFragmentFixture, HomeFragmentScreen>() {
 
-    private val settingsFragmentFixture =
-        SettingsFragmentFixture(this, homeFragmentFixture = fixture)
-
-    override fun createFixture() = HomeFragmentFixture(this)
+    override fun createFixture(externalDependencies: ExternalDependencies) =
+        HomeFragmentFixture(externalDependencies)
 
     @Test
-    fun settings_button_navigates_to_settings_screen() {
-        settingsFragmentFixture.prepareStubReserveResponse(getRandomBoolean())
-        HomeFragmentScreen {
-            clickSettingsButton()
+    fun screen_shows() {
+        fixture.screen {
+            assertSettingsButtonShown()
         }
-        SettingsFragmentScreen {
-            assertScreenShown()
-        }
-        settingsFragmentFixture.checkStubReserve()
     }
 }

@@ -15,27 +15,11 @@
  * AFS.
  */
 
-package ru.olegivo.afs.home.android
+package ru.olegivo.afs
 
-import com.agoda.kakao.text.KButton
-import com.kaspersky.kaspresso.screens.KScreen
-import ru.olegivo.afs.R
-
-object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {
-    private val settingsButton = KButton {
-        withId(R.id.settings_button)
-    }
-
-    fun clickSettingsButton() {
-        settingsButton {
-            click()
-        }
-    }
-
-    fun assertSettingsButtonShown() {
-        settingsButton { isVisible() }
-    }
-
-    override val layoutId: Int = R.layout.fragment_home
-    override val viewClass = HomeFragment::class.java
-}
+abstract class BaseFixture<TScreen>(
+    externalDependencies: ExternalDependencies,
+    screen: TScreen
+) :
+    ExternalDependencies by externalDependencies,
+    ScreenHolder<TScreen> by ScreenHolderImpl(screen)

@@ -19,23 +19,26 @@ package ru.olegivo.afs.settings.android
 
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.verify
+import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.ChainRuleHolder
 import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.home.android.HomeFragmentFixture
-import ru.olegivo.afs.home.android.HomeFragmentScreen
 import ru.olegivo.afs.schedule.data.ReserveRepositoryImpl
 
 class SettingsFragmentFixture(
     externalDependencies: ExternalDependencies,
     private val homeFragmentFixture: HomeFragmentFixture = HomeFragmentFixture(externalDependencies)
-) : ChainRuleHolder by homeFragmentFixture, ExternalDependencies by externalDependencies {
+) : BaseFixture<SettingsFragmentScreen>(externalDependencies, SettingsFragmentScreen),
+    ChainRuleHolder by homeFragmentFixture {
+
     fun prepare(isStubReserveResponse: Boolean) {
         prepareStubReserveResponse(isStubReserveResponse)
 
-        HomeFragmentScreen {
+        homeFragmentFixture.screen {
             clickSettingsButton()
         }
+        triggerActions()
     }
 
     fun prepareStubReserveResponse(isStubReserveResponse: Boolean) {

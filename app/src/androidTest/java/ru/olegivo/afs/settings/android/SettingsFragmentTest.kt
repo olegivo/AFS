@@ -19,26 +19,30 @@ package ru.olegivo.afs.settings.android
 
 import org.junit.Before
 import org.junit.Test
+import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.BaseIntegratedIsolatedUITest
 import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 
 @IntegratedIsolatedUITest
-class SettingsFragmentTest : BaseIntegratedIsolatedUITest<SettingsFragmentFixture>() {
+class SettingsFragmentTest :
+    BaseIntegratedIsolatedUITest<SettingsFragmentFixture, SettingsFragmentScreen>() {
 
     @Before
     fun setUp() {
     }
 
-    override fun createFixture() = SettingsFragmentFixture(this)
+    override fun createFixture(externalDependencies: ExternalDependencies) =
+        SettingsFragmentFixture(externalDependencies)
 
     @Test
     fun is_fake_checked_when_has_saved_true() {
         val expected = true
         fixture.prepare(isStubReserveResponse = expected)
 
-        SettingsFragmentScreen {
+        fixture.screen {
             isFakeChecked(expected)
         }
+
         fixture.checkStubReserve()
     }
 
@@ -47,9 +51,10 @@ class SettingsFragmentTest : BaseIntegratedIsolatedUITest<SettingsFragmentFixtur
         val expected = false
         fixture.prepare(isStubReserveResponse = expected)
 
-        SettingsFragmentScreen {
+        fixture.screen {
             isFakeChecked(expected)
         }
+
         fixture.checkStubReserve()
     }
 }
