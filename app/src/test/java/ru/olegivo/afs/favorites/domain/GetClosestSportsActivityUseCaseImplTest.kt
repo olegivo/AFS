@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -23,40 +23,60 @@ import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.date
-import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.domain.DateProvider
+import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.checkSingleValue
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.schedules.data.ScheduleRepositoryImpl
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
+import ru.olegivo.afs.schedules.db.ReserveDao
 import ru.olegivo.afs.schedules.db.ScheduleDao
+import ru.olegivo.afs.schedules.db.ScheduleDbSourceImpl
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.schedules.db.models.toDb
+import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
 import java.util.Calendar
 import java.util.Date
 
 class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActivityUseCase>() {
 
     override fun createInstance() = GetClosestSportsActivityUseCaseImpl(
-        afsDatabase = afsDatabase,
         dateProvider = dateProvider,
+        scheduleRepository = ScheduleRepositoryImpl(
+            scheduleNetworkSource = ScheduleNetworkSourceImpl(api = api),
+            scheduleDbSource = ScheduleDbSourceImpl(
+                reserveDao = reserveDao,
+                scheduleDao = scheduleDao,
+                ioScheduler = testScheduler,
+                computationScheduler = testScheduler
+            ),
+            dateProvider = dateProvider,
+            coroutineToRxAdapter = CoroutineToRxAdapter(),
+            computationScheduler = testScheduler
+        ),
         ioScheduler = testScheduler
     )
 
     //<editor-fold desc="Mocks">
     override fun getAllMocks(): Array<Any> = arrayOf(
-        afsDatabase,
-        dateProvider
+        dateProvider,
+        scheduleDao,
+        reserveDao,
+        api
     )
 
-    private val afsDatabase: AfsDatabase = mock()
+    private val api = mock<Api>()
     private val dateProvider: DateProvider = mock()
     private val scheduleDao: ScheduleDao = mock()
+    private val reserveDao = mock<ReserveDao>()
+
     //</editor-fold>
 
     @Test
@@ -287,14 +307,12 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         list: List<ScheduleEntity>,
         now: Date = getRandomDate()
     ) {
-        given { afsDatabase.schedules }.willReturn(scheduleDao)
         given { scheduleDao.filterSchedules(filter, filter.clubId) }
             .willReturn(list.toSingle())
         given { dateProvider.getDate() }.willReturn(now)
     }
 
     private fun verify(filter: FavoriteFilter) {
-        verify(afsDatabase).schedules
         verify(scheduleDao).filterSchedules(filter, filter.clubId)
         verify(dateProvider).getDate()
     }
