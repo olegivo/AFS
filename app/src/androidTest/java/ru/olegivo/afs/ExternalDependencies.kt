@@ -19,6 +19,7 @@ package ru.olegivo.afs
 
 import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
 import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
@@ -32,4 +33,5 @@ interface ExternalDependencies :
     val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
 
     fun resetFakes()
+    fun withFakeDatabase(block: FakeAfsDatabase.Actions.() -> Unit)
 }
