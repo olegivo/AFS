@@ -17,12 +17,9 @@
 
 package ru.olegivo.afs.settings.android
 
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.verify
 import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.ChainRuleHolder
-import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.home.android.HomeFragmentFixture
 import ru.olegivo.afs.schedule.data.ReserveRepositoryImpl
 
@@ -42,13 +39,7 @@ class SettingsFragmentFixture(
     }
 
     fun prepareStubReserveResponse(isStubReserveResponse: Boolean) {
-        given { preferencesDataSource.getBoolean(ReserveRepositoryImpl.IsStubReserve) }
-            .willAnswer {
-                isStubReserveResponse.toMaybe()
-            }
-    }
-
-    fun checkStubReserve() {
-        verify(preferencesDataSource).getBoolean(ReserveRepositoryImpl.IsStubReserve)
+        preferencesDataSource.putBoolean(ReserveRepositoryImpl.IsStubReserve, isStubReserveResponse)
+            .subscribe()
     }
 }

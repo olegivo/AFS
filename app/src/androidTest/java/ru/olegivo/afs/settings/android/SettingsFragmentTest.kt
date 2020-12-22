@@ -42,8 +42,6 @@ class SettingsFragmentTest :
         fixture.screen {
             isFakeChecked(expected)
         }
-
-        fixture.checkStubReserve()
     }
 
     @Test
@@ -54,7 +52,5 @@ class SettingsFragmentTest :
         fixture.screen {
             isFakeChecked(expected)
         }
-
-        fixture.checkStubReserve()
     }
 }

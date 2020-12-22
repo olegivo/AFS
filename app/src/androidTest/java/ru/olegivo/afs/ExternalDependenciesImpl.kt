@@ -21,6 +21,7 @@ import com.nhaarman.mockitokotlin2.mock
 import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.preferences.data.FakePreferencesDataSource
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
 class ExternalDependenciesImpl(
@@ -32,17 +33,22 @@ class ExternalDependenciesImpl(
     MocksHolder by MocksHolderImpl(),
     RxHelper by RxHelperImpl(strategy) {
 
+    private val fakePreferencesDataSource = FakePreferencesDataSource()
+
     override val afsDatabase: AfsDatabase = mock()
-    override val preferencesDataSource: PreferencesDataSource = mock()
+    override val preferencesDataSource: PreferencesDataSource = fakePreferencesDataSource
     override val api: Api = mock()
     override val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource = mock()
 
     init {
         addMocks(
             afsDatabase,
-            preferencesDataSource,
             api,
             firebaseAnalyticsNetworkSource
         )
+    }
+
+    override fun resetFakes() {
+        fakePreferencesDataSource.reset()
     }
 }

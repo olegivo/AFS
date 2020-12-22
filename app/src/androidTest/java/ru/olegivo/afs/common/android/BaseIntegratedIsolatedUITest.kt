@@ -39,6 +39,8 @@ abstract class BaseIntegratedIsolatedUITest<TFixture, TScreen>(
     @Before
     fun setUp() {
         resetMocks()
+        preferencesDataSource
+        resetFakes()
     }
 
     @After

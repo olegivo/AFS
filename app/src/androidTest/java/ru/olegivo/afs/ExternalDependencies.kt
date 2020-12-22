@@ -30,4 +30,6 @@ interface ExternalDependencies :
     val preferencesDataSource: PreferencesDataSource
     val api: Api
     val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
+
+    fun resetFakes()
 }
