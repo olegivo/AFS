@@ -22,7 +22,10 @@ import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
-interface ExternalDependencies : MocksHolder {
+interface ExternalDependencies :
+    MocksHolder,
+    RxHelper {
+
     val afsDatabase: AfsDatabase
     val preferencesDataSource: PreferencesDataSource
     val api: Api

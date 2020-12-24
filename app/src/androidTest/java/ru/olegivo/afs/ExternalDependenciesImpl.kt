@@ -23,9 +23,14 @@ import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
-class ExternalDependenciesImpl :
+class ExternalDependenciesImpl(
+    strategy: RxHelper.SchedulerSubstitutionStrategy =
+        AndroidTestSchedulerStrategies.RxIdlerTestSchedulerStrategy()
+    //AndroidTestSchedulerStrategies.RxIdlerStrategy
+) :
     ExternalDependencies,
-    MocksHolder by MocksHolderImpl() {
+    MocksHolder by MocksHolderImpl(),
+    RxHelper by RxHelperImpl(strategy) {
 
     override val afsDatabase: AfsDatabase = mock()
     override val preferencesDataSource: PreferencesDataSource = mock()
