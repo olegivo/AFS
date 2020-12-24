@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
- *  
+ *
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -15,25 +15,27 @@
  * AFS.
  */
 
-package ru.olegivo.afs
+package ru.olegivo.afs.common.db
 
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
+import io.reactivex.rxkotlin.toCompletable
 
-class RxSchedulerRule(private val strategy: RxHelper.SchedulerSubstitutionStrategy) : TestRule {
-
-    override fun apply(base: Statement, description: Description): Statement {
-        return object : Statement() {
-            @Throws(Throwable::class)
-            override fun evaluate() {
-                strategy.resetRxSchedulers()
-                strategy.substituteRxSchedulers()
-
-                base.evaluate()
-
-                strategy.resetRxSchedulers()
+class FakeBaseRxDao<T, TKey>(
+    private val entities: MutableMap<TKey, T>,
+    private val getKey: T.() -> TKey
+) : BaseRxDao<T> {
+    override fun insert(vararg obj: T) =
+        {
+            obj.forEach {
+                val key = it.getKey()
+                if (entities.containsKey(key)) throw RuntimeException("Duplicate key $key. Aborting insert")
+                entities[key] = it
             }
-        }
-    }
+        }.toCompletable()
+
+    override fun upsert(objects: List<T>) =
+        {
+            objects.forEach {
+                entities[it.getKey()] = it
+            }
+        }.toCompletable()
 }

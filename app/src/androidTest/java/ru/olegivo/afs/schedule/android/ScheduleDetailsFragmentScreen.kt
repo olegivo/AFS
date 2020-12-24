@@ -65,7 +65,9 @@ object ScheduleDetailsFragmentScreen : KScreen<ScheduleDetailsFragmentScreen>() 
         buttonReserve.shouldDisplay(isVisible)
 
         sportsActivity?.let {
-            textViewRecordingPeriod.containsText(it.recordingPeriod!!)
+            it.recordingPeriod?.let { recordingPeriod ->
+                textViewRecordingPeriod.containsText(recordingPeriod)
+            } ?: run { textViewRecordingPeriod.hasEmptyText() }
         }
     }
 

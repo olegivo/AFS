@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
- *  
+ *
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -17,23 +17,26 @@
 
 package ru.olegivo.afs
 
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 
-class RxSchedulerRule(private val strategy: RxHelper.SchedulerSubstitutionStrategy) : TestRule {
+class MocksHolderImpl : MocksHolder {
+    private val mocks = mutableListOf<Any>()
 
-    override fun apply(base: Statement, description: Description): Statement {
-        return object : Statement() {
-            @Throws(Throwable::class)
-            override fun evaluate() {
-                strategy.resetRxSchedulers()
-                strategy.substituteRxSchedulers()
+    override fun checkNotVerifiedMocks() {
+        mocks.forEach { verifyNoMoreInteractions(it) }
+    }
 
-                base.evaluate()
+    override fun resetMocks() {
+        mocks.forEach { reset(it) }
+    }
 
-                strategy.resetRxSchedulers()
-            }
-        }
+    override fun addMocks(vararg mocksToAdd: Any) {
+        mocksToAdd.forEach { mocks.add(it) }
+    }
+
+    override fun resetWhenNoMoreInteraction(mock: Any) {
+        verifyNoMoreInteractions(mock)
+        reset(mock)
     }
 }

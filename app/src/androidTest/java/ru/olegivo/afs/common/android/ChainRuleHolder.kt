@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
- *  
+ *
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -15,25 +15,10 @@
  * AFS.
  */
 
-package ru.olegivo.afs
+package ru.olegivo.afs.common.android
 
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
+import org.junit.rules.RuleChain
 
-class RxSchedulerRule(private val strategy: RxHelper.SchedulerSubstitutionStrategy) : TestRule {
-
-    override fun apply(base: Statement, description: Description): Statement {
-        return object : Statement() {
-            @Throws(Throwable::class)
-            override fun evaluate() {
-                strategy.resetRxSchedulers()
-                strategy.substituteRxSchedulers()
-
-                base.evaluate()
-
-                strategy.resetRxSchedulers()
-            }
-        }
-    }
+interface ChainRuleHolder {
+    val chain: RuleChain
 }

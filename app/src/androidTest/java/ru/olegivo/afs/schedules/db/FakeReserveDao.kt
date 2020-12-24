@@ -15,23 +15,25 @@
  * AFS.
  */
 
-package ru.olegivo.afs
+package ru.olegivo.afs.schedules.db
 
-import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
-import ru.olegivo.afs.common.db.AfsDatabase
+import io.reactivex.Single
+import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.common.db.FakeAfsDatabase
-import ru.olegivo.afs.common.network.Api
-import ru.olegivo.afs.preferences.data.PreferencesDataSource
+import ru.olegivo.afs.common.db.FakeBaseRxDao
+import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.schedules.db.models.ReservedSchedule
+import java.util.Date
 
-interface ExternalDependencies :
-    MocksHolder,
-    RxHelper {
+class FakeReserveDao(private val tables: FakeAfsDatabase.Tables) :
+    ReserveDao(),
+    BaseRxDao<ReservedSchedule> by FakeBaseRxDao(tables.reservedSchedules, { id }) {
 
-    val afsDatabase: AfsDatabase
-    val preferencesDataSource: PreferencesDataSource
-    val api: Api
-    val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
+    override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> {
+        TODO("Not yet implemented")
+    }
 
-    fun resetFakes()
-    fun withFakeDatabase(block: FakeAfsDatabase.Actions.() -> Unit)
+    override fun isScheduleReserved(scheduleId: Long) = tables.reservedSchedules.values.any {
+        it.id == scheduleId
+    }.toSingle()
 }

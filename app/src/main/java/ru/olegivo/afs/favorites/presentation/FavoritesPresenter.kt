@@ -71,6 +71,9 @@ class FavoritesPresenter @Inject constructor(
                             clubId = clubId
                         )
                     )
+                },
+                onError = {
+                    onError(it, "Ошибка при получении ближайшего занятия")
                 }
             )
             .addToComposite()

@@ -18,33 +18,43 @@
 package ru.olegivo.afs
 
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import ru.olegivo.afs.analytics.data.FirebaseAnalyticsNetworkSource
 import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.preferences.data.FakePreferencesDataSource
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
 
-class ExternalDependenciesImpl : ExternalDependencies{
-    private val mocks: Array<Any> by lazy {
-        arrayOf(
-            afsDatabase,
-            preferencesDataSource,
+class ExternalDependenciesImpl(
+    strategy: RxHelper.SchedulerSubstitutionStrategy =
+        AndroidTestSchedulerStrategies.RxIdlerTestSchedulerStrategy()
+    //AndroidTestSchedulerStrategies.RxIdlerStrategy
+) :
+    ExternalDependencies,
+    MocksHolder by MocksHolderImpl(),
+    RxHelper by RxHelperImpl(strategy) {
+
+    private val fakePreferencesDataSource = FakePreferencesDataSource()
+    private val fakeAfsDatabase = FakeAfsDatabase()
+
+    override val afsDatabase: AfsDatabase = fakeAfsDatabase
+    override val preferencesDataSource: PreferencesDataSource = fakePreferencesDataSource
+    override val api: Api = mock()
+    override val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource = mock()
+
+    init {
+        addMocks(
             api,
             firebaseAnalyticsNetworkSource
         )
     }
 
-    override val afsDatabase: AfsDatabase = mock()
-    override val preferencesDataSource: PreferencesDataSource = mock()
-    override val api: Api = mock()
-    override val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource = mock()
-
-    override fun checkNotVerifiedMocks() {
-        verifyNoMoreInteractions(*mocks)
+    override fun resetFakes() {
+        fakePreferencesDataSource.reset()
+        fakeAfsDatabase.reset()
     }
 
-    override fun resetMocks() {
-        reset(*mocks)
+    override fun withFakeDatabase(block: FakeAfsDatabase.Actions.() -> Unit) {
+        FakeAfsDatabase.Actions(fakeAfsDatabase).apply(block)
     }
 }

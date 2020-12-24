@@ -22,9 +22,12 @@ import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.rules.TestRule
 
 abstract class BaseTest(
-    private val rxHelperImpl: RxHelperImpl = RxHelperImpl(),
+    private val rxHelperImpl: RxHelperImpl = RxHelperImpl(
+        RxHelper.SchedulerSubstitutionStrategy.TestSchedulerEverywhere(substituteAndroidSchedulers = true)
+    ),
     private val dispatcherHelperImpl: DispatcherHelperImpl = DispatcherHelperImpl()
 ) :
     RxHelper by rxHelperImpl,
@@ -32,7 +35,7 @@ abstract class BaseTest(
 
     @Rule
     @JvmField
-    val schedulerRule = rxHelperImpl.schedulerRule
+    val schedulerRule: TestRule = rxHelperImpl.rxSchedulerRule
 
     @Rule
     @JvmField

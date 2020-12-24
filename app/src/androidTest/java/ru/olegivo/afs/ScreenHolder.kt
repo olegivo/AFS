@@ -13,12 +13,8 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * AFS.
- */
+ */package ru.olegivo.afs
 
-package ru.olegivo.afs.common.android
-
-import org.junit.rules.RuleChain
-
-interface ChainRueHolder {
-    val chain: RuleChain
+interface ScreenHolder<TScreen> {
+    val screen: TScreen
 }
