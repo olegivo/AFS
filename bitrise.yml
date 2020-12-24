@@ -109,13 +109,16 @@ workflows:
           run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
       - git-clone@4: {}
       - cache-pull@2: {}
-      - gradle-runner@1:
-          title: KtLint
-          inputs:
-            - gradle_task: lintKotlin
+
+#      - gradle-runner@1:
+#          title: KtLint
+#          inputs:
+#            - gradle_task: lintKotlin
+
       - install-missing-android-tools@2:
           inputs:
             - gradlew_path: $GRADLEW_PATH
+
       - file-downloader@1:
           title: Download google-services.json
           inputs:
@@ -131,46 +134,65 @@ workflows:
           inputs:
             - destination: $PROJECT_LOCATION/$MODULE/AFS.debug.jks
             - source: $BITRISEIO_SIGNING_KEYSTORE_DEBUG_URL
+
+#      - gradle-runner@1:
+#          title: Static analysis
+#          inputs:
+#            - gradle_task: staticAnalysisFull
+#      - deploy-to-bitrise-io@1:
+#          title: Upload KtLint results
+#          inputs:
+#            - zip_name: ktlint
+#            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/ktlint
+#            - is_compress: 'true'
+#      - deploy-to-bitrise-io@1:
+#          title: Upload Detekt results
+#          inputs:
+#            - zip_name: detekt
+#            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/detekt/detekt.html
+
+#      - android-unit-test@1:
+#          title: Unit tests
+#          inputs:
+#            - project_location: $PROJECT_LOCATION
+#            - module: $MODULE
+#            - variant: $VARIANT
+#      - gradle-runner@1:
+#          title: Unit tests coverage
+#          inputs:
+#            - gradle_task: testDebugUnitTestCoverageVerification
+#      - deploy-to-bitrise-io@1:
+#          title: Uload coverage results
+#          inputs:
+#            - zip_name: Coverage
+#            - deploy_path: >-
+#                $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
+#            - is_compress: 'true'
+
       - gradle-runner@1:
-          title: Static analysis
+          title: Prepare android tests
           inputs:
-            - gradle_task: staticAnalysisFull
-      - deploy-to-bitrise-io@1:
-          title: Upload KtLint results
-          inputs:
-            - zip_name: ktlint
-            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/ktlint
-            - is_compress: 'true'
-      - deploy-to-bitrise-io@1:
-          title: Upload Detekt results
-          inputs:
-            - zip_name: detekt
-            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/detekt/detekt.html
-      - android-unit-test@1:
-          title: Unit tests
-          inputs:
-            - project_location: $PROJECT_LOCATION
-            - module: $MODULE
-            - variant: $VARIANT
-      - gradle-runner@1:
-          title: Unit tests coverage
-          inputs:
-            - gradle_task: testDebugUnitTestCoverageVerification
-      - deploy-to-bitrise-io@1:
-          title: Uload coverage results
-          inputs:
-            - zip_name: Coverage
-            - deploy_path: >-
-                $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
-            - is_compress: 'true'
+            - gradle_task: packageDebugAndroidTest
       - avd-manager@1:
           inputs:
             - api_level: '29'
       - wait-for-android-emulator@1: {}
       - gradle-runner@1:
+          title: Install android tests
+          inputs:
+            - gradle_task: installDebugAndroidTest
+      - script@1:
           title: Run android tests
           inputs:
-            - gradle_task: connectedDebugAndroidTest
+            - content: >-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+                # debug log
+                set -x
+
+                adb shell am instrument -w -m -e notAnnotation ru.olegivo.afs.suite.NetworkTest -e debug false ru.olegivo.afs.debug.test/ru.olegivo.afs.CustomAndroidJUnitRunner
+
       - deploy-to-bitrise-io@1:
           title: Upload android tests results
           inputs:
