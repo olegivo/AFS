@@ -75,7 +75,7 @@ class ScheduleDetailsPresenterTest :
             savedAgreementUseCase = savedAgreementUseCase,
             addToFavorites = addToFavoritesUseCase,
             removeFromFavorites = removeFromFavoritesUseCase,
-            mainScheduler = schedulerRule.testScheduler,
+            mainScheduler = testScheduler,
             navigator = navigator,
             planFavoriteRecordReminderUseCase = planFavoriteRecordReminderUseCase,
             locale = Locale("ru"),

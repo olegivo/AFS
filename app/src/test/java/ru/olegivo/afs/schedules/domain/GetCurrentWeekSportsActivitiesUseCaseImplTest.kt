@@ -42,7 +42,7 @@ class GetCurrentWeekSportsActivitiesUseCaseImplTest : BaseTestOf<GetCurrentWeekS
         scheduleRepository,
         actualizeScheduleUseCase,
         favoritesRepository,
-        schedulerRule.testScheduler
+        testScheduler
     )
 
     //<editor-fold desc="mocks">

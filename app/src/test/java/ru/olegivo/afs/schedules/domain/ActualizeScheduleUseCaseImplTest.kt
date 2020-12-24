@@ -41,7 +41,7 @@ class ActualizeScheduleUseCaseImplTest : BaseTestOf<ActualizeScheduleUseCase>() 
         scheduleRepository = scheduleRepository,
         favoritesRepository = favoritesRepository,
         planFavoriteRecordReminder = planFavoriteRecordReminderUseCase,
-        computationScheduler = schedulerRule.testScheduler,
+        computationScheduler = testScheduler,
         analyticsProvider = analyticsProvider
     )
 

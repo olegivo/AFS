@@ -49,7 +49,7 @@ class WeekSchedulePresenterTest :
         getCurrentClub = getCurrentClubUseCase,
         dateProvider = dateProvider,
         navigator = navigator,
-        mainScheduler = schedulerRule.testScheduler,
+        mainScheduler = testScheduler,
         errorReporter = errorReporter,
         analyticsProvider = analyticsProvider
     )

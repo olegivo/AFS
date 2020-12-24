@@ -41,8 +41,8 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
 
     override fun createInstance() = FavoritesDbSourceImpl(
         favoriteDao,
-        schedulerRule.testScheduler,
-        schedulerRule.testScheduler
+        testScheduler,
+        testScheduler
     )
 
     //<editor-fold desc="mocks">
