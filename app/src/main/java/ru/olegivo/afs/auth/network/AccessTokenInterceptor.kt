@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -93,7 +93,10 @@ class AccessTokenInterceptor @Inject constructor(
         private const val AUTHORIZATION_KEY = "Authorization"
         private const val HTTP_CODE_UNAUTHORIZED = 401
         private const val REFERER: String =
-            "https://mobifitness.ru/widget/537535?colored=1&lines=1&club=375&clubs=0&grid30min=0&desc=0&direction=0&group=0&trainer=0&room=0&age=&level=&activity=0&language=ru&custom_css=0&category_filter=2&activity_filter=2&render_type=0&disable_booking=0&icons=&week=0&year=0&filters=groups,activities,trainers&filtercolor=000000&primarycolor=d3222c&filtertextcolor=ffffff&background=&datas=category_filter,colored,lines,desc"
+            "https://mobifitness.ru/widget/537535?colored=1&lines=1&club=375&clubs=0&grid30min=0&desc=0" +
+                "&direction=0&group=0&trainer=0&room=0&age=&level=&activity=0&language=ru&custom_css=0&category_filter=2" +
+                "&activity_filter=2&render_type=0&disable_booking=0&icons=&week=0&year=0&filters=groups,activities,trainers" +
+                "&filtercolor=000000&primarycolor=d3222c&filtertextcolor=ffffff&background=&datas=category_filter,colored,lines,desc"
         private const val USER_AGENT: String =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"
         private const val ACCEPT = "application/json, text/javascript, */*; q=0.01"

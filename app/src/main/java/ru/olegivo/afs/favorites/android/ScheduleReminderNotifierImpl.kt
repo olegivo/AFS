@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -25,13 +25,13 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.reactivex.Completable
-import ru.olegivo.afs.main.android.MainActivity
 import ru.olegivo.afs.R
 import ru.olegivo.afs.favorites.domain.ScheduleReminderNotifier
 import ru.olegivo.afs.favorites.domain.models.FavoriteRecordReminderParameters
+import ru.olegivo.afs.main.android.MainActivity
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -189,7 +189,8 @@ class ScheduleReminderNotifierImpl @Inject constructor(
                 )
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                //.addAction(R.drawable.ic_cancel_black_24dp, "Отмена", pendingIntent) TODO: отменить напоминание (чтобы после перезагрузки напоминание об этом занятии не всплыло снова)
+                /*.addAction(R.drawable.ic_cancel_black_24dp, "Отмена", pendingIntent) TODO: отменить напоминание
+                (чтобы после перезагрузки напоминание об этом занятии не всплыло снова)*/
                 .setAutoCancel(false)
                 .apply(notificationBuilderAction)
 
@@ -198,7 +199,8 @@ class ScheduleReminderNotifierImpl @Inject constructor(
                 notify(
                     notificationId,
                     builder.build()
-                )//TODO уникальный айдишник уведомления (для данного занятия может быть несколько разных уведомлений, нужно иметь возможность отменить каждое отдельно)
+                )/*TODO уникальный айдишник уведомления (для данного занятия может быть несколько разных уведомлений,
+                нужно иметь возможность отменить каждое отдельно)*/
             }
         }
     }

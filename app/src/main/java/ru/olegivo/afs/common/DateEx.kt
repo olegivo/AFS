@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -23,6 +23,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+@Suppress("LongParameterList")
 fun Date.add(
     years: Int? = null,
     months: Int? = null,
@@ -34,6 +35,7 @@ fun Date.add(
 ): Date =
     toCalendar().add(years, months, days, hours, minutes, seconds, milliseconds).time
 
+@Suppress("LongParameterList")
 fun Calendar.add(
     years: Int? = null,
     months: Int? = null,
@@ -59,6 +61,7 @@ fun Date.hasCurrentYear(): Boolean =
 fun Date.get(field: Int) =
     toCalendar().get(field)
 
+@Suppress("LongParameterList")
 fun date(
     years: Int? = null,
     months: Int? = null,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -39,12 +39,12 @@ class NetworkErrorsMapper @Inject constructor(private val json: Json) {
             error is UnknownHostException -> {
                 ServerUnreachableException(error)
             }
-            error is HttpException && error.code() == 404 -> {
+            error is HttpException && error.code() == notFound -> {
                 mapErrorBody(error, E::class)?.let {
                     HttpNotFoundException(it.getError(), error)
                 } ?: IllegalStateException("Mapping http body failed!")
             }
-            error is HttpException && error.code() >= 400 -> {
+            error is HttpException && error.code() >= errorCodes -> {
                 mapErrorBody(error, E::class)?.let {
                     HttpCallFailureException(it.getError(), error)
                 } ?: IllegalStateException("Mapping http body failed!")
@@ -65,6 +65,11 @@ class NetworkErrorsMapper @Inject constructor(private val json: Json) {
                         }
                     }
             }
+
+    companion object {
+        const val notFound = 404
+        const val errorCodes = 400
+    }
 }
 
 suspend inline fun <reified E : ErrorWrapper, T : Any> mapCoroutineError(
