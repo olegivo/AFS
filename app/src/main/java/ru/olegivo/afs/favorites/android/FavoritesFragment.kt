@@ -25,13 +25,16 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.squareup.cycler.Recycler
+import com.squareup.cycler.toDataSource
 import ru.olegivo.afs.R
-import ru.olegivo.afs.databinding.FragmentFavoritesBinding
-import ru.olegivo.afs.favorites.presentation.FavoritesContract
-import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
 import ru.olegivo.afs.common.android.doOnApplyWindowInsets
+import ru.olegivo.afs.databinding.FragmentFavoritesBinding
+import ru.olegivo.afs.databinding.RowFavoritesItemBinding
 import ru.olegivo.afs.favorites.analytics.FavoritesAnalytics
+import ru.olegivo.afs.favorites.presentation.FavoritesContract
+import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
 import javax.inject.Inject
 
 class FavoritesFragment @Inject constructor(private val presenter: FavoritesContract.Presenter) :
@@ -40,18 +43,14 @@ class FavoritesFragment @Inject constructor(private val presenter: FavoritesCont
     FavoritesContract.View {
 
     private val viewBinding: FragmentFavoritesBinding by viewBinding(FragmentFavoritesBinding::bind)
-
-    private val favoritesAdapter: FavoritesAdapter by lazy {
-        FavoritesAdapter(requireContext()) { presenter.onItemClick(it) }
-    }
+    private lateinit var cycler: Recycler<FavoritesItem>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding.toolbarLayout.toolbar.title = "Favorites"
 
-        viewBinding.favoritesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        viewBinding.favoritesRecyclerView.adapter = favoritesAdapter
+        initRecyclerView()
 
         viewBinding.toolbarLayout.appbarLayout.doOnApplyWindowInsets { view, insets, padding ->
             view.updatePadding(
@@ -78,7 +77,7 @@ class FavoritesFragment @Inject constructor(private val presenter: FavoritesCont
     }
 
     override fun showFavorites(favorites: List<FavoritesItem>) {
-        favoritesAdapter.items = favorites.toMutableList()
+        cycler.data = favorites.toDataSource()
     }
 
     override fun showErrorMessage(message: String) {
@@ -91,5 +90,23 @@ class FavoritesFragment @Inject constructor(private val presenter: FavoritesCont
 
     override fun hideProgress() {
         viewBinding.progressBar.isVisible = false
+    }
+
+    private fun initRecyclerView() {
+        viewBinding.favoritesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        cycler = Recycler.adopt(viewBinding.favoritesRecyclerView) {
+            row<FavoritesItem, View> {
+                create(R.layout.row_favorites_item) {
+                    val itemBinding = RowFavoritesItemBinding.bind(view)
+                    bind { item ->
+                        itemBinding.root.setOnClickListener { presenter.onItemClick(item) }
+                        itemBinding.textViewGroup.text = item.filter.group
+                        itemBinding.textViewActivity.text = item.filter.activity
+                        itemBinding.textViewDuty.text = item.duty
+                    }
+                }
+            }
+        }
     }
 }

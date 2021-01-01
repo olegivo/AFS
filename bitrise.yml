@@ -110,9 +110,20 @@ workflows:
       - git-clone@4: {}
       - cache-pull@2: {}
       - gradle-runner@1:
-          title: KtLint
+          title: Static Analysis
           inputs:
-            - gradle_task: lintKotlin
+            - gradle_task: staticAnalysis
+      - deploy-to-bitrise-io@1:
+          title: Upload KtLint results
+          inputs:
+            - zip_name: ktlint
+            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/ktlint
+            - is_compress: 'true'
+      - deploy-to-bitrise-io@1:
+          title: Upload Detekt results
+          inputs:
+            - zip_name: detekt
+            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/detekt/detekt.html
       - install-missing-android-tools@2:
           inputs:
             - gradlew_path: $GRADLEW_PATH
@@ -132,20 +143,9 @@ workflows:
             - destination: $PROJECT_LOCATION/$MODULE/AFS.debug.jks
             - source: $BITRISEIO_SIGNING_KEYSTORE_DEBUG_URL
       - gradle-runner@1:
-          title: Static analysis
+          title: Android lint
           inputs:
-            - gradle_task: staticAnalysisFull
-      - deploy-to-bitrise-io@1:
-          title: Upload KtLint results
-          inputs:
-            - zip_name: ktlint
-            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/ktlint
-            - is_compress: 'true'
-      - deploy-to-bitrise-io@1:
-          title: Upload Detekt results
-          inputs:
-            - zip_name: detekt
-            - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/detekt/detekt.html
+            - gradle_task: lintDebug
       - android-unit-test@1:
           title: Unit tests
           inputs:
@@ -163,6 +163,11 @@ workflows:
             - deploy_path: >-
                 $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
             - is_compress: 'true'
+      - gradle-runner@1:
+          title: Build android tests
+          inputs:
+            - gradle_task: packageDebugAndroidTest
+      - cache-push@2: {}
       - avd-manager@1:
           inputs:
             - api_level: '29'
