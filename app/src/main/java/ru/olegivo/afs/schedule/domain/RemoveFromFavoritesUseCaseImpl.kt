@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -23,7 +23,8 @@ import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import javax.inject.Inject
 
-class RemoveFromFavoritesUseCaseImpl @Inject constructor(private val favoritesRepository: FavoritesRepository) : RemoveFromFavoritesUseCase {
+class RemoveFromFavoritesUseCaseImpl @Inject constructor(private val favoritesRepository: FavoritesRepository) :
+    RemoveFromFavoritesUseCase {
     override fun invoke(schedule: Schedule): Completable =
         favoritesRepository.removeFilter(schedule.toFavoriteFilter())
 }

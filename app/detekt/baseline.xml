@@ -1,47 +1,23 @@
 <?xml version="1.0" ?>
+<!--
+  ~ Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
+  ~
+  ~ This file is part of AFS.
+  ~
+  ~ AFS is free software: you can redistribute it and/or modify
+  ~ it under the terms of the MIT License.
+  ~
+  ~ AFS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ AFS.
+  -->
+
 <SmellBaseline>
   <Blacklist></Blacklist>
   <Whitelist>
-    <ID>LongParameterList:DateEx.kt$( years: Int? = null, months: Int? = null, days: Int? = null, hours: Int? = null, minutes: Int? = null, seconds: Int? = null, milliseconds: Int? = null )</ID>
-    <ID>MagicNumber:MainFragment.kt$MainFragment$375</ID>
-    <ID>MagicNumber:NetworkErrorsMapper.kt$NetworkErrorsMapper$400</ID>
-    <ID>MagicNumber:NetworkErrorsMapper.kt$NetworkErrorsMapper$404</ID>
-    <ID>MagicNumber:WeekSchedulePresenter.kt$WeekSchedulePresenter$3</ID>
-    <ID>MagicNumber:WeekSchedulePresenter.kt$WeekSchedulePresenter$4</ID>
-    <ID>MagicNumber:WeekSchedulePresenter.kt$WeekSchedulePresenter$5</ID>
-    <ID>MagicNumber:WeekSchedulePresenter.kt$WeekSchedulePresenter$6</ID>
-    <ID>MaxLineLength:AccessTokenInterceptor.kt$AccessTokenInterceptor.Companion$"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"</ID>
-    <ID>MaxLineLength:AccessTokenInterceptor.kt$AccessTokenInterceptor.Companion$"https://mobifitness.ru/widget/537535?colored=1&amp;lines=1&amp;club=375&amp;clubs=0&amp;grid30min=0&amp;desc=0&amp;direction=0&amp;group=0&amp;trainer=0&amp;room=0&amp;age=&amp;level=&amp;activity=0&amp;language=ru&amp;custom_css=0&amp;category_filter=2&amp;activity_filter=2&amp;render_type=0&amp;disable_booking=0&amp;icons=&amp;week=0&amp;year=0&amp;filters=groups,activities,trainers&amp;filtercolor=000000&amp;primarycolor=d3222c&amp;filtertextcolor=ffffff&amp;background=&amp;datas=category_filter,colored,lines,desc"</ID>
-    <ID>MaxLineLength:FavoriteDao.kt$FavoriteDao$@Query("delete from favoriteFilters where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay")</ID>
-    <ID>MaxLineLength:FavoriteDao.kt$FavoriteDao$@Query("select exists(select * from favoriteFilters where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and timeOfDay = :timeOfDay)")</ID>
-    <ID>MaxLineLength:FavoritesModule.kt$FavoritesModule$@Binds abstract</ID>
-    <ID>MaxLineLength:NetworkErrorsMapper.kt$inline</ID>
-    <ID>MaxLineLength:RemoveFromFavoritesUseCaseImpl.kt$RemoveFromFavoritesUseCaseImpl : RemoveFromFavoritesUseCase</ID>
-    <ID>MaxLineLength:SavedAgreementUseCaseImpl.kt$SavedAgreementUseCaseImpl : SavedAgreementUseCase</ID>
-    <ID>MaxLineLength:ScheduleDao.kt$ScheduleDao$@Query("select $scheduleFields from schedules $scheduleJoins where datetime &gt;= :from and datetime &lt; :until and clubId = :clubId")</ID>
-    <ID>MaxLineLength:ScheduleDao.kt$ScheduleDao.Companion$"id, clubId, groupId, groups.value as [group], activityId, activities.value as activity, datetime, length, preEntry, totalSlots, recordFrom, recordTo"</ID>
-    <ID>MaxLineLength:ScheduleDao.kt$ScheduleDao.Companion$"inner join dictionary as activities on s.activityId = activities.key and activities.dictionaryId = $DICTIONARY_ACTIVITY "</ID>
-    <ID>MaxLineLength:ScheduleDao.kt$ScheduleDao.Companion$"inner join dictionary as groups on s.groupId = groups.key and groups.dictionaryId = $DICTIONARY_GROUP "</ID>
-    <ID>MaxLineLength:ScheduleDetailsFragment.kt$ScheduleDetailsFragment$imageViewIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)</ID>
-    <ID>MaxLineLength:ScheduleReminderNotifierImpl.kt$ScheduleReminderNotifierImpl$( notificationId, builder.build() )</ID>
-    <ID>MaxLineLength:ScheduleReminderNotifierImpl.kt$ScheduleReminderNotifierImpl$NotificationCompat.Builder( context, FAVORITE_RECORD_REMINDER_CHANNEL_ID ) .setSmallIcon(R.drawable.ic_check_box_black_24dp) .setSubText("Запись на занятие") .setStyle( NotificationCompat.BigTextStyle() .bigText(notificationText()) .setBigContentTitle(notificationTitle) ) .setCategory(NotificationCompat.CATEGORY_ALARM) .setPriority(NotificationCompat.PRIORITY_DEFAULT) //.addAction(R.drawable.ic_cancel_black_24dp, "Отмена", pendingIntent) TODO: отменить напоминание (чтобы после перезагрузки напоминание об этом занятии не всплыло снова) .setAutoCancel(false)</ID>
-    <ID>MaxLineLength:SchedulesModule.kt$SchedulesModule$@Binds abstract</ID>
-    <ID>MaxLineLength:SetCurrentClubUseCaseImpl.kt$SetCurrentClubUseCaseImpl : SetCurrentClubUseCase</ID>
-    <ID>MaxLineLength:SportsActivitiesAdapter.kt$SportsActivitiesAdapter$if (item.isReserved) R.drawable.ic_check_box_black_24dp else R.drawable.ic_check_box_outline_blank_black_24dp</ID>
-    <ID>MaxLineLength:SportsActivityReserveParameters.kt$fun Intent.putSportsActivityReserveParameters(sportsActivityReserveParameters: SportsActivityReserveParameters): Intent</ID>
-    <ID>MaxLineLength:SportsActivityReserveReceiver.kt$SportsActivityReserveReceiver$OneTimeWorkRequestBuilder&lt;SportsActivityReserveWorker&gt;() .setInputData(SportsActivityReserveWorker.createInputData(intent.getSportsActivityReserveParameters()))</ID>
-    <ID>ReturnCount:MainFragment.kt$MainFragment$private fun deleteDatabaseFile( context: Context, databaseName: String ): Boolean</ID>
-    <ID>SpreadOperator:DbModule.kt$DbModule$(*(AfsDatabase.getMigrations()))</ID>
-    <ID>TooManyFunctions:DateEx.kt$ru.olegivo.afs.common.DateEx.kt</ID>
-    <ID>TooManyFunctions:MainFragment.kt$MainFragment$MainFragment</ID>
-    <ID>TooManyFunctions:PreferencesDataSourceImpl.kt$PreferencesDataSourceImpl$PreferencesDataSourceImpl</ID>
-    <ID>TooManyFunctions:ScheduleDetailsContract.kt$ScheduleDetailsContract.View$View</ID>
-    <ID>TooManyFunctions:ScheduleDetailsFragment.kt$ScheduleDetailsFragment$ScheduleDetailsFragment</ID>
-    <ID>TooManyFunctions:ScheduleReminderNotifierImpl.kt$ScheduleReminderNotifierImpl$ScheduleReminderNotifierImpl</ID>
-    <ID>TooManyFunctions:ScheduleRepositoryImpl.kt$ScheduleRepositoryImpl$ScheduleRepositoryImpl</ID>
-    <ID>UnnecessaryAbstractClass:ReserveDao.kt$ReserveDao</ID>
-    <ID>UnnecessaryAbstractClass:ScheduleDao.kt$ScheduleDao</ID>
-    <ID>UtilityClassWithPublicConstructor:ChooseClubDialog.kt$ChooseClubDialog</ID>
-    <ID>UtilityClassWithPublicConstructor:RxModule.kt$RxModule</ID>
   </Whitelist>
 </SmellBaseline>

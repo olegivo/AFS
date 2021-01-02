@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -25,18 +25,16 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Named
 
 @Module
-class RxModule {
-    companion object {
-        @Provides
-        @Named("io")
-        fun provideIoScheduler(): Scheduler = Schedulers.io()
+object RxModule {
+    @Provides
+    @Named("io")
+    fun provideIoScheduler(): Scheduler = Schedulers.io()
 
-        @Provides
-        @Named("computation")
-        fun provideComputationScheduler(): Scheduler = Schedulers.computation()
+    @Provides
+    @Named("computation")
+    fun provideComputationScheduler(): Scheduler = Schedulers.computation()
 
-        @Provides
-        @Named("main")
-        fun provideMainScheduler(): Scheduler = AndroidSchedulers.mainThread()
-    }
+    @Provides
+    @Named("main")
+    fun provideMainScheduler(): Scheduler = AndroidSchedulers.mainThread()
 }

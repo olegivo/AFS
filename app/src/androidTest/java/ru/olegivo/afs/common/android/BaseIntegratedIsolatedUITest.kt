@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -39,7 +39,6 @@ abstract class BaseIntegratedIsolatedUITest<TFixture, TScreen>(
     @Before
     fun setUp() {
         resetMocks()
-        preferencesDataSource
         resetFakes()
     }
 
