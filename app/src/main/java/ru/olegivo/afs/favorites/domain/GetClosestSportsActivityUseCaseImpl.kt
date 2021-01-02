@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -19,28 +19,25 @@ package ru.olegivo.afs.favorites.domain
 
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
-import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.extensions.toMaybe
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
-import ru.olegivo.afs.schedules.data.models.toDomain
-import ru.olegivo.afs.schedules.db.models.toData
+import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.abs
 
 class GetClosestSportsActivityUseCaseImpl @Inject constructor(
-    private val afsDatabase: AfsDatabase,
     private val dateProvider: DateProvider,
+    private val scheduleRepository: ScheduleRepository,
     @Named("io") private val ioScheduler: Scheduler
 ) : GetClosestSportsActivityUseCase {
     override fun invoke(favoriteFilter: FavoriteFilter, clubId: Int): Maybe<Long> {
-        return afsDatabase.schedules.filterSchedules(favoriteFilter, clubId)
-            .subscribeOn(ioScheduler)
+        return scheduleRepository.filterSchedules(favoriteFilter, clubId)
             .flatMapMaybe { list ->
                 val now = dateProvider.getDate()
-                list.map { it.toData().toDomain() }
+                list
                     .filter { it.toFavoriteFilter() == favoriteFilter }
                     .minByOrNull { abs(it.datetime.time - now.time) }
                     ?.id

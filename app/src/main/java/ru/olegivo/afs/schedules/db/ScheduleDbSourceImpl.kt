@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -21,8 +21,10 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.data.ScheduleDbSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.db.models.ReservedSchedule
@@ -75,4 +77,12 @@ class ScheduleDbSourceImpl @Inject constructor(
     override fun isScheduleReserved(scheduleId: Long): Single<Boolean> =
         reserveDao.isScheduleReserved(scheduleId)
             .subscribeOn(ioScheduler)
+
+    override fun filterSchedules(
+        favoriteFilter: FavoriteFilter,
+        clubId: Int
+    ): Single<List<DataSchedule>> =
+        scheduleDao.filterSchedules(favoriteFilter, clubId)
+            .subscribeOn(ioScheduler)
+            .mapList { it.toData() }
 }

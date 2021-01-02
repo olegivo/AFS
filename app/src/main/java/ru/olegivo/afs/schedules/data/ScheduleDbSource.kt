@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -20,6 +20,7 @@ package ru.olegivo.afs.schedules.data
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import java.util.*
@@ -32,4 +33,5 @@ interface ScheduleDbSource {
     fun getSchedule(id: Long): Single<DataSchedule>
     fun isScheduleReserved(scheduleId: Long): Single<Boolean>
     fun getSchedules(ids: List<Long>): Single<List<DataSchedule>>
+    fun filterSchedules(favoriteFilter: FavoriteFilter, clubId: Int): Single<List<DataSchedule>>
 }

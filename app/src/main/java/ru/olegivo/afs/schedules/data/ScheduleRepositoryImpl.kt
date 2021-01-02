@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -25,8 +25,10 @@ import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
+import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.data.models.toDomain
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
@@ -83,6 +85,13 @@ class ScheduleRepositoryImpl @Inject constructor(
     override fun getSchedules(ids: List<Long>): Single<List<Schedule>> {
         return scheduleDbSource.getSchedules(ids).toDomain()
     }
+
+    override fun filterSchedules(
+        favoriteFilter: FavoriteFilter,
+        clubId: Int
+    ): Single<List<Schedule>> =
+        scheduleDbSource.filterSchedules(favoriteFilter, clubId)
+            .mapList { it.toDomain() }
 
     override fun getSchedule(scheduleId: Long): Single<Schedule> =
         scheduleDbSource.getSchedule(scheduleId)
