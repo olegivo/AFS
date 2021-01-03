@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -24,6 +24,7 @@ buildscript {
         classpath 'com.google.firebase:firebase-appdistribution-gradle:2.0.1'
         classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
+        classpath 'com.squareup.sqldelight:gradle-plugin:1.4.4'
     }
 }
 
@@ -47,6 +48,8 @@ apply plugin: 'com.google.firebase.appdistribution'
 apply plugin: 'com.google.firebase.crashlytics'
 
 apply plugin: 'com.google.firebase.firebase-perf'
+
+apply plugin: 'com.squareup.sqldelight'
 
 apply plugin: 'kotlinx-serialization'
 
@@ -156,6 +159,15 @@ configurations.all {
     }
 }
 
+sqldelight {
+    AfsDatabaseNew {
+        packageName = "ru.olegivo.afs.common.db"
+        sourceFolders = ["sqldelight"]
+        schemaOutputDirectory = file("src/main/sqldelight/databases")
+        dialect = "sqlite:3.24"
+    }
+}
+
 def isNonStable = { String version ->
     def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
     def regex = /^[0-9,.v-]+(-r)?$/
@@ -200,6 +212,7 @@ dependencies {
     def recyclerViewVersion = "1.1.0"
     def retrofitVersion = "2.9.0"
     def roomVersion = "2.2.5"
+    def sqlDelightVersion = '1.4.4'
     def workVersion = "2.4.0"
     def androidXFragmentVersion = "1.2.5"
 
@@ -257,6 +270,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-moshi:${retrofitVersion}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    implementation "com.squareup.sqldelight:android-driver:$sqlDelightVersion"
+    implementation "com.squareup.sqldelight:rxjava2-extensions:$sqlDelightVersion"
 
     implementation "javax.inject:javax.inject:${javaxInjectVersion}"
 
@@ -283,6 +298,12 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${coroutinesVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
+    testImplementation "com.squareup.sqldelight:sqlite-driver:$sqlDelightVersion"
+    //noinspection GradleDependency
+    testImplementation('org.xerial:sqlite-jdbc:3.8.6') {
+        // Override the version of sqlite used by sqlite-driver to match Android API 21
+        force = true
+    }
 
     debugImplementation("androidx.fragment:fragment-testing:$androidXFragmentVersion") {
         exclude group:'androidx.test', module:'monitor'

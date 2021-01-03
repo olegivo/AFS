@@ -1,0 +1,56 @@
+CREATE TABLE IF NOT EXISTS favoriteFilters (
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT NOT NULL,
+    clubId INTEGER AS Int NOT NULL,
+    groupId INTEGER AS Int NOT NULL,
+    `group` TEXT NOT NULL,
+    activityId INTEGER AS Int NOT NULL,
+    activity TEXT NOT NULL,
+    dayOfWeek INTEGER AS Int NOT NULL,
+    minutesOfDay INTEGER AS Int NOT NULL
+)
+;
+
+getFavoriteFilters:
+SELECT
+    id,
+    clubId,
+    groupId,
+    `group`,
+    activityId,
+    activity,
+    dayOfWeek,
+    minutesOfDay
+FROM favoriteFilters
+;
+
+removeFilter:
+DELETE FROM favoriteFilters
+WHERE
+    1 = 1
+    AND groupId = :groupId
+    AND activityId = :activityId
+    AND dayOfWeek = :dayOfWeek
+    AND minutesOfDay = :minutesOfDay
+;
+
+exist:
+SELECT EXISTS(
+    SELECT * FROM favoriteFilters
+    WHERE
+        1=1
+        AND groupId = :groupId
+        AND activityId = :activityId
+        AND dayOfWeek = :dayOfWeek
+        AND minutesOfDay = :minutesOfDay
+)
+;
+
+insert:
+INSERT INTO favoriteFilters
+VALUES ?
+;
+
+upsert:
+INSERT OR REPLACE INTO favoriteFilters
+VALUES ?
+;
