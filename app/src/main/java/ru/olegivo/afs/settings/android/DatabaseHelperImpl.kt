@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -18,24 +18,25 @@
 package ru.olegivo.afs.settings.android
 
 import android.content.Context
+import com.squareup.sqldelight.db.SqlDriver
 import io.reactivex.Completable
 import io.reactivex.Scheduler
-import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.settings.domain.DatabaseHelper
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
 
 class DatabaseHelperImpl @Inject constructor(
-    private val afsDatabase: AfsDatabase,
+    private val sqlDriver: SqlDriver,
     @Named("application") private val context: Context,
     @Named("io") private val ioScheduler: Scheduler
 ) : DatabaseHelper {
 
     override fun delete(): Completable {
         return Completable.fromCallable {
-            afsDatabase.openHelper.close()
-            deleteDatabaseFile(context, afsDatabase.openHelper.databaseName!!)
+            sqlDriver.close()
+            deleteDatabaseFile(context, BuildConfig.DB_NAME)
         }.subscribeOn(ioScheduler)
     }
 

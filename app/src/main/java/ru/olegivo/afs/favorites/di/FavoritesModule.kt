@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -19,8 +19,6 @@ package ru.olegivo.afs.favorites.di
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.favorites.android.FavoriteAlarmPlannerImpl
 import ru.olegivo.afs.favorites.android.ScheduleReminderNotifierImpl
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
@@ -46,7 +44,7 @@ import ru.olegivo.afs.favorites.presentation.FavoritesPresenter
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCase
 import ru.olegivo.afs.schedule.domain.RemoveFromFavoritesUseCaseImpl
 
-@Module(includes = [FavoritesModule.ProvidesModule::class])
+@Module
 interface FavoritesModule {
     @Binds
     fun bindAddToFavoritesUseCase(impl: AddToFavoritesUseCaseImpl): AddToFavoritesUseCase
@@ -84,10 +82,4 @@ interface FavoritesModule {
 
     @Binds
     fun bindGetFavoritesUseCase(impl: GetFavoritesUseCaseImpl): GetFavoritesUseCase
-
-    @Module
-    object ProvidesModule {
-        @Provides
-        fun provideFavoriteDao(afsDatabase: AfsDatabase) = afsDatabase.favorites
-    }
 }

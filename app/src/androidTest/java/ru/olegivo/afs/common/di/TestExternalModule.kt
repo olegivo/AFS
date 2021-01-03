@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -18,12 +18,27 @@
 package ru.olegivo.afs.common.di
 
 import dagger.Module
+import dagger.Provides
 import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
+import ru.olegivo.afs.common.db.AfsDatabase
 
 @Module(
     includes = [
+        TestExternalModule.ProvidesModule::class,
         NetworkModule.ProvidesKtorModule::class,
         AnalyticsCoreModule::class
     ]
 )
-interface TestExternalModule
+interface TestExternalModule {
+    @Module
+    object ProvidesModule {
+        @Provides
+        fun providesFavoritesDao(afsDatabase: AfsDatabase) = afsDatabase.favorites
+
+        @Provides
+        fun providesReserveDao(afsDatabase: AfsDatabase) = afsDatabase.reserve
+
+        @Provides
+        fun providesSchedulesDao(afsDatabase: AfsDatabase) = afsDatabase.schedules
+    }
+}
