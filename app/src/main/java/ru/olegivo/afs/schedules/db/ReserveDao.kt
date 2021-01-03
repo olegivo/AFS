@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -25,11 +25,11 @@ import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import java.util.Date
 
 @Dao
-abstract class ReserveDao : BaseRxDao<ReservedSchedule> {
+interface ReserveDao : BaseRxDao<ReservedSchedule> {
 
     @Query("select id from reservedSchedules where datetime >= :from and datetime < :until")
-    abstract fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>>
+    fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>>
 
     @Query("select exists (select * from reservedSchedules where id = :scheduleId)")
-    abstract fun isScheduleReserved(scheduleId: Long): Single<Boolean>
+    fun isScheduleReserved(scheduleId: Long): Single<Boolean>
 }
