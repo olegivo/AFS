@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -26,6 +26,7 @@ import ru.olegivo.afs.common.android.worker.di.WorkerBindingModule
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
+import ru.olegivo.afs.settings.domain.DatabaseHelper
 import javax.inject.Singleton
 
 @Singleton
@@ -48,7 +49,8 @@ interface TestAppComponent : AppComponent {
             @BindsInstance api: Api,
             @BindsInstance preferencesDataSource: PreferencesDataSource,
             @BindsInstance afsDatabase: AfsDatabase,
-            @BindsInstance firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
+            @BindsInstance firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource,
+            @BindsInstance databaseHelper: DatabaseHelper
         ): TestAppComponent
     }
 }

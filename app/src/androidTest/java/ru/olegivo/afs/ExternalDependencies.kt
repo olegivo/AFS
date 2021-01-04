@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -22,6 +22,7 @@ import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
+import ru.olegivo.afs.settings.domain.DatabaseHelper
 
 interface ExternalDependencies :
     MocksHolder,
@@ -31,6 +32,7 @@ interface ExternalDependencies :
     val preferencesDataSource: PreferencesDataSource
     val api: Api
     val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource
+    val databaseHelper: DatabaseHelper
 
     fun resetFakes()
     fun withFakeDatabase(block: FakeAfsDatabase.Actions.() -> Unit)

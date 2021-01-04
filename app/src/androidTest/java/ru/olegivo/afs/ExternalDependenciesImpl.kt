@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -24,6 +24,7 @@ import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.preferences.data.FakePreferencesDataSource
 import ru.olegivo.afs.preferences.data.PreferencesDataSource
+import ru.olegivo.afs.settings.domain.DatabaseHelper
 
 class ExternalDependenciesImpl(
     strategy: RxHelper.SchedulerSubstitutionStrategy =
@@ -41,11 +42,13 @@ class ExternalDependenciesImpl(
     override val preferencesDataSource: PreferencesDataSource = fakePreferencesDataSource
     override val api: Api = mock()
     override val firebaseAnalyticsNetworkSource: FirebaseAnalyticsNetworkSource = mock()
+    override val databaseHelper: DatabaseHelper = mock()
 
     init {
         addMocks(
             api,
-            firebaseAnalyticsNetworkSource
+            firebaseAnalyticsNetworkSource,
+            databaseHelper
         )
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -51,7 +51,8 @@ class InjectRule(externalDependencies: ExternalDependencies) :
                 api = api,
                 preferencesDataSource = preferencesDataSource,
                 afsDatabase = afsDatabase,
-                firebaseAnalyticsNetworkSource = firebaseAnalyticsNetworkSource
+                firebaseAnalyticsNetworkSource = firebaseAnalyticsNetworkSource,
+                databaseHelper = databaseHelper
             )
             .inject(afsApplication)
     }

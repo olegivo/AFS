@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -20,15 +20,18 @@ package ru.olegivo.afs.common.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.common.db.DbVersions
+import ru.olegivo.afs.settings.android.DatabaseHelperImpl
+import ru.olegivo.afs.settings.domain.DatabaseHelper
 import javax.inject.Named
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [DbModule.BindsModule::class])
 object DbModule {
     @Singleton
     @Provides
@@ -39,5 +42,11 @@ object DbModule {
             .addMigrations(*DbVersions.migrations)
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
             .build()
+    }
+
+    @Module
+    interface BindsModule {
+        @Binds
+        fun bindDatabaseHelper(impl: DatabaseHelperImpl): DatabaseHelper
     }
 }
