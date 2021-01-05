@@ -15,21 +15,25 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.db
+package com.squareup.sqldelight.runtime.rx
 
-import androidx.room.Dao
-import androidx.room.Query
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
-import ru.olegivo.afs.schedules.db.models.ReservedSchedule
-import java.util.Date
+import com.squareup.sqldelight.Query
+import io.reactivex.disposables.Disposable
+import java.util.concurrent.atomic.AtomicBoolean
 
-@Dao
-interface ReserveDao : BaseRxDao<ReservedSchedule> {
+internal class QueryListenerAndDisposable<T : Any>(
+    private val query: Query<T>,
+    private val emit: () -> Unit
+) : AtomicBoolean(), Query.Listener, Disposable {
+    override fun queryResultsChanged() {
+        emit()
+    }
 
-    @Query("select id from reservedSchedules where datetime >= :from and datetime < :until")
-    fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>>
+    override fun isDisposed() = get()
 
-    @Query("select exists (select * from reservedSchedules where id = :scheduleId)")
-    fun isScheduleReserved(scheduleId: Long): Single<Boolean>
+    override fun dispose() {
+        if (compareAndSet(false, true)) {
+            query.removeListener(this)
+        }
+    }
 }

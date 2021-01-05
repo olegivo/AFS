@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -20,8 +20,6 @@ package ru.olegivo.afs.settings.di
 import dagger.Binds
 import dagger.Module
 import ru.olegivo.afs.common.di.PerFragment
-import ru.olegivo.afs.settings.android.DatabaseHelperImpl
-import ru.olegivo.afs.settings.domain.DatabaseHelper
 import ru.olegivo.afs.settings.domain.DeleteDatabaseUseCase
 import ru.olegivo.afs.settings.domain.DeleteDatabaseUseCaseImpl
 import ru.olegivo.afs.settings.presentation.SettingsContract
@@ -35,7 +33,4 @@ interface SettingsModule {
 
     @Binds
     fun bindDeleteDatabaseUseCase(impl: DeleteDatabaseUseCaseImpl): DeleteDatabaseUseCase
-
-    @Binds
-    fun bindDatabaseHelper(impl: DatabaseHelperImpl): DatabaseHelper
 }

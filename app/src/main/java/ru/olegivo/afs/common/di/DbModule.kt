@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -18,26 +18,80 @@
 package ru.olegivo.afs.common.di
 
 import android.content.Context
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import com.squareup.sqldelight.ColumnAdapter
+import com.squareup.sqldelight.android.AndroidSqliteDriver
+import com.squareup.sqldelight.db.SqlDriver
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import ru.olegivo.afs.BuildConfig
-import ru.olegivo.afs.common.db.AfsDatabase
-import ru.olegivo.afs.common.db.DbVersions
+import ru.olegivo.afs.common.db.AfsDatabaseNew
+import ru.olegivo.afs.favorites.db.FavoriteDao
+import ru.olegivo.afs.favorites.db.FavoriteDaoNew
+import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
+import ru.olegivo.afs.reserve.db.models.ReservedSchedules
+import ru.olegivo.afs.schedules.db.ReserveDao
+import ru.olegivo.afs.schedules.db.ReserveDaoNew
+import ru.olegivo.afs.schedules.db.ScheduleDao
+import ru.olegivo.afs.schedules.db.ScheduleDaoNew
+import ru.olegivo.afs.schedules.db.models.Schedules
+import ru.olegivo.afs.settings.android.DatabaseHelperImpl
+import ru.olegivo.afs.settings.domain.DatabaseHelper
+import java.util.Date
 import javax.inject.Named
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [DbModule.BindsModule::class, DbModuleCore::class])
 object DbModule {
     @Singleton
     @Provides
-    @Suppress("SpreadOperator")
-    fun providesAfsDatabase(@Named("application") context: Context): AfsDatabase {
-        return Room
-            .databaseBuilder(context, AfsDatabase::class.java, BuildConfig.DB_NAME)
-            .addMigrations(*DbVersions.migrations)
-            .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
-            .build()
+    fun providesSqlDriver(@Named("application") context: Context): SqlDriver =
+        AndroidSqliteDriver(
+            schema = AfsDatabaseNew.Schema,
+            context = context,
+            name = BuildConfig.DB_NAME
+        )
+
+    @Module
+    interface BindsModule {
+        @Binds
+        fun bindDatabaseHelper(impl: DatabaseHelperImpl): DatabaseHelper
+
+        @Binds
+        fun bindReserveDao(impl: ReserveDaoNew): ReserveDao
+
+        @Binds
+        fun bindScheduleDao(impl: ScheduleDaoNew): ScheduleDao
+
+        @Binds
+        fun bindFavoriteDao(impl: FavoriteDaoNew): FavoriteDao
+    }
+}
+
+@Module
+object DbModuleCore {
+    private val dateAdapter = object : ColumnAdapter<Date, Long> {
+        override fun decode(databaseValue: Long) = Date(databaseValue)
+        override fun encode(value: Date) = value.time
+    }
+
+    @Singleton
+    @Provides
+    fun providesAfsDatabaseNew(sqliteDriver: SqlDriver): AfsDatabaseNew {
+        return AfsDatabaseNew(
+            sqliteDriver,
+            recordReminderSchedulesAdapter = RecordReminderSchedules.Adapter(
+                dateFromAdapter = dateAdapter,
+                dateUntilAdapter = dateAdapter
+            ),
+            schedulesAdapter = Schedules.Adapter(
+                datetimeAdapter = dateAdapter,
+                recordFromAdapter = dateAdapter,
+                recordToAdapter = dateAdapter
+            ),
+            reservedSchedulesAdapter = ReservedSchedules.Adapter(
+                datetimeAdapter = dateAdapter
+            )
+        )
     }
 }

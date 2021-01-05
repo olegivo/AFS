@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *  
  * This file is part of AFS.
  *
@@ -23,6 +23,7 @@ import ru.olegivo.afs.common.andThenDeferMaybe
 import ru.olegivo.afs.common.db.AfsDaoTest
 import ru.olegivo.afs.helpers.checkSingleValue
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.randomSubList
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
 import ru.olegivo.afs.schedules.db.models.toDb
@@ -31,18 +32,29 @@ import ru.olegivo.afs.suite.DbTest
 @DbTest
 class ScheduleDaoTest : AfsDaoTest<ScheduleDao>({ schedules }) {
     @Test
-    fun getSchedule_RETURNS_putted_entity() {
-        val entity = createDataSchedule().toDb()
-        dao.upsert(listOf(entity))
+    fun getSchedule_RETURNS_only_relevant_entity() {
+        val objects = { createDataSchedule().toDb() }.repeat(4)
+        val entity = objects.random()
+        dao.upsert(objects)
             .andThen(dao.getSchedule(entity.id))
-            .test()
-            .checkSingleValue {
+            .assertResult {
                 assertThat(it).isEqualTo(entity)
             }
     }
 
     @Test
-    fun getSchedules_RETURNS_putted_only_entities_inside_date_range_WHEN_putted_entities_inside_and_outside_of_date_range() {
+    fun getSchedules_RETURNS_only_relevant_entities() {
+        val objects = { createDataSchedule().toDb() }.repeat(4)
+        val subList = objects.randomSubList()
+        dao.upsert(objects)
+            .andThen(dao.getSchedules(subList.map { it.id }))
+            .assertResult {
+                assertThat(it).containsExactlyInAnyOrderElementsOf(subList)
+            }
+    }
+
+    @Test
+    fun getSchedules_RETURNS_only_relevant_entities_inside_date_range() {
         val clubId = getRandomInt()
 
         val schedules = {
@@ -66,6 +78,29 @@ class ScheduleDaoTest : AfsDaoTest<ScheduleDao>({ schedules }) {
             .assertNoErrors()
             .checkSingleValue { result ->
                 assertThat(result).containsExactlyInAnyOrderElementsOf(expected)
+            }
+    }
+
+    @Test
+    fun filterSchedules_RETURNS_only_relevant_entities() {
+        val entity = createDataSchedule().toDb()
+        val objects = listOf(
+            entity,
+            entity.copy(id = entity.id + 1, clubId = entity.clubId + 1),
+            entity.copy(id = entity.id + 2, groupId = entity.groupId + 1),
+            entity.copy(id = entity.id + 3, activityId = entity.activityId + 1)
+        )
+
+        dao.upsert(objects)
+            .andThen(
+                dao.filterSchedules(
+                    clubId = entity.clubId,
+                    groupId = entity.groupId,
+                    activityId = entity.activityId
+                )
+            )
+            .assertResult {
+                assertThat(it).containsExactly(entity)
             }
     }
 }

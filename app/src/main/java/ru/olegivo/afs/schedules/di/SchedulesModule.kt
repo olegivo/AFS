@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -19,9 +19,7 @@ package ru.olegivo.afs.schedules.di
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import ru.olegivo.afs.clubs.di.ClubsModule
-import ru.olegivo.afs.common.db.AfsDatabase
 import ru.olegivo.afs.favorites.di.FavoritesModule
 import ru.olegivo.afs.schedules.data.ScheduleDbSource
 import ru.olegivo.afs.schedules.data.ScheduleNetworkSource
@@ -40,39 +38,29 @@ import ru.olegivo.afs.schedules.presentation.DaySchedulePresenter
 
 @Module(
     includes = [
-        SchedulesModule.ProvidesModule::class,
         ClubsModule::class,
         FavoritesModule::class
     ]
 )
-abstract class SchedulesModule {
+interface SchedulesModule {
     @Binds
-    abstract fun bindDaySchedulePresenter(impl: DaySchedulePresenter): DayScheduleContract.Presenter
-
-    @Binds
-    abstract fun bindGetCurrentWeekScheduleUseCase(impl: GetCurrentWeekSportsActivitiesUseCaseImpl): GetCurrentWeekScheduleUseCase
+    fun bindDaySchedulePresenter(impl: DaySchedulePresenter): DayScheduleContract.Presenter
 
     @Binds
-    abstract fun bindGetDaySportsActivitiesUseCase(impl: GetDaySportsActivitiesUseCaseImpl): GetDaySportsActivitiesUseCase
+    fun bindGetCurrentWeekScheduleUseCase(impl: GetCurrentWeekSportsActivitiesUseCaseImpl): GetCurrentWeekScheduleUseCase
 
     @Binds
-    abstract fun bindActualizeScheduleUseCase(impl: ActualizeScheduleUseCaseImpl): ActualizeScheduleUseCase
+    fun bindGetDaySportsActivitiesUseCase(impl: GetDaySportsActivitiesUseCaseImpl): GetDaySportsActivitiesUseCase
 
     @Binds
-    abstract fun bindScheduleRepository(impl: ScheduleRepositoryImpl): ScheduleRepository
+    fun bindActualizeScheduleUseCase(impl: ActualizeScheduleUseCaseImpl): ActualizeScheduleUseCase
 
     @Binds
-    abstract fun bindScheduleNetworkSource(impl: ScheduleNetworkSourceImpl): ScheduleNetworkSource
+    fun bindScheduleRepository(impl: ScheduleRepositoryImpl): ScheduleRepository
 
     @Binds
-    abstract fun bindReserveDbSource(impl: ScheduleDbSourceImpl): ScheduleDbSource
+    fun bindScheduleNetworkSource(impl: ScheduleNetworkSourceImpl): ScheduleNetworkSource
 
-    @Module
-    object ProvidesModule {
-        @Provides
-        fun provideResrerveDao(afsDatabase: AfsDatabase) = afsDatabase.reserve
-
-        @Provides
-        fun provideScheduleDao(afsDatabase: AfsDatabase) = afsDatabase.schedules
-    }
+    @Binds
+    fun bindReserveDbSource(impl: ScheduleDbSourceImpl): ScheduleDbSource
 }

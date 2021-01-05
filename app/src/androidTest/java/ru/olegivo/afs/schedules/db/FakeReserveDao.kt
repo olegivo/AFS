@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -26,7 +26,7 @@ import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import java.util.Date
 
 class FakeReserveDao(private val tables: FakeAfsDatabase.Tables) :
-    ReserveDao(),
+    ReserveDao,
     BaseRxDao<ReservedSchedule> by FakeBaseRxDao(tables.reservedSchedules, { id }) {
 
     override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> {
