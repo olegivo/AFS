@@ -17,9 +17,6 @@
 
 package ru.olegivo.afs.common.db
 
-import androidx.room.DatabaseConfiguration
-import androidx.room.InvalidationTracker
-import androidx.sqlite.db.SupportSQLiteOpenHelper
 import io.reactivex.Completable
 import ru.olegivo.afs.favorites.db.FakeFavoriteDao
 import ru.olegivo.afs.favorites.db.FavoriteDao
@@ -30,41 +27,17 @@ import ru.olegivo.afs.schedules.db.ReserveDao
 import ru.olegivo.afs.schedules.db.ScheduleDao
 import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
-import java.util.HashMap
 
-class FakeAfsDatabase : AfsDatabase() {
+class FakeAfsDatabase {
     private val tables = Tables()
 
     private val fakeScheduleDao = FakeScheduleDao(tables)
     private val fakeFavoriteDao = FakeFavoriteDao(tables)
     private val fakeReserveDao = FakeReserveDao(tables)
 
-    override val schedules: ScheduleDao = fakeScheduleDao
-    override val favorites: FavoriteDao = fakeFavoriteDao
-    override val reserve: ReserveDao = fakeReserveDao
-
-    override fun createOpenHelper(config: DatabaseConfiguration?): SupportSQLiteOpenHelper {
-        TODO("Not yet implemented")
-    }
-
-    override fun createInvalidationTracker(): InvalidationTracker {
-        // copied from generated AfsDatabase_Impl
-        val shadowTablesMap = HashMap<String, String>(0)
-        val viewTables = HashMap<String, Set<String>>(0)
-        return InvalidationTracker(
-            this,
-            shadowTablesMap,
-            viewTables,
-            "schedules",
-            "reservedSchedules",
-            "favoriteFilters",
-            "recordReminderSchedules"
-        )
-    }
-
-    override fun clearAllTables() {
-        TODO("Not yet implemented")
-    }
+    val schedules: ScheduleDao = fakeScheduleDao
+    val favorites: FavoriteDao = fakeFavoriteDao
+    val reserve: ReserveDao = fakeReserveDao
 
     fun reset() {
         with(tables) {

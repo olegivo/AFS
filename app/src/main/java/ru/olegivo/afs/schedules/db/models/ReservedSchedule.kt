@@ -17,12 +17,9 @@
 
 package ru.olegivo.afs.schedules.db.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.*
+import java.util.Date
 
-@Entity(tableName = "reservedSchedules")
 data class ReservedSchedule(
-    @PrimaryKey val id: Long,
+    val id: Long,
     val datetime: Date
 )

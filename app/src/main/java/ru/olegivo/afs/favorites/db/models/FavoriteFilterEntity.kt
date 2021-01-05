@@ -17,13 +17,9 @@
 
 package ru.olegivo.afs.favorites.db.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 
-@Entity(tableName = "favoriteFilters")
 data class FavoriteFilterEntity(
-    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val clubId: Int,
     val groupId: Int,

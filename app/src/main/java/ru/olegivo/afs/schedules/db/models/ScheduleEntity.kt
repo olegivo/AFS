@@ -17,20 +17,11 @@
 
 package ru.olegivo.afs.schedules.db.models
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import ru.olegivo.afs.schedules.data.models.DataSchedule
-import java.util.*
+import java.util.Date
 
-@Entity(
-    tableName = "schedules",
-    indices = [
-        Index("datetime", "clubId")
-    ]
-)
 data class ScheduleEntity(
-    @PrimaryKey val id: Long,
+    val id: Long,
     val clubId: Int,
     val groupId: Int,
     val group: String,
