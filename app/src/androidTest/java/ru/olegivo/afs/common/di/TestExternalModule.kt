@@ -20,7 +20,7 @@ package ru.olegivo.afs.common.di
 import dagger.Module
 import dagger.Provides
 import ru.olegivo.afs.analytics.di.AnalyticsCoreModule
-import ru.olegivo.afs.common.db.AfsDatabase
+import ru.olegivo.afs.common.db.FakeAfsDatabase
 
 @Module(
     includes = [
@@ -33,12 +33,12 @@ interface TestExternalModule {
     @Module
     object ProvidesModule {
         @Provides
-        fun providesFavoritesDao(afsDatabase: AfsDatabase) = afsDatabase.favorites
+        fun providesFavoritesDao(afsDatabase: FakeAfsDatabase) = afsDatabase.favorites
 
         @Provides
-        fun providesReserveDao(afsDatabase: AfsDatabase) = afsDatabase.reserve
+        fun providesReserveDao(afsDatabase: FakeAfsDatabase) = afsDatabase.reserve
 
         @Provides
-        fun providesSchedulesDao(afsDatabase: AfsDatabase) = afsDatabase.schedules
+        fun providesSchedulesDao(afsDatabase: FakeAfsDatabase) = afsDatabase.schedules
     }
 }

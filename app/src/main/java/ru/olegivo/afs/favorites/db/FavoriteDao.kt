@@ -17,10 +17,6 @@
 
 package ru.olegivo.afs.favorites.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.common.db.BaseRxDao
@@ -28,31 +24,17 @@ import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import java.util.Date
 
-@Dao
 interface FavoriteDao : BaseRxDao<FavoriteFilterEntity> {
 
-    @Query("select id, clubId, groupId, `group`, activityId, activity, dayOfWeek, minutesOfDay from favoriteFilters")
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
 
-    @Query(
-        """delete from favoriteFilters 
-where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and minutesOfDay = :minutesOfDay"""
-    )
     fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Completable
 
-    @Query(
-        """select exists
-(select * from favoriteFilters 
-where groupId = :groupId and activityId = :activityId and dayOfWeek = :dayOfWeek and minutesOfDay = :minutesOfDay)"""
-    )
     fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Single<Boolean>
 
-    @Query("select scheduleId from recordReminderSchedules where dateFrom <= :moment and :moment <= dateUntil")
     fun getActiveRecordReminderScheduleIds(moment: Date): Single<List<Long>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // TODO: remove old reminders?
     fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity): Completable
 
-    @Query("select exists(select * from recordReminderSchedules where scheduleId = :scheduleId)")
     fun hasPlannedReminderToRecord(scheduleId: Long): Single<Boolean>
 }

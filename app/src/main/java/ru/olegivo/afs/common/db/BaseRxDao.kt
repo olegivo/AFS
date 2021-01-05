@@ -17,14 +17,10 @@
 
 package ru.olegivo.afs.common.db
 
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import io.reactivex.Completable
 
 interface BaseRxDao<T> {
-    @Insert
     fun insert(vararg obj: T): Completable
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(objects: List<T>): Completable
 }

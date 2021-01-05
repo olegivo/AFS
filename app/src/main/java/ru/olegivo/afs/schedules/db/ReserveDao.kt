@@ -17,19 +17,14 @@
 
 package ru.olegivo.afs.schedules.db
 
-import androidx.room.Dao
-import androidx.room.Query
 import io.reactivex.Single
 import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.schedules.db.models.ReservedSchedule
 import java.util.Date
 
-@Dao
 interface ReserveDao : BaseRxDao<ReservedSchedule> {
 
-    @Query("select id from reservedSchedules where datetime >= :from and datetime < :until")
     fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>>
 
-    @Query("select exists (select * from reservedSchedules where id = :scheduleId)")
     fun isScheduleReserved(scheduleId: Long): Single<Boolean>
 }

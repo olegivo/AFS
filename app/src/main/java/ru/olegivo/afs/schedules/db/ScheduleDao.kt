@@ -17,8 +17,6 @@
 
 package ru.olegivo.afs.schedules.db
 
-import androidx.room.Dao
-import androidx.room.Query
 import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.olegivo.afs.common.db.BaseRxDao
@@ -26,22 +24,13 @@ import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import java.util.Date
 
-@Dao
 abstract class ScheduleDao : BaseRxDao<ScheduleEntity> {
-    @Query(
-        """select $scheduleFields 
-                from schedules 
-                where datetime >= :from and datetime < :until and clubId = :clubId"""
-    )
     abstract fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<ScheduleEntity>>
 
-    @Query("select $scheduleFields from schedules where id = :id")
     abstract fun getSchedule(id: Long): Single<ScheduleEntity>
 
-    @Query("select $scheduleFields from schedules where id in (:ids)")
     abstract fun getSchedules(ids: List<Long>): Single<List<ScheduleEntity>>
 
-    @Query("select $scheduleFields from schedules where clubId = :clubId and groupId = :groupId and activityId = :activityId")
     abstract fun filterSchedules(
         clubId: Int,
         groupId: Int,
@@ -56,10 +45,4 @@ abstract class ScheduleDao : BaseRxDao<ScheduleEntity> {
                 activityId = activityId
             )
         }
-
-    companion object {
-        private const val scheduleFields =
-            """id, clubId, groupId, [group], activityId, activity, datetime, length, 
-preEntry, totalSlots, recordFrom, recordTo""" // TODO: later: room, trainer,
-    }
 }
