@@ -31,7 +31,6 @@ buildscript {
 plugins {
     id 'se.patrikerdes.use-latest-versions' version '0.2.15'
     id 'com.github.ben-manes.versions' version '0.36.0'
-    id "com.github.plnice.canidropjetifier" version "0.5"
 }
 repositories {
     mavenCentral()
@@ -219,8 +218,6 @@ dependencies {
     implementation "androidx.work:work-runtime:$workVersion"
     implementation "androidx.work:work-runtime-ktx:$workVersion"
     implementation "androidx.work:work-rxjava2:$workVersion"
-
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     implementation 'com.google.android.material:material:1.2.1'
 
