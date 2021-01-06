@@ -166,6 +166,8 @@ workflows:
       - gradle-runner@1:
           title: Build android tests
           inputs:
+            - app_file_exclude_filter: '*.apk'
+            - test_apk_file_exclude_filter: '*.apk'
             - gradle_task: packageDebugAndroidTest
       - cache-push@2: {}
       - avd-manager@1:
@@ -175,6 +177,8 @@ workflows:
       - gradle-runner@1:
           title: Run android tests
           inputs:
+            - app_file_exclude_filter: '*.apk'
+            - test_apk_file_exclude_filter: '*.apk'
             - gradle_task: connectedDebugAndroidTest
       - deploy-to-bitrise-io@1:
           title: Upload android tests results
