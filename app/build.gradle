@@ -219,8 +219,6 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$workVersion"
     implementation "androidx.work:work-rxjava2:$workVersion"
 
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-
     implementation 'com.google.android.material:material:1.2.1'
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
