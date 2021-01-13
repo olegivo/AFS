@@ -190,8 +190,8 @@ dependencies {
     def daggerVersion = "2.30.1"
     def javaxInjectVersion = '1'
     def jUnitVersion = '4.13.1'
-    def ktorVersion = "1.4.3"
-    def mockitoVersion = '3.6.28'
+    def ktorVersion = "1.5.0"
+    def mockitoVersion = '3.7.0'
     def moshiVersion = "1.11.0"
     def mockitoKotlinVersion = '2.2.0'
     def recyclerViewVersion = "1.1.0"
@@ -230,14 +230,14 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
 
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:1.3.1'
+    implementation 'com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:1.4.0'
 
     implementation "com.squareup.cycler:cycler:0.1.4"
 
@@ -279,7 +279,7 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
     testImplementation "com.squareup.sqldelight:sqlite-driver:$sqlDelightVersion"
     //noinspection GradleDependency
-    testImplementation('org.xerial:sqlite-jdbc:3.8.6') {
+    testImplementation('org.xerial:sqlite-jdbc:3.34.0') {
         // Override the version of sqlite used by sqlite-driver to match Android API 21
         force = true
     }
