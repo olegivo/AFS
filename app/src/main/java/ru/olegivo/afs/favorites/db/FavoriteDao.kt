@@ -27,14 +27,9 @@ import java.util.Date
 interface FavoriteDao : BaseRxDao<FavoriteFilterEntity> {
 
     fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
-
     fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Completable
-
     fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Single<Boolean>
-
     fun getActiveRecordReminderScheduleIds(moment: Date): Single<List<Long>>
-
     fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity): Completable
-
     fun hasPlannedReminderToRecord(scheduleId: Long): Single<Boolean>
 }
