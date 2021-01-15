@@ -27,10 +27,10 @@ import io.reactivex.rxkotlin.toCompletable
 import io.reactivex.schedulers.Schedulers
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.extensions.parallelMapList
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named

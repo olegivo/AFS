@@ -21,7 +21,7 @@ import com.nhaarman.mockitokotlin2.verifyBlocking
 import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.ChainRuleHolder
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.givenBlocking
 import ru.olegivo.afs.helpers.willReturn

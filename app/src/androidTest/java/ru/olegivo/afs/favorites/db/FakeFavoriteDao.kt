@@ -23,7 +23,7 @@ import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseRxDao
 import ru.olegivo.afs.extensions.toSingle
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import java.util.Date
 

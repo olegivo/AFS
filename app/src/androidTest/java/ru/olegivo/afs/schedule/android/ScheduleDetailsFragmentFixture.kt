@@ -21,7 +21,7 @@ import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.ChainRuleHolder
 import ru.olegivo.afs.favorites.android.FavoritesFragmentFixture
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 

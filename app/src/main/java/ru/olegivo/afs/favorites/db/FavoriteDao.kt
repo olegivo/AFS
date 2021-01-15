@@ -20,8 +20,8 @@ package ru.olegivo.afs.favorites.db
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.common.db.BaseRxDao
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import java.util.Date
 
 interface FavoriteDao : BaseRxDao<FavoriteFilterEntity> {

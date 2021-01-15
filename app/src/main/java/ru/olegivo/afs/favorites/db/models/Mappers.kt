@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -18,17 +18,7 @@
 package ru.olegivo.afs.favorites.db.models
 
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-
-data class FavoriteFilterEntity(
-    val id: Int = 0,
-    val clubId: Int,
-    val groupId: Int,
-    val group: String,
-    val activityId: Int,
-    val activity: String,
-    val dayOfWeek: Int,
-    val minutesOfDay: Int
-)
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 
 fun FavoriteFilter.toDb() = FavoriteFilterEntity(
     clubId = clubId,

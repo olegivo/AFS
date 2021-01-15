@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
- *  
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
+ *
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -15,19 +15,15 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.db.models
+package ru.olegivo.afs.shared.favorites.db.models
 
-import ru.olegivo.afs.helpers.getRandomInt
-import ru.olegivo.afs.helpers.getRandomString
-import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
-
-fun createFavoriteFilterEntity() =
-    FavoriteFilterEntity(
-        clubId = getRandomInt(),
-        groupId = getRandomInt(),
-        group = getRandomString(),
-        activityId = getRandomInt(),
-        activity = getRandomString(),
-        dayOfWeek = getRandomInt(),
-        minutesOfDay = getRandomInt()
-    )
+data class FavoriteFilterEntity(
+    val id: Int = 0,
+    val clubId: Int,
+    val groupId: Int,
+    val group: String,
+    val activityId: Int,
+    val activity: String,
+    val dayOfWeek: Int,
+    val minutesOfDay: Int
+)

@@ -20,7 +20,7 @@ package ru.olegivo.afs.common.db
 import io.reactivex.Completable
 import ru.olegivo.afs.favorites.db.FakeFavoriteDao
 import ru.olegivo.afs.favorites.db.FavoriteDao
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.schedules.db.FakeReserveDao
 import ru.olegivo.afs.schedules.db.FakeScheduleDao
 import ru.olegivo.afs.schedules.db.ReserveDao
