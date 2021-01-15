@@ -17,7 +17,7 @@
 
 package ru.olegivo.afs.favorites.db
 
-import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.add
@@ -31,56 +31,51 @@ import ru.olegivo.afs.repeat
 import java.util.Date
 
 class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
-    { afsDatabaseNew, testScheduler ->
-        FavoriteDaoNew(afsDatabaseNew, testScheduler)
+    { afsDatabaseNew, _ ->
+        FavoriteDaoNew(afsDatabaseNew)
     }
 ) {
 
     @Test
     fun getFavoriteFilters_RETURNS_all() {
         val objects = { createFavoriteFilterEntity().copy(id = getRandomInt()) }.repeat(4)
-        dao.upsertCompletable(objects)
-            .andThen(dao.getFavoriteFilters())
-            .assertResult {
-                assertThat(it).containsExactlyInAnyOrderElementsOf(objects)
-            }
+        dao.upsert(objects)
+        runBlocking {
+            assertThat(dao.getFavoriteFilters()).containsExactlyInAnyOrderElementsOf(objects)
+        }
     }
 
     @Test
     fun removeFilter_REMOVES_only_relevant() {
         val objects = { createFavoriteFilterEntity().copy(id = getRandomInt()) }.repeat(4)
         val entity = objects.random()
-        dao.upsertCompletable(objects)
-            .andThen(
-                dao.removeFilter(
-                    groupId = entity.groupId,
-                    activityId = entity.activityId,
-                    dayOfWeek = entity.dayOfWeek,
-                    minutesOfDay = entity.minutesOfDay
-                )
-            )
-            .andThen(dao.getFavoriteFilters())
-            .assertResult {
-                assertThat(it).containsExactlyInAnyOrderElementsOf(objects - entity)
-            }
+        dao.upsert(objects)
+        dao.removeFilter(
+            groupId = entity.groupId,
+            activityId = entity.activityId,
+            dayOfWeek = entity.dayOfWeek,
+            minutesOfDay = entity.minutesOfDay
+        )
+        runBlocking {
+            assertThat(dao.getFavoriteFilters()).containsExactlyInAnyOrderElementsOf(objects - entity)
+        }
     }
 
     @Test
     fun exist_RETURNS_true_WHEN_has_relevant() {
         val objects = { createFavoriteFilterEntity().copy(id = getRandomInt()) }.repeat(4)
         val entity = objects.random()
-        dao.upsertCompletable(objects)
-            .andThen(
+        dao.upsert(objects)
+        runBlocking {
+            assertThat(
                 dao.exist(
                     groupId = entity.groupId,
                     activityId = entity.activityId,
                     dayOfWeek = entity.dayOfWeek,
                     minutesOfDay = entity.minutesOfDay
                 )
-            )
-            .assertResult {
-                assertThat(it).isTrue()
-            }
+            ).isTrue
+        }
     }
 
     @Test
@@ -92,18 +87,17 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
             entity.copy(id = entity.id + 3, dayOfWeek = entity.dayOfWeek + 1),
             entity.copy(id = entity.id + 4, minutesOfDay = entity.minutesOfDay + 1)
         )
-        dao.upsertCompletable(objects)
-            .andThen(
+        dao.upsert(objects)
+        runBlocking {
+            assertThat(
                 dao.exist(
                     groupId = entity.groupId,
                     activityId = entity.activityId,
                     dayOfWeek = entity.dayOfWeek,
                     minutesOfDay = entity.minutesOfDay
                 )
-            )
-            .assertResult {
-                assertThat(it).isFalse()
-            }
+            ).isFalse
+        }
     }
 
     @Test
@@ -129,13 +123,10 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
                 dateUntil = moment.add(hours = 1)
             )
         )
-        Completable.concat(
-            objects.map { dao.addReminderToRecord(it) }
-        )
-            .andThen(dao.getActiveRecordReminderScheduleIds(moment))
-            .assertResult {
-                assertThat(it).containsOnly(entity.scheduleId)
-            }
+        objects.forEach { dao.addReminderToRecord(it) }
+        runBlocking {
+            assertThat(dao.getActiveRecordReminderScheduleIds(moment)).containsOnly(entity.scheduleId)
+        }
     }
 
     @Test
@@ -146,10 +137,9 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
             dateUntil = getRandomDate()
         )
         dao.addReminderToRecord(entity)
-            .andThen(dao.hasPlannedReminderToRecord(entity.scheduleId))
-            .assertResult {
-                assertThat(it).isTrue()
-            }
+        runBlocking {
+            assertThat(dao.hasPlannedReminderToRecord(entity.scheduleId)).isTrue
+        }
     }
 
     @Test
@@ -160,9 +150,8 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
             dateUntil = getRandomDate()
         )
         dao.addReminderToRecord(entity.copy(scheduleId = entity.scheduleId + 1))
-            .andThen(dao.hasPlannedReminderToRecord(entity.scheduleId))
-            .assertResult {
-                assertThat(it).isFalse()
-            }
+        runBlocking {
+            assertThat(dao.hasPlannedReminderToRecord(entity.scheduleId)).isFalse
+        }
     }
 }

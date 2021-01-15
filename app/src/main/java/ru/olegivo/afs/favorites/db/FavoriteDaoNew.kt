@@ -17,109 +17,76 @@
 
 package ru.olegivo.afs.favorites.db
 
-import com.squareup.sqldelight.runtime.rx.asSingle
-import com.squareup.sqldelight.runtime.rx.mapToList
-import com.squareup.sqldelight.runtime.rx.mapToOne
-import io.reactivex.Completable
-import io.reactivex.Scheduler
-import io.reactivex.Single
-import io.reactivex.rxkotlin.toCompletable
-import io.reactivex.schedulers.Schedulers
 import ru.olegivo.afs.common.db.AfsDatabaseNew
-import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import java.util.Date
 import javax.inject.Inject
-import javax.inject.Named
 
 class FavoriteDaoNew @Inject constructor(
-    db: AfsDatabaseNew,
-    @Named("io") private val ioScheduler: Scheduler
+    db: AfsDatabaseNew
 ) : FavoriteDao {
     private val favoriteFilterQueries = db.favoriteFilterQueries
     private val recordReminderScheduleQueries = db.recordReminderScheduleQueries
 
-    override fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>> =
+    override suspend fun getFavoriteFilters(): List<FavoriteFilterEntity> =
         favoriteFilterQueries.getFavoriteFilters()
-            .asSingle(ioScheduler)
-            .mapToList()
-            .parallelMapList(Schedulers.computation()) {
-                it.toOldEntity()
-            }
+            .executeAsList()
+            .map { it.toOldEntity() } // TODO: ioDispatcher?
 
     override fun removeFilter(
         groupId: Int,
         activityId: Int,
         dayOfWeek: Int,
         minutesOfDay: Int
-    ): Completable {
-        return {
-            favoriteFilterQueries.removeFilter(
-                groupId = groupId,
-                activityId = activityId,
-                dayOfWeek = dayOfWeek,
-                minutesOfDay = minutesOfDay
-            )
-        }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
-    }
+    ) = favoriteFilterQueries.removeFilter(
+        groupId = groupId,
+        activityId = activityId,
+        dayOfWeek = dayOfWeek,
+        minutesOfDay = minutesOfDay
+    )
 
-    override fun exist(
+    override suspend fun exist(
         groupId: Int,
         activityId: Int,
         dayOfWeek: Int,
         minutesOfDay: Int
-    ): Single<Boolean> =
+    ): Boolean =
         favoriteFilterQueries.exist(
             groupId = groupId,
             activityId = activityId,
             dayOfWeek = dayOfWeek,
             minutesOfDay = minutesOfDay
         )
-            .asSingle(ioScheduler)
-            .mapToOne()
+            .executeAsOne()// TODO: ioDispatcher?
 
-    override fun getActiveRecordReminderScheduleIds(moment: Date): Single<List<Long>> =
+    override suspend fun getActiveRecordReminderScheduleIds(moment: Date): List<Long> =
         recordReminderScheduleQueries.getActiveRecordReminderScheduleIds(moment)
-            .asSingle(ioScheduler)
-            .mapToList()
+            .executeAsList() // TODO: ioDispatcher?
 
-    override fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity): Completable {
-        return { recordReminderScheduleQueries.addReminderToRecord(recordReminder.toNewEntity()) }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
+    override fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity) {
+        recordReminderScheduleQueries.addReminderToRecord(recordReminder.toNewEntity())
     }
 
-    override fun hasPlannedReminderToRecord(scheduleId: Long): Single<Boolean> =
+    override suspend fun hasPlannedReminderToRecord(scheduleId: Long): Boolean =
         recordReminderScheduleQueries.hasPlannedReminderToRecord(scheduleId)
-            .asSingle(ioScheduler)
-            .mapToOne()
+            .executeAsOne() // TODO: ioDispatcher?
 
-    override fun insertCompletable(vararg obj: FavoriteFilterEntity): Completable =
-        {
-            favoriteFilterQueries.transaction {
-                obj.forEach {
-                    favoriteFilterQueries.insert(it.toNewEntity())
-                }
+    override fun insert(vararg obj: FavoriteFilterEntity) =
+        favoriteFilterQueries.transaction {
+            obj.forEach {
+                favoriteFilterQueries.insert(it.toNewEntity())
             }
         }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
 
-    override fun upsertCompletable(objects: List<FavoriteFilterEntity>): Completable =
-        {
-            favoriteFilterQueries.transaction {
-                objects.forEach {
-                    favoriteFilterQueries.upsert(it.toNewEntity())
-                }
+    override fun upsert(objects: List<FavoriteFilterEntity>) =
+        favoriteFilterQueries.transaction {
+            objects.forEach {
+                favoriteFilterQueries.upsert(it.toNewEntity())
             }
         }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
 }
 
 private fun FavoriteFilterEntity.toNewEntity() =

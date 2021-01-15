@@ -17,19 +17,17 @@
 
 package ru.olegivo.afs.favorites.db
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
+import ru.olegivo.afs.common.db.BaseDao
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import java.util.Date
 
-interface FavoriteDao : BaseRxDao<FavoriteFilterEntity> {
+interface FavoriteDao : BaseDao<FavoriteFilterEntity> {
 
-    fun getFavoriteFilters(): Single<List<FavoriteFilterEntity>>
-    fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Completable
-    fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Single<Boolean>
-    fun getActiveRecordReminderScheduleIds(moment: Date): Single<List<Long>>
-    fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity): Completable
-    fun hasPlannedReminderToRecord(scheduleId: Long): Single<Boolean>
+    suspend fun getFavoriteFilters(): List<FavoriteFilterEntity>
+    fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int)
+    suspend fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Boolean
+    suspend fun getActiveRecordReminderScheduleIds(moment: Date): List<Long>
+    fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity)
+    suspend fun hasPlannedReminderToRecord(scheduleId: Long): Boolean
 }

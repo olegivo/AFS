@@ -17,32 +17,30 @@
 
 package ru.olegivo.afs.favorites.db
 
-import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.willReturn
-import io.reactivex.Completable
-import io.reactivex.Single
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
-import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
-import ru.olegivo.afs.favorites.db.models.toDb
 import ru.olegivo.afs.favorites.domain.models.toFavoriteFilter
 import ru.olegivo.afs.helpers.capture
 import ru.olegivo.afs.helpers.getRandomBoolean
+import ru.olegivo.afs.helpers.givenBlocking
+import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedules.domain.models.createSchedule
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 
 class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
 
     override fun createInstance() = FavoritesDbSourceImpl(
-        favoriteDao,
-        testScheduler,
-        testScheduler
+        favoriteDao = favoriteDao,
+        ioScheduler = testScheduler,
+        computationScheduler = testScheduler,
+        coroutineToRxAdapter = coroutineToRxAdapter
     )
 
     //<editor-fold desc="mocks">
@@ -56,8 +54,6 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
     @Test
     fun `addFilter PASSES data to favoriteDao`() {
         val favoriteFilter = createFavoriteFilter()
-        given(favoriteDao.insertCompletable(favoriteFilter.toDb()))
-            .willReturn(Completable.complete())
 
         instance.addFilter(favoriteFilter)
             .test().andTriggerActions()
@@ -65,7 +61,7 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
             .assertComplete()
 
         val favoriteFilterEntity =
-            favoriteDao.capture { param: FavoriteFilterEntity -> insertCompletable(param) }
+            favoriteDao.capture { param: FavoriteFilterEntity -> insert(param) }
         assertThat(favoriteFilterEntity.activityId).isEqualTo(favoriteFilter.activityId)
     }
 
@@ -73,7 +69,8 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
     fun `getFavoriteFilters RETURNS data from favoriteDao`() {
         val favoriteFilterEntities = { createFavoriteFilterEntity() }.repeat(10)
 
-        given(favoriteDao.getFavoriteFilters()).willReturn(Single.just(favoriteFilterEntities))
+        givenBlocking(favoriteDao) { getFavoriteFilters() }
+            .willReturn { favoriteFilterEntities }
 
         val result = instance.getFavoriteFilters()
             .test().andTriggerActions()
@@ -84,7 +81,7 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
         assertThat(result).extracting<Int> { it.activityId }
             .containsExactlyElementsOf(favoriteFilterEntities.map { it.activityId })
 
-        verify(favoriteDao).getFavoriteFilters()
+        verifyBlocking(favoriteDao) { getFavoriteFilters() }
     }
 
     @Test
@@ -92,15 +89,14 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
         val favoriteFilter = createSchedule().toFavoriteFilter()
         val exist = getRandomBoolean()
         with(favoriteFilter) {
-            given(
-                favoriteDao.exist(
+            givenBlocking(favoriteDao) {
+                exist(
                     groupId = groupId,
                     activityId = activityId,
                     dayOfWeek = dayOfWeek,
                     minutesOfDay = minutesOfDay
                 )
-            )
-                .willReturn(Single.just(exist))
+            }.willReturn { exist }
         }
 
         val result = instance.exist(favoriteFilter)
@@ -110,12 +106,14 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
             .values().single()
 
         with(favoriteFilter) {
-            verify(favoriteDao).exist(
-                groupId = groupId,
-                activityId = activityId,
-                dayOfWeek = dayOfWeek,
-                minutesOfDay = minutesOfDay
-            )
+            verifyBlocking(favoriteDao) {
+                exist(
+                    groupId = groupId,
+                    activityId = activityId,
+                    dayOfWeek = dayOfWeek,
+                    minutesOfDay = minutesOfDay
+                )
+            }
         }
         assertThat(result).isEqualTo(exist)
     }
@@ -124,14 +122,14 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
     fun `hasPlannedReminderToRecord RETURNS data from favoriteDao`() {
         val schedule = createSchedule()
         val hasPlannedReminderToRecord = getRandomBoolean()
-        given { favoriteDao.hasPlannedReminderToRecord(schedule.id) }
-            .willReturn { Single.just(hasPlannedReminderToRecord) }
+        givenBlocking(favoriteDao) { hasPlannedReminderToRecord(schedule.id) }
+            .willReturn { hasPlannedReminderToRecord }
 
         instance.hasPlannedReminderToRecord(schedule)
             .assertResult {
                 assertThat(it).isEqualTo(hasPlannedReminderToRecord)
             }
 
-        verify(favoriteDao).hasPlannedReminderToRecord(schedule.id)
+        verifyBlocking(favoriteDao) { hasPlannedReminderToRecord(schedule.id) }
     }
 }

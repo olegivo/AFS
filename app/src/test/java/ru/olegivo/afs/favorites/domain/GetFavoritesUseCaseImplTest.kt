@@ -17,18 +17,18 @@
 
 package ru.olegivo.afs.favorites.domain
 
-import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
-import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.data.FavoritesRepositoryImpl
 import ru.olegivo.afs.favorites.db.FavoriteDao
 import ru.olegivo.afs.favorites.db.FavoritesDbSourceImpl
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
 import ru.olegivo.afs.helpers.checkSingleValue
+import ru.olegivo.afs.helpers.givenBlocking
+import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.repeat
 
 class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
@@ -39,7 +39,8 @@ class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
                 favoritesDbSource = FavoritesDbSourceImpl(
                     favoriteDao = favoriteDao,
                     ioScheduler = testScheduler,
-                    computationScheduler = testScheduler
+                    computationScheduler = testScheduler,
+                    coroutineToRxAdapter = coroutineToRxAdapter
                 )
             )
         )
@@ -54,7 +55,7 @@ class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
     @Test
     fun `invoke RETURNS data from db`() {
         val list = { createFavoriteFilterEntity() }.repeat(3)
-        given { favoriteDao.getFavoriteFilters() }.willReturn(list.toSingle())
+        givenBlocking(favoriteDao) { getFavoriteFilters() }.willReturn { list }
 
         instance.invoke()
             .test().andTriggerActions()
@@ -63,6 +64,6 @@ class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
                 assertThat(actual.map { it.activityId }).isEqualTo(list.map { it.activityId })
             }
 
-        verify(favoriteDao).getFavoriteFilters()
+        verifyBlocking(favoriteDao) { getFavoriteFilters() }
     }
 }

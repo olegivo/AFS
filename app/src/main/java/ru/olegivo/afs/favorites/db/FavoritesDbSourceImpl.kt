@@ -20,6 +20,8 @@ package ru.olegivo.afs.favorites.db
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toCompletable
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
@@ -34,7 +36,8 @@ import javax.inject.Named
 class FavoritesDbSourceImpl @Inject constructor(
     private val favoriteDao: FavoriteDao,
     @Named("io") private val ioScheduler: Scheduler,
-    @Named("computation") private val computationScheduler: Scheduler
+    @Named("computation") private val computationScheduler: Scheduler,
+    private val coroutineToRxAdapter: CoroutineToRxAdapter
 ) : FavoritesDbSource {
 
     override fun addFilter(favoriteFilter: FavoriteFilter): Completable =
@@ -42,30 +45,41 @@ class FavoritesDbSourceImpl @Inject constructor(
             .subscribeOn(computationScheduler)
             .observeOn(ioScheduler)
             .flatMapCompletable {
-                favoriteDao.insertCompletable(it)
+                { favoriteDao.insert(it) }
+                    .toCompletable()
+                    .subscribeOn(ioScheduler)
             }
 
     override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =
-        with(favoriteFilter) {
-            favoriteDao.removeFilter(
-                groupId = groupId,
-                activityId = activityId,
-                dayOfWeek = dayOfWeek,
-                minutesOfDay = minutesOfDay
-            )
+        {
+            with(favoriteFilter) {
+                favoriteDao.removeFilter(
+                    groupId = groupId,
+                    activityId = activityId,
+                    dayOfWeek = dayOfWeek,
+                    minutesOfDay = minutesOfDay
+                )
+            }
         }
+            .toCompletable()
             .subscribeOn(ioScheduler)
 
     override fun exist(favoriteFilter: FavoriteFilter): Single<Boolean> =
-        with(favoriteFilter) { favoriteDao.exist(groupId, activityId, dayOfWeek, minutesOfDay) }
+        coroutineToRxAdapter.runToSingle {
+            with(favoriteFilter) { favoriteDao.exist(groupId, activityId, dayOfWeek, minutesOfDay) }
+        }
             .subscribeOn(ioScheduler)
 
     override fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>> =
-        favoriteDao.getActiveRecordReminderScheduleIds(moment)
+        coroutineToRxAdapter.runToSingle {
+            favoriteDao.getActiveRecordReminderScheduleIds(moment)
+        }
             .subscribeOn(ioScheduler)
 
     override fun hasPlannedReminderToRecord(schedule: Schedule): Single<Boolean> =
-        favoriteDao.hasPlannedReminderToRecord(schedule.id)
+        coroutineToRxAdapter.runToSingle {
+            favoriteDao.hasPlannedReminderToRecord(schedule.id)
+        }
             .subscribeOn(ioScheduler)
 
     override fun addReminderToRecord(
@@ -73,16 +87,20 @@ class FavoritesDbSourceImpl @Inject constructor(
         dateFrom: Date,
         dateUntil: Date
     ): Completable =
-        favoriteDao.addReminderToRecord(
-            RecordReminderScheduleEntity(
-                scheduleId = scheduleId,
-                dateFrom = dateFrom,
-                dateUntil = dateUntil
+        {
+            favoriteDao.addReminderToRecord(
+                RecordReminderScheduleEntity(
+                    scheduleId = scheduleId,
+                    dateFrom = dateFrom,
+                    dateUntil = dateUntil
+                )
             )
-        ).subscribeOn(ioScheduler)
+        }
+            .toCompletable()
+            .subscribeOn(ioScheduler)
 
     override fun getFavoriteFilters(): Single<List<FavoriteFilter>> =
-        favoriteDao.getFavoriteFilters()
+        coroutineToRxAdapter.runToSingle { favoriteDao.getFavoriteFilters() }
             .subscribeOn(ioScheduler)
             .observeOn(computationScheduler)
             .mapList { it.toDomain() }
