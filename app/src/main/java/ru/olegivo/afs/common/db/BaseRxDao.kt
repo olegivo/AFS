@@ -20,7 +20,6 @@ package ru.olegivo.afs.common.db
 import io.reactivex.Completable
 
 interface BaseRxDao<T> {
-    fun insert(vararg obj: T): Completable
-
-    fun upsert(objects: List<T>): Completable
+    fun insertCompletable(vararg obj: T): Completable
+    fun upsertCompletable(objects: List<T>): Completable
 }

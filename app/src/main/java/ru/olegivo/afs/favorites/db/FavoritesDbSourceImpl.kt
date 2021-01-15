@@ -42,7 +42,7 @@ class FavoritesDbSourceImpl @Inject constructor(
             .subscribeOn(computationScheduler)
             .observeOn(ioScheduler)
             .flatMapCompletable {
-                favoriteDao.insert(it)
+                favoriteDao.insertCompletable(it)
             }
 
     override fun removeFilter(favoriteFilter: FavoriteFilter): Completable =

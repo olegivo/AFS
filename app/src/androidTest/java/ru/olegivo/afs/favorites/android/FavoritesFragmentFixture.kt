@@ -36,7 +36,7 @@ class FavoritesFragmentFixture(
 
     fun prepare(filters: List<FavoriteFilterEntity>) {
         withFakeDatabase {
-            action { favorites.insert(*filters.toTypedArray()) }
+            action { favorites.insertCompletable(*filters.toTypedArray()) }
         }
         homeFragmentFixture.screen {
             clickFavoritesButton()
@@ -49,7 +49,7 @@ class FavoritesFragmentFixture(
         scheduleEntity: ScheduleEntity
     ) {
         withFakeDatabase {
-            action { schedules.insert(scheduleEntity) }
+            action { schedules.insertCompletable(scheduleEntity) }
         }
 //        given { scheduleDao.filterSchedules(favoriteFilter, filter.clubId) }
 //            .willReturn(listOf(scheduleEntity).toSingle())

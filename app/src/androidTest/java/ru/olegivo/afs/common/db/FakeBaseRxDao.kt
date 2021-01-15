@@ -23,7 +23,7 @@ class FakeBaseRxDao<T, TKey>(
     private val entities: MutableMap<TKey, T>,
     private val getKey: T.() -> TKey
 ) : BaseRxDao<T> {
-    override fun insert(vararg obj: T) =
+    override fun insertCompletable(vararg obj: T) =
         {
             obj.forEach {
                 val key = it.getKey()
@@ -32,7 +32,7 @@ class FakeBaseRxDao<T, TKey>(
             }
         }.toCompletable()
 
-    override fun upsert(objects: List<T>) =
+    override fun upsertCompletable(objects: List<T>) =
         {
             objects.forEach {
                 entities[it.getKey()] = it

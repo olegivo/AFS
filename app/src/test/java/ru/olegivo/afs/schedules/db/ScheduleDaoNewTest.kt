@@ -37,7 +37,7 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
     fun getSchedule_RETURNS_only_relevant_entity() {
         val objects = { createDataSchedule().toDb() }.repeat(4)
         val entity = objects.random()
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(dao.getSchedule(entity.id))
             .assertResult {
                 assertThat(it).isEqualTo(entity)
@@ -48,7 +48,7 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
     fun getSchedules_RETURNS_only_relevant_entities() {
         val objects = { createDataSchedule().toDb() }.repeat(4)
         val subList = objects.randomSubList()
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(dao.getSchedules(subList.map { it.id }))
             .assertResult {
                 assertThat(it).containsExactlyInAnyOrderElementsOf(subList)
@@ -70,7 +70,7 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
 
         val expected = schedules.filter { it.datetime >= from && it.datetime < until }
 
-        dao.upsert(schedules)
+        dao.upsertCompletable(schedules)
             .andThenDeferMaybe {
                 dao.getSchedules(clubId, from, until)
             }
@@ -91,7 +91,7 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
             entity.copy(id = entity.id + 3, activityId = entity.activityId + 1)
         )
 
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(
                 dao.filterSchedules(
                     clubId = entity.clubId,

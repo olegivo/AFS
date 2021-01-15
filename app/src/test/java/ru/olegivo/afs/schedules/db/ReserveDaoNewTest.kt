@@ -43,7 +43,7 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
             ReservedSchedule(id = getRandomLong(), datetime = from.add(seconds = -1)),
             ReservedSchedule(id = getRandomLong(), datetime = until)
         )
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(dao.getReservedScheduleIds(from, until))
             .assertResult {
                 assertThat(it).containsExactlyInAnyOrder(entity1.id, entity2.id)
@@ -53,7 +53,7 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
     @Test
     fun isScheduleReserved_RETURNS_true() {
         val entity = ReservedSchedule(id = getRandomLong(), datetime = getRandomDate())
-        dao.upsert(listOf(entity))
+        dao.upsertCompletable(listOf(entity))
             .andThen(dao.isScheduleReserved(entity.id))
             .assertResult {
                 assertThat(it).isTrue()
@@ -63,7 +63,7 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
     @Test
     fun isScheduleReserved_RETURNS_false() {
         val entity = ReservedSchedule(id = getRandomLong(), datetime = getRandomDate())
-        dao.upsert(listOf(entity))
+        dao.upsertCompletable(listOf(entity))
             .andThen(dao.isScheduleReserved(entity.id + 1))
             .assertResult {
                 assertThat(it).isFalse()

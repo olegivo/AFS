@@ -47,7 +47,7 @@ class ReserveDaoNew @Inject constructor(
             .asSingle(ioScheduler)
             .mapToOne()
 
-    override fun insert(vararg obj: ReservedSchedule): Completable =
+    override fun insertCompletable(vararg obj: ReservedSchedule): Completable =
         {
             queries.transaction {
                 obj.forEach {
@@ -58,7 +58,7 @@ class ReserveDaoNew @Inject constructor(
             .toCompletable()
             .subscribeOn(ioScheduler)
 
-    override fun upsert(objects: List<ReservedSchedule>): Completable =
+    override fun upsertCompletable(objects: List<ReservedSchedule>): Completable =
         {
             queries.transaction {
                 objects.forEach {

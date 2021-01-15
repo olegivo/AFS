@@ -56,7 +56,7 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
     @Test
     fun `addFilter PASSES data to favoriteDao`() {
         val favoriteFilter = createFavoriteFilter()
-        given(favoriteDao.insert(favoriteFilter.toDb()))
+        given(favoriteDao.insertCompletable(favoriteFilter.toDb()))
             .willReturn(Completable.complete())
 
         instance.addFilter(favoriteFilter)
@@ -65,7 +65,7 @@ class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {
             .assertComplete()
 
         val favoriteFilterEntity =
-            favoriteDao.capture { param: FavoriteFilterEntity -> insert(param) }
+            favoriteDao.capture { param: FavoriteFilterEntity -> insertCompletable(param) }
         assertThat(favoriteFilterEntity.activityId).isEqualTo(favoriteFilter.activityId)
     }
 

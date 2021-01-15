@@ -99,7 +99,7 @@ class FavoriteDaoNew @Inject constructor(
             .asSingle(ioScheduler)
             .mapToOne()
 
-    override fun insert(vararg obj: FavoriteFilterEntity): Completable =
+    override fun insertCompletable(vararg obj: FavoriteFilterEntity): Completable =
         {
             favoriteFilterQueries.transaction {
                 obj.forEach {
@@ -110,7 +110,7 @@ class FavoriteDaoNew @Inject constructor(
             .toCompletable()
             .subscribeOn(ioScheduler)
 
-    override fun upsert(objects: List<FavoriteFilterEntity>): Completable =
+    override fun upsertCompletable(objects: List<FavoriteFilterEntity>): Completable =
         {
             favoriteFilterQueries.transaction {
                 objects.forEach {

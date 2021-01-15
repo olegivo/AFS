@@ -39,7 +39,7 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
     @Test
     fun getFavoriteFilters_RETURNS_all() {
         val objects = { createFavoriteFilterEntity().copy(id = getRandomInt()) }.repeat(4)
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(dao.getFavoriteFilters())
             .assertResult {
                 assertThat(it).containsExactlyInAnyOrderElementsOf(objects)
@@ -50,7 +50,7 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
     fun removeFilter_REMOVES_only_relevant() {
         val objects = { createFavoriteFilterEntity().copy(id = getRandomInt()) }.repeat(4)
         val entity = objects.random()
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(
                 dao.removeFilter(
                     groupId = entity.groupId,
@@ -69,7 +69,7 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
     fun exist_RETURNS_true_WHEN_has_relevant() {
         val objects = { createFavoriteFilterEntity().copy(id = getRandomInt()) }.repeat(4)
         val entity = objects.random()
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(
                 dao.exist(
                     groupId = entity.groupId,
@@ -92,7 +92,7 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
             entity.copy(id = entity.id + 3, dayOfWeek = entity.dayOfWeek + 1),
             entity.copy(id = entity.id + 4, minutesOfDay = entity.minutesOfDay + 1)
         )
-        dao.upsert(objects)
+        dao.upsertCompletable(objects)
             .andThen(
                 dao.exist(
                     groupId = entity.groupId,

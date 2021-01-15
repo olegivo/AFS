@@ -79,7 +79,7 @@ class ScheduleDaoNew @Inject constructor(
                 it.toOldEntity()
             }
 
-    override fun insert(vararg obj: ScheduleEntity): Completable =
+    override fun insertCompletable(vararg obj: ScheduleEntity): Completable =
         {
             queries.transaction {
                 obj.forEach {
@@ -90,7 +90,7 @@ class ScheduleDaoNew @Inject constructor(
             .toCompletable()
             .subscribeOn(ioScheduler)
 
-    override fun upsert(objects: List<ScheduleEntity>): Completable =
+    override fun upsertCompletable(objects: List<ScheduleEntity>): Completable =
         {
             queries.transaction {
                 objects.forEach {
