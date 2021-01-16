@@ -23,7 +23,6 @@ import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
-import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.date
 import ru.olegivo.afs.common.domain.DateProvider
@@ -58,7 +57,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
                 computationScheduler = testScheduler
             ),
             dateProvider = dateProvider,
-            coroutineToRxAdapter = CoroutineToRxAdapter(),
+            coroutineToRxAdapter = coroutineToRxAdapter,
             computationScheduler = testScheduler
         ),
         ioScheduler = testScheduler
