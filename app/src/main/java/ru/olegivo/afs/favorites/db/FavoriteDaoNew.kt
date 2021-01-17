@@ -19,7 +19,7 @@ package ru.olegivo.afs.favorites.db
 
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.favorites.db.models.FavoriteFilters
-import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity

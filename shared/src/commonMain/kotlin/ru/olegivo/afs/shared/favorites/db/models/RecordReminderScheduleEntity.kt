@@ -15,7 +15,7 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.db.models
+package ru.olegivo.afs.shared.favorites.db.models
 
 import ru.olegivo.afs.shared.datetime.ADate
 
