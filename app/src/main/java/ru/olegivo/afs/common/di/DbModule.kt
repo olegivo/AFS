@@ -29,7 +29,7 @@ import kotlinx.datetime.TimeZone
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.common.toDate
-import ru.olegivo.afs.favorites.db.FavoriteDaoNew
+import ru.olegivo.afs.favorites.db.FavoriteDaoImpl
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.schedules.db.ReserveDao
@@ -68,7 +68,7 @@ object DbModule {
         fun bindScheduleDao(impl: ScheduleDaoNew): ScheduleDao
 
         @Binds
-        fun bindFavoriteDao(impl: FavoriteDaoNew): FavoriteDao
+        fun bindFavoriteDao(impl: FavoriteDaoImpl): FavoriteDao
     }
 }
 

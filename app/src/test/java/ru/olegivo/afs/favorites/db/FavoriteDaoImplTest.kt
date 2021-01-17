@@ -31,9 +31,9 @@ import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.repeat
 import java.util.Date
 
-class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
+class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
     { afsDatabaseNew, _ ->
-        FavoriteDaoNew(afsDatabaseNew)
+        FavoriteDaoImpl(afsDatabaseNew)
     }
 ) {
 

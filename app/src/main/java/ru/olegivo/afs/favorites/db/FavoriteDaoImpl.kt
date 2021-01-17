@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
- *
+ *  
  * This file is part of AFS.
  *
  * AFS is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import javax.inject.Inject
 
-class FavoriteDaoNew @Inject constructor(
+class FavoriteDaoImpl @Inject constructor(
     db: AfsDatabaseNew
 ) : FavoriteDao {
     private val favoriteFilterQueries = db.favoriteFilterQueries
