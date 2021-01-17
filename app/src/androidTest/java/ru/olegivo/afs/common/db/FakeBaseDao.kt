@@ -17,6 +17,8 @@
 
 package ru.olegivo.afs.common.db
 
+import ru.olegivo.afs.shared.common.db.BaseDao
+
 class FakeBaseDao<T, TKey>(
     private val entities: MutableMap<TKey, T>,
     private val getKey: T.() -> TKey

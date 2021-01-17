@@ -32,6 +32,7 @@ import ru.olegivo.afs.helpers.givenBlocking
 import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedules.domain.models.createSchedule
+import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 
 class FavoritesDbSourceImplTest : BaseTestOf<FavoritesDbSource>() {

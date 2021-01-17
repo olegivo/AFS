@@ -25,11 +25,12 @@ import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
-import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.favorites.db.models.toDb
 import ru.olegivo.afs.favorites.db.models.toDomain
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.shared.favorites.db.FavoriteDao
+import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named

@@ -29,7 +29,6 @@ import kotlinx.datetime.TimeZone
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.common.toDate
-import ru.olegivo.afs.favorites.db.FavoriteDao
 import ru.olegivo.afs.favorites.db.FavoriteDaoNew
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
@@ -41,6 +40,7 @@ import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 import java.util.Date
 import javax.inject.Named
 import javax.inject.Singleton

@@ -23,13 +23,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
 import ru.olegivo.afs.favorites.data.FavoritesRepositoryImpl
-import ru.olegivo.afs.favorites.db.FavoriteDao
 import ru.olegivo.afs.favorites.db.FavoritesDbSourceImpl
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
 import ru.olegivo.afs.helpers.checkSingleValue
 import ru.olegivo.afs.helpers.givenBlocking
 import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.repeat
+import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 
 class GetFavoritesUseCaseImplTest : BaseTestOf<GetFavoritesUseCase>() {
 
