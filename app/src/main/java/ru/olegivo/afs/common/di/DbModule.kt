@@ -24,8 +24,11 @@ import com.squareup.sqldelight.db.SqlDriver
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.common.db.AfsDatabaseNew
+import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.favorites.db.FavoriteDao
 import ru.olegivo.afs.favorites.db.FavoriteDaoNew
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
@@ -37,6 +40,7 @@ import ru.olegivo.afs.schedules.db.ScheduleDaoNew
 import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
+import ru.olegivo.afs.shared.datetime.ADate
 import java.util.Date
 import javax.inject.Named
 import javax.inject.Singleton
@@ -73,6 +77,17 @@ object DbModuleCore {
     private val dateAdapter = object : ColumnAdapter<Date, Long> {
         override fun decode(databaseValue: Long) = Date(databaseValue)
         override fun encode(value: Date) = value.time
+    }
+
+    private val aDateAdapter = object : ColumnAdapter<ADate, Long> {
+        override fun decode(databaseValue: Long): ADate =
+            TimeZone.currentSystemDefault().let {
+                with(it) {
+                    ADate(Instant.fromEpochMilliseconds(databaseValue).toLocalDateTime(), it)
+                }
+            }
+
+        override fun encode(value: ADate) = value.toDate().time
     }
 
     @Singleton

@@ -121,7 +121,7 @@ fun toDate(dateString: String): Date {
     val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     var convertedDate = Date()
     try {
-        convertedDate = dateFormat.parse(dateString)
+        convertedDate = dateFormat.parse(dateString)!!
     } catch (e: ParseException) {
         e.printStackTrace()
     }
