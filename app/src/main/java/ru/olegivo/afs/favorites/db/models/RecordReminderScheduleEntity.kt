@@ -17,10 +17,10 @@
 
 package ru.olegivo.afs.favorites.db.models
 
-import java.util.Date
+import ru.olegivo.afs.shared.datetime.ADate
 
 data class RecordReminderScheduleEntity(
     val scheduleId: Long,
-    val dateFrom: Date,
-    val dateUntil: Date
+    val dateFrom: ADate,
+    val dateUntil: ADate
 )

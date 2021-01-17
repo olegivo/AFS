@@ -22,6 +22,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.db.BaseDaoNewTest
+import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
 import ru.olegivo.afs.helpers.getRandomDate
@@ -105,27 +106,27 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
         val moment = Date()
         val entity = RecordReminderScheduleEntity(
             scheduleId = getRandomLong(),
-            dateFrom = moment.add(minutes = -1),
-            dateUntil = moment.add(minutes = 1)
+            dateFrom = moment.add(minutes = -1).toADate(),
+            dateUntil = moment.add(minutes = 1).toADate()
         )
         val objects = listOf(
             entity,
             // earlier:
             entity.copy(
                 scheduleId = entity.scheduleId + 1,
-                dateFrom = moment.add(hours = -1),
-                dateUntil = moment.add(seconds = -1)
+                dateFrom = moment.add(hours = -1).toADate(),
+                dateUntil = moment.add(seconds = -1).toADate()
             ),
             // later:
             entity.copy(
                 scheduleId = entity.scheduleId + 2,
-                dateFrom = moment.add(seconds = 1),
-                dateUntil = moment.add(hours = 1)
+                dateFrom = moment.add(seconds = 1).toADate(),
+                dateUntil = moment.add(hours = 1).toADate()
             )
         )
         objects.forEach { dao.addReminderToRecord(it) }
         runBlocking {
-            assertThat(dao.getActiveRecordReminderScheduleIds(moment)).containsOnly(entity.scheduleId)
+            assertThat(dao.getActiveRecordReminderScheduleIds(moment.toADate())).containsOnly(entity.scheduleId)
         }
     }
 
@@ -133,8 +134,8 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
     fun hasPlannedReminderToRecord_RETURNS_true() {
         val entity = RecordReminderScheduleEntity(
             scheduleId = getRandomLong(),
-            dateFrom = getRandomDate(),
-            dateUntil = getRandomDate()
+            dateFrom = getRandomDate().toADate(),
+            dateUntil = getRandomDate().toADate()
         )
         dao.addReminderToRecord(entity)
         runBlocking {
@@ -146,8 +147,8 @@ class FavoriteDaoNewTest : BaseDaoNewTest<FavoriteDaoNew>(
     fun hasPlannedReminderToRecord_RETURNS_false() {
         val entity = RecordReminderScheduleEntity(
             scheduleId = getRandomLong(),
-            dateFrom = getRandomDate(),
-            dateUntil = getRandomDate()
+            dateFrom = getRandomDate().toADate(),
+            dateUntil = getRandomDate().toADate()
         )
         dao.addReminderToRecord(entity.copy(scheduleId = entity.scheduleId + 1))
         runBlocking {

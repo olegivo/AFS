@@ -21,8 +21,8 @@ import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
+import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
-import java.util.Date
 import javax.inject.Inject
 
 class FavoriteDaoNew @Inject constructor(
@@ -62,7 +62,7 @@ class FavoriteDaoNew @Inject constructor(
         )
             .executeAsOne()// TODO: ioDispatcher?
 
-    override suspend fun getActiveRecordReminderScheduleIds(moment: Date): List<Long> =
+    override suspend fun getActiveRecordReminderScheduleIds(moment: ADate): List<Long> =
         recordReminderScheduleQueries.getActiveRecordReminderScheduleIds(moment)
             .executeAsList() // TODO: ioDispatcher?
 

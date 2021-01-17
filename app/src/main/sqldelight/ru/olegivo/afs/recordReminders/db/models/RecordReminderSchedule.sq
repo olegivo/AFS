@@ -1,9 +1,9 @@
-import java.util.Date;
+import ru.olegivo.afs.shared.datetime.ADate;
 
 CREATE TABLE IF NOT EXISTS recordReminderSchedules (
     scheduleId INTEGER PRIMARY KEY NOT NULL,
-    dateFrom INTEGER AS Date NOT NULL,
-    dateUntil INTEGER AS Date NOT NULL
+    dateFrom INTEGER AS ADate NOT NULL,
+    dateUntil INTEGER AS ADate NOT NULL
 );
 
 getActiveRecordReminderScheduleIds:

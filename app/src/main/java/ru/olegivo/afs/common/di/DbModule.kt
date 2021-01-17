@@ -96,8 +96,8 @@ object DbModuleCore {
         return AfsDatabaseNew(
             sqliteDriver,
             recordReminderSchedulesAdapter = RecordReminderSchedules.Adapter(
-                dateFromAdapter = dateAdapter,
-                dateUntilAdapter = dateAdapter
+                dateFromAdapter = aDateAdapter,
+                dateUntilAdapter = aDateAdapter
             ),
             schedulesAdapter = Schedules.Adapter(
                 datetimeAdapter = dateAdapter,

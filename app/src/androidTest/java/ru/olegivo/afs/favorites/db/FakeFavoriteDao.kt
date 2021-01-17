@@ -21,8 +21,8 @@ import ru.olegivo.afs.common.db.BaseDao
 import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseDao
 import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
-import java.util.Date
 
 class FakeFavoriteDao(private val tables: FakeAfsDatabase.Tables) :
     FavoriteDao,
@@ -52,7 +52,7 @@ class FakeFavoriteDao(private val tables: FakeAfsDatabase.Tables) :
             it.minutesOfDay == minutesOfDay
     }
 
-    override suspend fun getActiveRecordReminderScheduleIds(moment: Date): List<Long> {
+    override suspend fun getActiveRecordReminderScheduleIds(moment: ADate): List<Long> {
         TODO("Not yet implemented")
     }
 
