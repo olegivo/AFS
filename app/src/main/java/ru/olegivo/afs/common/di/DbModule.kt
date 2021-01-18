@@ -33,7 +33,7 @@ import ru.olegivo.afs.favorites.db.FavoriteDaoImpl
 import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.schedules.db.ReserveDao
-import ru.olegivo.afs.schedules.db.ReserveDaoNew
+import ru.olegivo.afs.schedules.db.ReserveDaoImpl
 import ru.olegivo.afs.schedules.db.ScheduleDao
 import ru.olegivo.afs.schedules.db.ScheduleDaoNew
 import ru.olegivo.afs.schedules.db.models.Schedules
@@ -61,7 +61,7 @@ object DbModule {
         fun bindDatabaseHelper(impl: DatabaseHelperImpl): DatabaseHelper
 
         @Binds
-        fun bindReserveDao(impl: ReserveDaoNew): ReserveDao
+        fun bindReserveDao(impl: ReserveDaoImpl): ReserveDao
 
         @Binds
         fun bindScheduleDao(impl: ScheduleDaoNew): ScheduleDao

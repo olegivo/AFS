@@ -23,7 +23,7 @@ import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import javax.inject.Inject
 
-class ReserveDaoNew @Inject constructor(
+class ReserveDaoImpl @Inject constructor(
     db: AfsDatabaseNew
 ) : ReserveDao {
     private val queries = db.reservedScheduleQueries

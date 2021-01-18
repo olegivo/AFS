@@ -28,8 +28,8 @@ import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 
-class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
-    { afsDatabaseNew, _ -> ReserveDaoNew(afsDatabaseNew) }
+class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
+    { afsDatabaseNew, _ -> ReserveDaoImpl(afsDatabaseNew) }
 ) {
     @Test
     fun getReservedScheduleIds_RETURNS_only_relevant_ids() {
