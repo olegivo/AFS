@@ -27,6 +27,7 @@ import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.date
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.network.Api
+import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
@@ -108,7 +109,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = now
+            datetime = now.toADate()
         )
 
         setup(filter, listOf(element), now)
@@ -137,7 +138,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = now
+            datetime = now.toADate()
         )
 
         setup(filter, listOf(element), now)
@@ -166,7 +167,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = now
+            datetime = now.toADate()
         )
 
         setup(filter, listOf(element), now)
@@ -198,13 +199,13 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         )
 
         val past = template.copy(
-            datetime = now.add(days = -7)
+            datetime = now.add(days = -7).toADate()
         )
         val middle = template.copy(
-            datetime = now.add(days = getRandomInt(from = -6, until = 7))
+            datetime = now.add(days = getRandomInt(from = -6, until = 7)).toADate()
         )
         val future = template.copy(
-            datetime = now.add(days = 7)
+            datetime = now.add(days = 7).toADate()
         )
 
         setup(
@@ -240,10 +241,10 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         )
 
         val earlier = template.copy(
-            datetime = now.add(days = 7)
+            datetime = now.add(days = 7).toADate()
         )
         val later = template.copy(
-            datetime = now.add(days = 14)
+            datetime = now.add(days = 14).toADate()
         )
 
         setup(
@@ -279,10 +280,10 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         )
 
         val earlier = template.copy(
-            datetime = now.add(days = -14)
+            datetime = now.add(days = -14).toADate()
         )
         val later = template.copy(
-            datetime = now.add(days = -7)
+            datetime = now.add(days = -7).toADate()
         )
 
         setup(

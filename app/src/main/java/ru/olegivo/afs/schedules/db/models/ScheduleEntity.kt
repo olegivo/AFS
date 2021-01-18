@@ -17,8 +17,7 @@
 
 package ru.olegivo.afs.schedules.db.models
 
-import ru.olegivo.afs.schedules.data.models.DataSchedule
-import java.util.Date
+import ru.olegivo.afs.shared.datetime.ADate
 
 data class ScheduleEntity(
     val id: Long,
@@ -29,46 +28,10 @@ data class ScheduleEntity(
     val activity: String,
     // TODO: later: val room: String?,
     // TODO: later: val trainer: String?,
-    val datetime: Date,
+    val datetime: ADate,
     val length: Int,
     val preEntry: Boolean,
     val totalSlots: Int?,
-    val recordFrom: Date?,
-    val recordTo: Date?
+    val recordFrom: ADate?,
+    val recordTo: ADate?
 )
-
-fun ScheduleEntity.toData() =
-    DataSchedule(
-        id = id,
-        clubId = clubId,
-        groupId = groupId,
-        group = group,
-        activityId = activityId,
-        activity = activity,
-        // TODO: later: room = room,
-        // TODO: later: trainer = trainer,
-        datetime = datetime,
-        length = length,
-        preEntry = preEntry,
-        totalSlots = totalSlots,
-        recordFrom = recordFrom,
-        recordTo = recordTo
-    )
-
-fun DataSchedule.toDb(): ScheduleEntity =
-    ScheduleEntity(
-        id = id,
-        clubId = clubId,
-        groupId = groupId,
-        group = group,
-        activityId = activityId,
-        activity = activity,
-        // TODO: later: room = room,
-        // TODO: later: trainer = trainer,
-        datetime = datetime,
-        length = length,
-        preEntry = preEntry,
-        totalSlots = totalSlots,
-        recordFrom = recordFrom,
-        recordTo = recordTo
-    )

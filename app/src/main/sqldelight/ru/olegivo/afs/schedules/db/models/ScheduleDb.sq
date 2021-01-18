@@ -1,4 +1,4 @@
-import java.util.Date;
+import ru.olegivo.afs.shared.datetime.ADate;
 
 CREATE TABLE IF NOT EXISTS schedules (
     id INTEGER PRIMARY KEY NOT NULL,
@@ -7,12 +7,12 @@ CREATE TABLE IF NOT EXISTS schedules (
     `group` TEXT NOT NULL,
     activityId INTEGER AS Int NOT NULL,
     activity TEXT NOT NULL,
-    datetime INTEGER AS Date NOT NULL,
+    datetime INTEGER AS ADate NOT NULL,
     `length` INTEGER AS Int NOT NULL,
     preEntry INTEGER AS Boolean NOT NULL,
     totalSlots INTEGER AS Int,
-    recordFrom INTEGER AS Date,
-    recordTo INTEGER AS Date
+    recordFrom INTEGER AS ADate,
+    recordTo INTEGER AS ADate
     -- // TODO: later: room, trainer
 )
 ;

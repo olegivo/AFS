@@ -21,6 +21,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.extensions.toSingle
@@ -51,7 +52,7 @@ class ScheduleDbSourceImpl @Inject constructor(
             .subscribeOn(ioScheduler)
 
     override fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<DataSchedule>> =
-        scheduleDao.getSchedules(clubId, from, until)
+        scheduleDao.getSchedules(clubId, from.toADate(), until.toADate())
             .subscribeOn(ioScheduler)
             .parallelMapList(computationScheduler) { it.toData() }
 

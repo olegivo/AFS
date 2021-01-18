@@ -31,7 +31,7 @@ import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.schedules.db.models.Schedules
-import java.util.Date
+import ru.olegivo.afs.shared.datetime.ADate
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -41,7 +41,7 @@ class ScheduleDaoNew @Inject constructor(
 ) : ScheduleDao() {
     private val queries = db.scheduleDbQueries
 
-    override fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<ScheduleEntity>> =
+    override fun getSchedules(clubId: Int, from: ADate, until: ADate): Maybe<List<ScheduleEntity>> =
         queries.getSchedules(
             from = from,
             until = until,

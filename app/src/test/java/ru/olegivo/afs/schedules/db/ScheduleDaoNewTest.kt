@@ -21,6 +21,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.andThenDeferMaybe
 import ru.olegivo.afs.common.db.BaseDaoNewTest
+import ru.olegivo.afs.common.toADate
+import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.helpers.checkSingleValue
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.randomSubList
@@ -64,15 +66,16 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
                 .copy(clubId = clubId)
                 .toDb()
         }.repeat(10)
-        val dates = schedules.map { it.datetime }.sorted()
+        val dates = schedules.map { it.datetime.toDate() }.sorted()
         val from = dates.drop(1).first()
         val until = dates.last()
 
-        val expected = schedules.filter { it.datetime >= from && it.datetime < until }
+        val expected =
+            schedules.filter { it.datetime.toDate() >= from && it.datetime.toDate() < until }
 
         dao.upsertCompletable(schedules)
             .andThenDeferMaybe {
-                dao.getSchedules(clubId, from, until)
+                dao.getSchedules(clubId, from.toADate(), until.toADate())
             }
             .test().andTriggerActions()
             .assertNoErrors()

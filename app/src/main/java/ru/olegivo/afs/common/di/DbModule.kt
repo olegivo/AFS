@@ -100,9 +100,9 @@ object DbModuleCore {
                 dateUntilAdapter = aDateAdapter
             ),
             schedulesAdapter = Schedules.Adapter(
-                datetimeAdapter = dateAdapter,
-                recordFromAdapter = dateAdapter,
-                recordToAdapter = dateAdapter
+                datetimeAdapter = aDateAdapter,
+                recordFromAdapter = aDateAdapter,
+                recordToAdapter = aDateAdapter
             ),
             reservedSchedulesAdapter = ReservedSchedules.Adapter(
                 datetimeAdapter = dateAdapter
