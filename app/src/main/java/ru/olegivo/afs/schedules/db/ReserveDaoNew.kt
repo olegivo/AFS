@@ -26,7 +26,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toCompletable
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
-import ru.olegivo.afs.schedules.db.models.ReservedSchedule
+import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
@@ -47,7 +47,7 @@ class ReserveDaoNew @Inject constructor(
             .asSingle(ioScheduler)
             .mapToOne()
 
-    override fun insertCompletable(vararg obj: ReservedSchedule): Completable =
+    override fun insertCompletable(vararg obj: ReservedScheduleEntity): Completable =
         {
             queries.transaction {
                 obj.forEach {
@@ -58,7 +58,7 @@ class ReserveDaoNew @Inject constructor(
             .toCompletable()
             .subscribeOn(ioScheduler)
 
-    override fun upsertCompletable(objects: List<ReservedSchedule>): Completable =
+    override fun upsertCompletable(objects: List<ReservedScheduleEntity>): Completable =
         {
             queries.transaction {
                 objects.forEach {
@@ -70,5 +70,5 @@ class ReserveDaoNew @Inject constructor(
             .subscribeOn(ioScheduler)
 }
 
-private fun ReservedSchedule.toNewEntity() =
+private fun ReservedScheduleEntity.toNewEntity() =
     ReservedSchedules(id, datetime)

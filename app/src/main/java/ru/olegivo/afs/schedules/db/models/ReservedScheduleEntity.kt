@@ -19,7 +19,7 @@ package ru.olegivo.afs.schedules.db.models
 
 import java.util.Date
 
-data class ReservedSchedule(
+data class ReservedScheduleEntity(
     val id: Long,
     val datetime: Date
 )

@@ -28,7 +28,7 @@ import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.data.ScheduleDbSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.db.models.ReservedSchedule
+import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
 import ru.olegivo.afs.schedules.db.models.toData
 import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.domain.models.Schedule
@@ -44,7 +44,7 @@ class ScheduleDbSourceImpl @Inject constructor(
 ) : ScheduleDbSource {
 
     override fun setScheduleReserved(schedule: Schedule): Completable =
-        reserveDao.insertCompletable(ReservedSchedule(schedule.id, schedule.datetime))
+        reserveDao.insertCompletable(ReservedScheduleEntity(schedule.id, schedule.datetime))
             .subscribeOn(ioScheduler)
 
     override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> =

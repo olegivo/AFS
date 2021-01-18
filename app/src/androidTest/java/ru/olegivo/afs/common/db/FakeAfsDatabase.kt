@@ -23,7 +23,7 @@ import ru.olegivo.afs.schedules.db.FakeReserveDao
 import ru.olegivo.afs.schedules.db.FakeScheduleDao
 import ru.olegivo.afs.schedules.db.ReserveDao
 import ru.olegivo.afs.schedules.db.ScheduleDao
-import ru.olegivo.afs.schedules.db.models.ReservedSchedule
+import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
@@ -50,7 +50,7 @@ class FakeAfsDatabase {
     class Tables {
         val schedules: MutableMap<Long, ScheduleEntity> = mutableMapOf()
         val favoriteFilters: MutableMap<Int, FavoriteFilterEntity> = mutableMapOf()
-        val reservedSchedules: MutableMap<Long, ReservedSchedule> = mutableMapOf()
+        val reservedSchedules: MutableMap<Long, ReservedScheduleEntity> = mutableMapOf()
     }
 
     class Actions(private val fakeAfsDatabase: FakeAfsDatabase) {
