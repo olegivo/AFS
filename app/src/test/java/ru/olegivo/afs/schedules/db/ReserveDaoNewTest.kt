@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.db.BaseDaoNewTest
+import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
@@ -35,16 +36,28 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
         val from = moment.add(days = -1)
         val until = moment.add(days = 1)
 
-        val entity1 = ReservedScheduleEntity(id = getRandomLong(), datetime = from)
-        val entity2 = ReservedScheduleEntity(id = getRandomLong(), datetime = until.add(seconds = -1))
+        val entity1 = ReservedScheduleEntity(
+            id = getRandomLong(),
+            datetime = from.toADate()
+        )
+        val entity2 = ReservedScheduleEntity(
+            id = getRandomLong(),
+            datetime = until.add(seconds = -1).toADate()
+        )
         val objects = listOf(
             entity1,
             entity2,
-            ReservedScheduleEntity(id = getRandomLong(), datetime = from.add(seconds = -1)),
-            ReservedScheduleEntity(id = getRandomLong(), datetime = until)
+            ReservedScheduleEntity(
+                id = getRandomLong(),
+                datetime = from.add(seconds = -1).toADate()
+            ),
+            ReservedScheduleEntity(
+                id = getRandomLong(),
+                datetime = until.toADate()
+            )
         )
         dao.upsertCompletable(objects)
-            .andThen(dao.getReservedScheduleIds(from, until))
+            .andThen(dao.getReservedScheduleIds(from.toADate(), until.toADate()))
             .assertResult {
                 assertThat(it).containsExactlyInAnyOrder(entity1.id, entity2.id)
             }
@@ -52,7 +65,11 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
 
     @Test
     fun isScheduleReserved_RETURNS_true() {
-        val entity = ReservedScheduleEntity(id = getRandomLong(), datetime = getRandomDate())
+        val entity =
+            ReservedScheduleEntity(
+                id = getRandomLong(),
+                datetime = getRandomDate().toADate()
+            )
         dao.upsertCompletable(listOf(entity))
             .andThen(dao.isScheduleReserved(entity.id))
             .assertResult {
@@ -62,7 +79,11 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
 
     @Test
     fun isScheduleReserved_RETURNS_false() {
-        val entity = ReservedScheduleEntity(id = getRandomLong(), datetime = getRandomDate())
+        val entity =
+            ReservedScheduleEntity(
+                id = getRandomLong(),
+                datetime = getRandomDate().toADate()
+            )
         dao.upsertCompletable(listOf(entity))
             .andThen(dao.isScheduleReserved(entity.id + 1))
             .assertResult {

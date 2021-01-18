@@ -44,11 +44,16 @@ class ScheduleDbSourceImpl @Inject constructor(
 ) : ScheduleDbSource {
 
     override fun setScheduleReserved(schedule: Schedule): Completable =
-        reserveDao.insertCompletable(ReservedScheduleEntity(schedule.id, schedule.datetime))
+        reserveDao.insertCompletable(
+            ReservedScheduleEntity(
+                schedule.id,
+                schedule.datetime.toADate()
+            )
+        )
             .subscribeOn(ioScheduler)
 
     override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> =
-        reserveDao.getReservedScheduleIds(from, until)
+        reserveDao.getReservedScheduleIds(from.toADate(), until.toADate())
             .subscribeOn(ioScheduler)
 
     override fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<DataSchedule>> =

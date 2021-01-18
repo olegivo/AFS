@@ -27,7 +27,7 @@ import io.reactivex.rxkotlin.toCompletable
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
-import java.util.Date
+import ru.olegivo.afs.shared.datetime.ADate
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -37,7 +37,7 @@ class ReserveDaoNew @Inject constructor(
 ) : ReserveDao {
     private val queries = db.reservedScheduleQueries
 
-    override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> =
+    override fun getReservedScheduleIds(from: ADate, until: ADate): Single<List<Long>> =
         queries.getReservedScheduleIds(from, until)
             .asSingle(ioScheduler)
             .mapToList()

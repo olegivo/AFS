@@ -23,13 +23,13 @@ import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseRxDao
 import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
-import java.util.Date
+import ru.olegivo.afs.shared.datetime.ADate
 
 class FakeReserveDao(private val tables: FakeAfsDatabase.Tables) :
     ReserveDao,
     BaseRxDao<ReservedScheduleEntity> by FakeBaseRxDao(tables.reservedSchedules, { id }) {
 
-    override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> {
+    override fun getReservedScheduleIds(from: ADate, until: ADate): Single<List<Long>> {
         TODO("Not yet implemented")
     }
 

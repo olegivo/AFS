@@ -41,7 +41,6 @@ import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
-import java.util.Date
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -74,11 +73,6 @@ object DbModule {
 
 @Module
 object DbModuleCore {
-    private val dateAdapter = object : ColumnAdapter<Date, Long> {
-        override fun decode(databaseValue: Long) = Date(databaseValue)
-        override fun encode(value: Date) = value.time
-    }
-
     private val aDateAdapter = object : ColumnAdapter<ADate, Long> {
         override fun decode(databaseValue: Long): ADate =
             TimeZone.currentSystemDefault().let {
@@ -105,7 +99,7 @@ object DbModuleCore {
                 recordToAdapter = aDateAdapter
             ),
             reservedSchedulesAdapter = ReservedSchedules.Adapter(
-                datetimeAdapter = dateAdapter
+                datetimeAdapter = aDateAdapter
             )
         )
     }

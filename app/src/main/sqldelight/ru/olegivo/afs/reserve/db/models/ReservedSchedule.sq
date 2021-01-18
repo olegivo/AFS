@@ -1,8 +1,8 @@
-import java.util.Date;
+import ru.olegivo.afs.shared.datetime.ADate;
 
 CREATE TABLE IF NOT EXISTS reservedSchedules (
     id INTEGER PRIMARY KEY NOT NULL,
-    datetime INTEGER AS Date NOT NULL
+    datetime INTEGER AS ADate NOT NULL
 );
 
 getReservedScheduleIds:
