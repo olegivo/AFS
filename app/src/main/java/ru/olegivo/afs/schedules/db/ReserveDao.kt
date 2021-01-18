@@ -19,8 +19,8 @@ package ru.olegivo.afs.schedules.db
 
 import io.reactivex.Single
 import ru.olegivo.afs.common.db.BaseRxDao
-import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 
 interface ReserveDao : BaseRxDao<ReservedScheduleEntity> {
 

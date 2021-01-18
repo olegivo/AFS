@@ -28,10 +28,10 @@ import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.data.ScheduleDbSource
 import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
 import ru.olegivo.afs.schedules.db.models.toData
 import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named

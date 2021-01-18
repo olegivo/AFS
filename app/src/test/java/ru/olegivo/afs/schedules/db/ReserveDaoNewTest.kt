@@ -24,7 +24,7 @@ import ru.olegivo.afs.common.db.BaseDaoNewTest
 import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomLong
-import ru.olegivo.afs.schedules.db.models.ReservedScheduleEntity
+import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 
 class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
