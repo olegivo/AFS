@@ -17,14 +17,13 @@
 
 package ru.olegivo.afs.schedules.db
 
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
+import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 
-interface ReserveDao : BaseRxDao<ReservedScheduleEntity> {
+interface ReserveDao : BaseDao<ReservedScheduleEntity> {
 
-    fun getReservedScheduleIds(from: ADate, until: ADate): Single<List<Long>>
+    suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long>
 
-    fun isScheduleReserved(scheduleId: Long): Single<Boolean>
+    suspend fun isScheduleReserved(scheduleId: Long): Boolean
 }

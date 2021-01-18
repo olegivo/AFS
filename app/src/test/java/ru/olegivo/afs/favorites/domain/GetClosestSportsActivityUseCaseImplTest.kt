@@ -55,7 +55,8 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
                 reserveDao = reserveDao,
                 scheduleDao = scheduleDao,
                 ioScheduler = testScheduler,
-                computationScheduler = testScheduler
+                computationScheduler = testScheduler,
+                coroutineToRxAdapter = coroutineToRxAdapter
             ),
             dateProvider = dateProvider,
             coroutineToRxAdapter = coroutineToRxAdapter,

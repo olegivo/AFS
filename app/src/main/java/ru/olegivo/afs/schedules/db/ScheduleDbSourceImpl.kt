@@ -21,6 +21,8 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toCompletable
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.extensions.parallelMapList
@@ -40,20 +42,26 @@ class ScheduleDbSourceImpl @Inject constructor(
     private val reserveDao: ReserveDao,
     private val scheduleDao: ScheduleDao,
     @Named("io") private val ioScheduler: Scheduler,
-    @Named("computation") private val computationScheduler: Scheduler
+    @Named("computation") private val computationScheduler: Scheduler,
+    private val coroutineToRxAdapter: CoroutineToRxAdapter
 ) : ScheduleDbSource {
 
     override fun setScheduleReserved(schedule: Schedule): Completable =
-        reserveDao.insertCompletable(
-            ReservedScheduleEntity(
-                schedule.id,
-                schedule.datetime.toADate()
+        {
+            reserveDao.insert(
+                ReservedScheduleEntity(
+                    schedule.id,
+                    schedule.datetime.toADate()
+                )
             )
-        )
+        }
+            .toCompletable()
             .subscribeOn(ioScheduler)
 
     override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> =
-        reserveDao.getReservedScheduleIds(from.toADate(), until.toADate())
+        coroutineToRxAdapter.runToSingle {
+            reserveDao.getReservedScheduleIds(from.toADate(), until.toADate())
+        }
             .subscribeOn(ioScheduler)
 
     override fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<DataSchedule>> =
@@ -81,7 +89,7 @@ class ScheduleDbSourceImpl @Inject constructor(
             .map { it.toData() }
 
     override fun isScheduleReserved(scheduleId: Long): Single<Boolean> =
-        reserveDao.isScheduleReserved(scheduleId)
+        coroutineToRxAdapter.runToSingle { reserveDao.isScheduleReserved(scheduleId) }
             .subscribeOn(ioScheduler)
 
     override fun filterSchedules(

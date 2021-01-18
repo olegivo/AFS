@@ -17,6 +17,7 @@
 
 package ru.olegivo.afs.schedules.db
 
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.add
@@ -28,7 +29,7 @@ import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 
 class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
-    { afsDatabaseNew, testScheduler -> ReserveDaoNew(afsDatabaseNew, testScheduler) }
+    { afsDatabaseNew, _ -> ReserveDaoNew(afsDatabaseNew) }
 ) {
     @Test
     fun getReservedScheduleIds_RETURNS_only_relevant_ids() {
@@ -56,11 +57,11 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
                 datetime = until.toADate()
             )
         )
-        dao.upsertCompletable(objects)
-            .andThen(dao.getReservedScheduleIds(from.toADate(), until.toADate()))
-            .assertResult {
-                assertThat(it).containsExactlyInAnyOrder(entity1.id, entity2.id)
-            }
+        dao.upsert(objects)
+        runBlocking {
+            assertThat(dao.getReservedScheduleIds(from.toADate(), until.toADate()))
+                .containsExactlyInAnyOrder(entity1.id, entity2.id)
+        }
     }
 
     @Test
@@ -70,11 +71,10 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
                 id = getRandomLong(),
                 datetime = getRandomDate().toADate()
             )
-        dao.upsertCompletable(listOf(entity))
-            .andThen(dao.isScheduleReserved(entity.id))
-            .assertResult {
-                assertThat(it).isTrue()
-            }
+        dao.upsert(listOf(entity))
+        runBlocking {
+            assertThat(dao.isScheduleReserved(entity.id)).isTrue
+        }
     }
 
     @Test
@@ -84,10 +84,9 @@ class ReserveDaoNewTest : BaseDaoNewTest<ReserveDaoNew>(
                 id = getRandomLong(),
                 datetime = getRandomDate().toADate()
             )
-        dao.upsertCompletable(listOf(entity))
-            .andThen(dao.isScheduleReserved(entity.id + 1))
-            .assertResult {
-                assertThat(it).isFalse()
-            }
+        dao.upsert(listOf(entity))
+        runBlocking {
+            assertThat(dao.isScheduleReserved(entity.id + 1)).isFalse
+        }
     }
 }

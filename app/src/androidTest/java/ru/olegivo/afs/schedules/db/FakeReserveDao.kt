@@ -17,23 +17,22 @@
 
 package ru.olegivo.afs.schedules.db
 
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.common.db.FakeAfsDatabase
-import ru.olegivo.afs.common.db.FakeBaseRxDao
-import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.common.db.FakeBaseDao
+import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 
 class FakeReserveDao(private val tables: FakeAfsDatabase.Tables) :
     ReserveDao,
-    BaseRxDao<ReservedScheduleEntity> by FakeBaseRxDao(tables.reservedSchedules, { id }) {
+    BaseDao<ReservedScheduleEntity> by FakeBaseDao(tables.reservedSchedules, { id }) {
 
-    override fun getReservedScheduleIds(from: ADate, until: ADate): Single<List<Long>> {
+    override suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long> {
         TODO("Not yet implemented")
     }
 
-    override fun isScheduleReserved(scheduleId: Long) = tables.reservedSchedules.values.any {
-        it.id == scheduleId
-    }.toSingle()
+    override suspend fun isScheduleReserved(scheduleId: Long): Boolean =
+        tables.reservedSchedules.values.any {
+            it.id == scheduleId
+        }
 }

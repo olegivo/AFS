@@ -17,57 +17,38 @@
 
 package ru.olegivo.afs.schedules.db
 
-import com.squareup.sqldelight.runtime.rx.asSingle
-import com.squareup.sqldelight.runtime.rx.mapToList
-import com.squareup.sqldelight.runtime.rx.mapToOne
-import io.reactivex.Completable
-import io.reactivex.Scheduler
-import io.reactivex.Single
-import io.reactivex.rxkotlin.toCompletable
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import javax.inject.Inject
-import javax.inject.Named
 
 class ReserveDaoNew @Inject constructor(
-    db: AfsDatabaseNew,
-    @Named("io") private val ioScheduler: Scheduler
+    db: AfsDatabaseNew
 ) : ReserveDao {
     private val queries = db.reservedScheduleQueries
 
-    override fun getReservedScheduleIds(from: ADate, until: ADate): Single<List<Long>> =
+    override suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long> =
         queries.getReservedScheduleIds(from, until)
-            .asSingle(ioScheduler)
-            .mapToList()
+            .executeAsList() // TODO: ioDispatcher?
 
-    override fun isScheduleReserved(scheduleId: Long): Single<Boolean> =
+    override suspend fun isScheduleReserved(scheduleId: Long): Boolean =
         queries.isScheduleReserved(scheduleId)
-            .asSingle(ioScheduler)
-            .mapToOne()
+            .executeAsOne() // TODO: ioDispatcher?
 
-    override fun insertCompletable(vararg obj: ReservedScheduleEntity): Completable =
-        {
-            queries.transaction {
-                obj.forEach {
-                    queries.insert(it.toNewEntity())
-                }
+    override fun insert(vararg obj: ReservedScheduleEntity) =
+        queries.transaction {
+            obj.forEach {
+                queries.insert(it.toNewEntity())
             }
         }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
 
-    override fun upsertCompletable(objects: List<ReservedScheduleEntity>): Completable =
-        {
-            queries.transaction {
-                objects.forEach {
-                    queries.upsert(it.toNewEntity())
-                }
+    override fun upsert(objects: List<ReservedScheduleEntity>) =
+        queries.transaction {
+            objects.forEach {
+                queries.upsert(it.toNewEntity())
             }
         }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
 }
 
 private fun ReservedScheduleEntity.toNewEntity() =
