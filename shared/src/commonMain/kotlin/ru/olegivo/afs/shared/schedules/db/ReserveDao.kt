@@ -15,7 +15,7 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.db
+package ru.olegivo.afs.shared.schedules.db
 
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate

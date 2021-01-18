@@ -21,6 +21,7 @@ import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseDao
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.schedules.db.ReserveDao
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 
 class FakeReserveDao(private val tables: FakeAfsDatabase.Tables) :

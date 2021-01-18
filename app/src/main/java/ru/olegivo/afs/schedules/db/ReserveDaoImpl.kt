@@ -20,6 +20,7 @@ package ru.olegivo.afs.schedules.db
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.schedules.db.ReserveDao
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import javax.inject.Inject
 
