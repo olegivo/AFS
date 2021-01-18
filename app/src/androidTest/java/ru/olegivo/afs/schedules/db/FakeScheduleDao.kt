@@ -17,36 +17,37 @@
 
 package ru.olegivo.afs.schedules.db
 
-import io.reactivex.Maybe
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.common.db.FakeAfsDatabase
-import ru.olegivo.afs.common.db.FakeBaseRxDao
-import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.common.db.FakeBaseDao
+import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 
 class FakeScheduleDao(private val tables: FakeAfsDatabase.Tables) :
-    ScheduleDao(),
-    BaseRxDao<ScheduleEntity> by FakeBaseRxDao(tables.schedules, { id }) {
+    ScheduleDao,
+    BaseDao<ScheduleEntity> by FakeBaseDao(tables.schedules, { id }) {
 
-    override fun getSchedules(clubId: Int, from: ADate, until: ADate): Maybe<List<ScheduleEntity>> {
+    override suspend fun getSchedules(
+        clubId: Int,
+        from: ADate,
+        until: ADate
+    ): List<ScheduleEntity>? {
         TODO("Not yet implemented")
     }
 
-    override fun getSchedules(ids: List<Long>): Single<List<ScheduleEntity>> {
+    override suspend fun getSchedules(ids: List<Long>): List<ScheduleEntity> {
         TODO("Not yet implemented")
     }
 
-    override fun getSchedule(id: Long) = tables.schedules.values.single {
+    override suspend fun getSchedule(id: Long): ScheduleEntity = tables.schedules.values.single {
         it.id == id
-    }.toSingle()
+    }
 
-    override fun filterSchedules(
+    override suspend fun filterSchedules(
         clubId: Int,
         groupId: Int,
         activityId: Int
-    ) = tables.schedules.values.filter {
+    ): List<ScheduleEntity> = tables.schedules.values.filter {
         it.clubId == clubId && it.groupId == groupId && it.activityId == activityId
-    }.toSingle()
+    }
 }

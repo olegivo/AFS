@@ -17,13 +17,12 @@
 
 package ru.olegivo.afs.schedules.db
 
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import ru.olegivo.afs.common.andThenDeferMaybe
 import ru.olegivo.afs.common.db.BaseDaoNewTest
 import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.common.toDate
-import ru.olegivo.afs.helpers.checkSingleValue
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.randomSubList
 import ru.olegivo.afs.repeat
@@ -39,22 +38,22 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
     fun getSchedule_RETURNS_only_relevant_entity() {
         val objects = { createDataSchedule().toDb() }.repeat(4)
         val entity = objects.random()
-        dao.upsertCompletable(objects)
-            .andThen(dao.getSchedule(entity.id))
-            .assertResult {
-                assertThat(it).isEqualTo(entity)
-            }
+        dao.upsert(objects)
+        runBlocking {
+            assertThat(dao.getSchedule(entity.id)).isEqualTo(entity)
+        }
     }
 
     @Test
     fun getSchedules_RETURNS_only_relevant_entities() {
         val objects = { createDataSchedule().toDb() }.repeat(4)
         val subList = objects.randomSubList()
-        dao.upsertCompletable(objects)
-            .andThen(dao.getSchedules(subList.map { it.id }))
-            .assertResult {
-                assertThat(it).containsExactlyInAnyOrderElementsOf(subList)
-            }
+        dao.upsert(objects)
+        runBlocking {
+            assertThat(dao.getSchedules(subList.map { it.id })).containsExactlyInAnyOrderElementsOf(
+                subList
+            )
+        }
     }
 
     @Test
@@ -73,15 +72,11 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
         val expected =
             schedules.filter { it.datetime.toDate() >= from && it.datetime.toDate() < until }
 
-        dao.upsertCompletable(schedules)
-            .andThenDeferMaybe {
-                dao.getSchedules(clubId, from.toADate(), until.toADate())
-            }
-            .test().andTriggerActions()
-            .assertNoErrors()
-            .checkSingleValue { result ->
-                assertThat(result).containsExactlyInAnyOrderElementsOf(expected)
-            }
+        dao.upsert(schedules)
+        runBlocking {
+            assertThat(dao.getSchedules(clubId, from.toADate(), until.toADate()))
+                .containsExactlyInAnyOrderElementsOf(expected)
+        }
     }
 
     @Test
@@ -94,16 +89,15 @@ class ScheduleDaoNewTest : BaseDaoNewTest<ScheduleDaoNew>(
             entity.copy(id = entity.id + 3, activityId = entity.activityId + 1)
         )
 
-        dao.upsertCompletable(objects)
-            .andThen(
+        dao.upsert(objects)
+        runBlocking {
+            assertThat(
                 dao.filterSchedules(
                     clubId = entity.clubId,
                     groupId = entity.groupId,
                     activityId = entity.activityId
                 )
-            )
-            .assertResult {
-                assertThat(it).containsExactly(entity)
-            }
+            ).containsExactly(entity)
+        }
     }
 }

@@ -66,12 +66,18 @@ class ScheduleDbSourceImpl @Inject constructor(
             .subscribeOn(ioScheduler)
 
     override fun getSchedules(clubId: Int, from: Date, until: Date): Maybe<List<DataSchedule>> =
-        scheduleDao.getSchedules(clubId, from.toADate(), until.toADate())
+        coroutineToRxAdapter.runToMaybe {
+            scheduleDao.getSchedules(
+                clubId,
+                from.toADate(),
+                until.toADate()
+            )
+        }
             .subscribeOn(ioScheduler)
             .parallelMapList(computationScheduler) { it.toData() }
 
     override fun getSchedules(ids: List<Long>): Single<List<DataSchedule>> =
-        scheduleDao.getSchedules(ids)
+        coroutineToRxAdapter.runToSingle { scheduleDao.getSchedules(ids) }
             .subscribeOn(ioScheduler)
             .parallelMapList(computationScheduler) { it.toData() }
 
@@ -80,11 +86,12 @@ class ScheduleDbSourceImpl @Inject constructor(
             .parallelMapList(computationScheduler) { it.toDb() }
             .observeOn(ioScheduler)
             .flatMapCompletable {
-                scheduleDao.upsertCompletable(it)
+                { scheduleDao.upsert(it) }.toCompletable()
+                    .subscribeOn(ioScheduler)
             }
 
     override fun getSchedule(id: Long): Single<DataSchedule> =
-        scheduleDao.getSchedule(id)
+        coroutineToRxAdapter.runToSingle { scheduleDao.getSchedule(id) }
             .subscribeOn(ioScheduler)
             .observeOn(computationScheduler)
             .map { it.toData() }
@@ -97,7 +104,15 @@ class ScheduleDbSourceImpl @Inject constructor(
         favoriteFilter: FavoriteFilter,
         clubId: Int
     ): Single<List<DataSchedule>> =
-        scheduleDao.filterSchedules(favoriteFilter, clubId)
+        with(favoriteFilter) {
+            coroutineToRxAdapter.runToSingle {
+                scheduleDao.filterSchedules(
+                    clubId = clubId,
+                    groupId = groupId,
+                    activityId = activityId
+                )
+            }
+        }
             .subscribeOn(ioScheduler)
             .mapList { it.toData() }
 }

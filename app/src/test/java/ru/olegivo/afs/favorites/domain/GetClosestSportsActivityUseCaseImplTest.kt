@@ -20,6 +20,7 @@ package ru.olegivo.afs.favorites.domain
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
@@ -28,12 +29,13 @@ import ru.olegivo.afs.common.date
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.network.Api
 import ru.olegivo.afs.common.toADate
-import ru.olegivo.afs.extensions.toSingle
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.checkSingleValue
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.helpers.givenBlocking
+import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.schedules.data.ScheduleRepositoryImpl
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
 import ru.olegivo.afs.schedules.db.ScheduleDao
@@ -308,13 +310,29 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         list: List<ScheduleEntity>,
         now: Date = getRandomDate()
     ) {
-        given { scheduleDao.filterSchedules(filter, filter.clubId) }
-            .willReturn(list.toSingle())
+        givenBlocking(scheduleDao) {
+            with(filter) {
+                filterSchedules(
+                    clubId = filter.clubId,
+                    groupId = groupId,
+                    activityId = activityId
+                )
+            }
+        }
+            .willReturn { list }
         given { dateProvider.getDate() }.willReturn(now)
     }
 
     private fun verify(filter: FavoriteFilter) {
-        verify(scheduleDao).filterSchedules(filter, filter.clubId)
+        with(filter) {
+            verifyBlocking(scheduleDao) {
+                filterSchedules(
+                    clubId = filter.clubId,
+                    groupId = groupId,
+                    activityId = activityId
+                )
+            }
+        }
         verify(dateProvider).getDate()
     }
 }

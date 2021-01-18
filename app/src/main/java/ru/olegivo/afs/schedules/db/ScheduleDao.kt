@@ -17,32 +17,13 @@
 
 package ru.olegivo.afs.schedules.db
 
-import io.reactivex.Maybe
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
-import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
+import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 
-abstract class ScheduleDao : BaseRxDao<ScheduleEntity> {
-    abstract fun getSchedules(clubId: Int, from: ADate, until: ADate): Maybe<List<ScheduleEntity>>
-
-    abstract fun getSchedule(id: Long): Single<ScheduleEntity>
-
-    abstract fun getSchedules(ids: List<Long>): Single<List<ScheduleEntity>>
-
-    abstract fun filterSchedules(
-        clubId: Int,
-        groupId: Int,
-        activityId: Int
-    ): Single<List<ScheduleEntity>>
-
-    fun filterSchedules(favoriteFilter: FavoriteFilter, clubId: Int) =
-        with(favoriteFilter) {
-            filterSchedules(
-                clubId = clubId,
-                groupId = groupId,
-                activityId = activityId
-            )
-        }
+interface ScheduleDao : BaseDao<ScheduleEntity> {
+    suspend fun getSchedules(clubId: Int, from: ADate, until: ADate): List<ScheduleEntity>?
+    suspend fun getSchedule(id: Long): ScheduleEntity
+    suspend fun getSchedules(ids: List<Long>): List<ScheduleEntity>
+    suspend fun filterSchedules(clubId: Int, groupId: Int, activityId: Int): List<ScheduleEntity>
 }

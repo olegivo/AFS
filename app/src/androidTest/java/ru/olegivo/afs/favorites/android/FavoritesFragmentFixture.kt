@@ -49,7 +49,7 @@ class FavoritesFragmentFixture(
         scheduleEntity: ScheduleEntity
     ) {
         withFakeDatabase {
-            action { schedules.insertCompletable(scheduleEntity) }
+            action { schedules.insert(scheduleEntity) }
         }
 //        given { scheduleDao.filterSchedules(favoriteFilter, filter.clubId) }
 //            .willReturn(listOf(scheduleEntity).toSingle())

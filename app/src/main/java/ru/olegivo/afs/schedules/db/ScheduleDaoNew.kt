@@ -17,18 +17,8 @@
 
 package ru.olegivo.afs.schedules.db
 
-import com.squareup.sqldelight.runtime.rx.asMaybe
-import com.squareup.sqldelight.runtime.rx.asSingle
-import com.squareup.sqldelight.runtime.rx.mapToList
-import com.squareup.sqldelight.runtime.rx.mapToOne
-import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Scheduler
-import io.reactivex.Single
-import io.reactivex.rxkotlin.toCompletable
-import io.reactivex.schedulers.Schedulers
 import ru.olegivo.afs.common.db.AfsDatabaseNew
-import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
@@ -38,68 +28,55 @@ import javax.inject.Named
 class ScheduleDaoNew @Inject constructor(
     db: AfsDatabaseNew,
     @Named("io") private val ioScheduler: Scheduler
-) : ScheduleDao() {
+) : ScheduleDao {
     private val queries = db.scheduleDbQueries
 
-    override fun getSchedules(clubId: Int, from: ADate, until: ADate): Maybe<List<ScheduleEntity>> =
+    override suspend fun getSchedules(
+        clubId: Int,
+        from: ADate,
+        until: ADate
+    ): List<ScheduleEntity>? =
         queries.getSchedules(
             from = from,
             until = until,
             clubId = clubId
         )
-            .asMaybe(ioScheduler)
-            .mapToList()
-            .parallelMapList(Schedulers.computation()) {
-                it.toOldEntity()
-            }
+            .executeAsList() // TODO: ioDispatcher?
+            .map { it.toOldEntity() }
+            .takeIf { it.isNotEmpty() } // TODO: ioDispatcher?
 
-    override fun getSchedules(ids: List<Long>): Single<List<ScheduleEntity>> =
+    override suspend fun getSchedules(ids: List<Long>): List<ScheduleEntity> =
         queries.getSchedulesByIds(ids)
-            .asSingle(ioScheduler)
-            .mapToList()
-            .parallelMapList(Schedulers.computation()) {
-                it.toOldEntity()
-            }
-
-    override fun getSchedule(id: Long): Single<ScheduleEntity> =
-        queries.getSchedule(id)
-            .asSingle(ioScheduler)
-            .mapToOne()
+            .executeAsList() // TODO: ioDispatcher?
             .map { it.toOldEntity() }
 
-    override fun filterSchedules(
+    override suspend fun getSchedule(id: Long): ScheduleEntity =
+        queries.getSchedule(id)
+            .executeAsOne() // TODO: ioDispatcher?
+            .toOldEntity()
+
+    override suspend fun filterSchedules(
         clubId: Int,
         groupId: Int,
         activityId: Int
-    ): Single<List<ScheduleEntity>> =
+    ): List<ScheduleEntity> =
         queries.filterSchedules(clubId = clubId, groupId = groupId, activityId = activityId)
-            .asSingle(ioScheduler)
-            .mapToList()
-            .parallelMapList(Schedulers.computation()) {
-                it.toOldEntity()
-            }
+            .executeAsList() // TODO: ioDispatcher?
+            .map { it.toOldEntity() }
 
-    override fun insertCompletable(vararg obj: ScheduleEntity): Completable =
-        {
-            queries.transaction {
-                obj.forEach {
-                    queries.insert(it.toNewEntity())
-                }
+    override fun insert(vararg obj: ScheduleEntity) =
+        queries.transaction {
+            obj.forEach {
+                queries.insert(it.toNewEntity())
             }
         }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
 
-    override fun upsertCompletable(objects: List<ScheduleEntity>): Completable =
-        {
-            queries.transaction {
-                objects.forEach {
-                    queries.upsert(it.toNewEntity())
-                }
+    override fun upsert(objects: List<ScheduleEntity>) =
+        queries.transaction {
+            objects.forEach {
+                queries.upsert(it.toNewEntity())
             }
         }
-            .toCompletable()
-            .subscribeOn(ioScheduler)
 }
 
 fun Schedules.toOldEntity() =
