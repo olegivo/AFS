@@ -29,9 +29,9 @@ import io.reactivex.rxkotlin.toCompletable
 import io.reactivex.schedulers.Schedulers
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.extensions.parallelMapList
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import javax.inject.Inject
 import javax.inject.Named
 

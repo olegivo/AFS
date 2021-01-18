@@ -26,7 +26,7 @@ import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 import java.util.Calendar
 

@@ -21,8 +21,8 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 
 abstract class ScheduleDao : BaseRxDao<ScheduleEntity> {
     abstract fun getSchedules(clubId: Int, from: ADate, until: ADate): Maybe<List<ScheduleEntity>>

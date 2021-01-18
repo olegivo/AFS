@@ -39,9 +39,9 @@ import ru.olegivo.afs.schedules.data.models.createDataSchedule
 import ru.olegivo.afs.schedules.db.ReserveDao
 import ru.olegivo.afs.schedules.db.ScheduleDao
 import ru.olegivo.afs.schedules.db.ScheduleDbSourceImpl
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
+import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import java.util.Calendar
 import java.util.Date
 

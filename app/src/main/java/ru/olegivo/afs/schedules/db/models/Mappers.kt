@@ -20,6 +20,7 @@ package ru.olegivo.afs.schedules.db.models
 import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.schedules.data.models.DataSchedule
+import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 
 fun ScheduleEntity.toData() =
     DataSchedule(

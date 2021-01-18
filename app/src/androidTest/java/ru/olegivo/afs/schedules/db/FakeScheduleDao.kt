@@ -23,8 +23,8 @@ import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseRxDao
 import ru.olegivo.afs.extensions.toSingle
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 
 class FakeScheduleDao(private val tables: FakeAfsDatabase.Tables) :
     ScheduleDao(),

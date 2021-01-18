@@ -25,8 +25,8 @@ import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.givenBlocking
 import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.home.android.HomeFragmentFixture
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 
 class FavoritesFragmentFixture(
     externalDependencies: ExternalDependencies,

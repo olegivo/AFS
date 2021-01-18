@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -15,7 +15,7 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.db.models
+package ru.olegivo.afs.shared.schedules.db.models
 
 import ru.olegivo.afs.shared.datetime.ADate
 
