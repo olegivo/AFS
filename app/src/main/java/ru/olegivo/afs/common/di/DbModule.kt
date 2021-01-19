@@ -28,18 +28,18 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.common.toDate
-import ru.olegivo.afs.favorites.db.FavoriteDaoImpl
-import ru.olegivo.afs.schedules.db.ReserveDaoImpl
-import ru.olegivo.afs.schedules.db.ScheduleDaoImpl
 import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
+import ru.olegivo.afs.shared.favorites.db.FavoriteDaoImpl
 import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.schedules.db.ReserveDao
+import ru.olegivo.afs.shared.schedules.db.ReserveDaoImpl
 import ru.olegivo.afs.shared.schedules.db.ScheduleDao
+import ru.olegivo.afs.shared.schedules.db.ScheduleDaoImpl
 import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import javax.inject.Named
 import javax.inject.Singleton
@@ -55,19 +55,19 @@ object DbModule {
             name = BuildConfig.DB_NAME
         )
 
+    @Provides
+    fun provideFavoriteDao(db: AfsDatabase): FavoriteDao = FavoriteDaoImpl(db)
+
+    @Provides
+    fun provideReserveDao(db: AfsDatabase): ReserveDao = ReserveDaoImpl(db)
+
+    @Provides
+    fun provideScheduleDao(db: AfsDatabase): ScheduleDao = ScheduleDaoImpl(db)
+
     @Module
     interface BindsModule {
         @Binds
         fun bindDatabaseHelper(impl: DatabaseHelperImpl): DatabaseHelper
-
-        @Binds
-        fun bindReserveDao(impl: ReserveDaoImpl): ReserveDao
-
-        @Binds
-        fun bindScheduleDao(impl: ScheduleDaoImpl): ScheduleDao
-
-        @Binds
-        fun bindFavoriteDao(impl: FavoriteDaoImpl): FavoriteDao
     }
 }
 

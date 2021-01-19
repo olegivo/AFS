@@ -28,6 +28,7 @@ import ru.olegivo.afs.randomSubList
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
 import ru.olegivo.afs.schedules.db.models.toDb
+import ru.olegivo.afs.shared.schedules.db.ScheduleDaoImpl
 
 class ScheduleDaoImplTest : BaseDaoNewTest<ScheduleDaoImpl>(
     { afsDatabaseNew, _ ->

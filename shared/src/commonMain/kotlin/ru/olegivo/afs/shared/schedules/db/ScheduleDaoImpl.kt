@@ -15,18 +15,14 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.db
+package ru.olegivo.afs.shared.schedules.db
 
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
-import ru.olegivo.afs.shared.schedules.db.ScheduleDao
 import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.shared.schedules.db.models.Schedules
-import javax.inject.Inject
 
-class ScheduleDaoImpl @Inject constructor(
-    db: AfsDatabase
-) : ScheduleDao {
+class ScheduleDaoImpl constructor(db: AfsDatabase) : ScheduleDao {
     private val queries = db.scheduleDbQueries
 
     override suspend fun getSchedules(

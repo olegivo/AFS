@@ -23,12 +23,13 @@ import org.junit.Test
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.db.BaseDaoNewTest
 import ru.olegivo.afs.common.toADate
-import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.repeat
+import ru.olegivo.afs.shared.favorites.db.FavoriteDaoImpl
+import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import java.util.Date
 
 class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(

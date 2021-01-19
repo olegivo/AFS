@@ -15,20 +15,16 @@
  * AFS.
  */
 
-package ru.olegivo.afs.favorites.db
+package ru.olegivo.afs.shared.favorites.db
 
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
-import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
-import javax.inject.Inject
 
-class FavoriteDaoImpl @Inject constructor(
-    db: AfsDatabase
-) : FavoriteDao {
+class FavoriteDaoImpl constructor(db: AfsDatabase) : FavoriteDao {
     private val favoriteFilterQueries = db.favoriteFilterQueries
     private val recordReminderScheduleQueries = db.recordReminderScheduleQueries
 

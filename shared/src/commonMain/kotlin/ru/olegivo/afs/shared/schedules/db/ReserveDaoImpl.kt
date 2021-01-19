@@ -15,18 +15,14 @@
  * AFS.
  */
 
-package ru.olegivo.afs.schedules.db
+package ru.olegivo.afs.shared.schedules.db
 
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
-import ru.olegivo.afs.shared.schedules.db.ReserveDao
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
-import javax.inject.Inject
 
-class ReserveDaoImpl @Inject constructor(
-    db: AfsDatabase
-) : ReserveDao {
+class ReserveDaoImpl constructor(db: AfsDatabase) : ReserveDao {
     private val queries = db.reservedScheduleQueries
 
     override suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long> =
