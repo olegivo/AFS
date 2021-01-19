@@ -34,7 +34,7 @@ import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.schedules.db.ReserveDaoImpl
 import ru.olegivo.afs.schedules.db.ScheduleDao
-import ru.olegivo.afs.schedules.db.ScheduleDaoNew
+import ru.olegivo.afs.schedules.db.ScheduleDaoImpl
 import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
@@ -64,7 +64,7 @@ object DbModule {
         fun bindReserveDao(impl: ReserveDaoImpl): ReserveDao
 
         @Binds
-        fun bindScheduleDao(impl: ScheduleDaoNew): ScheduleDao
+        fun bindScheduleDao(impl: ScheduleDaoImpl): ScheduleDao
 
         @Binds
         fun bindFavoriteDao(impl: FavoriteDaoImpl): FavoriteDao

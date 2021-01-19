@@ -25,7 +25,7 @@ import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import javax.inject.Inject
 import javax.inject.Named
 
-class ScheduleDaoNew @Inject constructor(
+class ScheduleDaoImpl @Inject constructor(
     db: AfsDatabaseNew,
     @Named("io") private val ioScheduler: Scheduler
 ) : ScheduleDao {
