@@ -21,6 +21,7 @@ import io.reactivex.Scheduler
 import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.schedules.db.ScheduleDao
 import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import javax.inject.Inject
 import javax.inject.Named

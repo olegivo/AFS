@@ -34,6 +34,7 @@ import ru.olegivo.afs.schedules.db.models.toData
 import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.shared.schedules.db.ReserveDao
+import ru.olegivo.afs.shared.schedules.db.ScheduleDao
 import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 import javax.inject.Inject
