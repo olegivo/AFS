@@ -144,15 +144,6 @@ configurations.all {
     }
 }
 
-sqldelight {
-    AfsDatabaseNew {
-        packageName = "ru.olegivo.afs.common.db"
-        sourceFolders = ["sqldelight"]
-        schemaOutputDirectory = file("src/main/sqldelight/databases")
-        dialect = "sqlite:3.24"
-    }
-}
-
 def isNonStable = { String version ->
     def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
     def regex = /^[0-9,.v-]+(-r)?$/

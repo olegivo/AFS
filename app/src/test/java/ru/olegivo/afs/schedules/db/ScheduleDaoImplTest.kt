@@ -30,8 +30,8 @@ import ru.olegivo.afs.schedules.data.models.createDataSchedule
 import ru.olegivo.afs.schedules.db.models.toDb
 
 class ScheduleDaoImplTest : BaseDaoNewTest<ScheduleDaoImpl>(
-    { afsDatabaseNew, testScheduler ->
-        ScheduleDaoImpl(afsDatabaseNew, testScheduler)
+    { afsDatabaseNew, _ ->
+        ScheduleDaoImpl(afsDatabaseNew)
     }
 ) {
     @Test

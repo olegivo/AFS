@@ -27,20 +27,20 @@ import dagger.Provides
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import ru.olegivo.afs.BuildConfig
-import ru.olegivo.afs.common.db.AfsDatabaseNew
 import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.favorites.db.FavoriteDaoImpl
-import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
-import ru.olegivo.afs.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.schedules.db.ReserveDaoImpl
 import ru.olegivo.afs.schedules.db.ScheduleDaoImpl
-import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
+import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.schedules.db.ReserveDao
 import ru.olegivo.afs.shared.schedules.db.ScheduleDao
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -50,7 +50,7 @@ object DbModule {
     @Provides
     fun providesSqlDriver(@Named("application") context: Context): SqlDriver =
         AndroidSqliteDriver(
-            schema = AfsDatabaseNew.Schema,
+            schema = AfsDatabase.Schema,
             context = context,
             name = BuildConfig.DB_NAME
         )
@@ -86,8 +86,8 @@ object DbModuleCore {
 
     @Singleton
     @Provides
-    fun providesAfsDatabaseNew(sqliteDriver: SqlDriver): AfsDatabaseNew {
-        return AfsDatabaseNew(
+    fun providesAfsDatabaseNew(sqliteDriver: SqlDriver): AfsDatabase {
+        return AfsDatabase(
             sqliteDriver,
             recordReminderSchedulesAdapter = RecordReminderSchedules.Adapter(
                 dateFromAdapter = aDateAdapter,

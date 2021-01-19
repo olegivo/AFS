@@ -22,19 +22,20 @@ import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import io.reactivex.schedulers.TestScheduler
 import ru.olegivo.afs.BaseTest
 import ru.olegivo.afs.common.di.DbModuleCore
+import ru.olegivo.afs.shared.db.AfsDatabase
 
-abstract class BaseDaoNewTest<DAO : Any>(private val daoProvider: (AfsDatabaseNew, TestScheduler) -> DAO) :
+abstract class BaseDaoNewTest<DAO : Any>(private val daoProvider: (AfsDatabase, TestScheduler) -> DAO) :
     BaseTest() {
 
     private lateinit var sqliteDriver: SqlDriver
-    private lateinit var db: AfsDatabaseNew
+    private lateinit var db: AfsDatabase
     protected lateinit var dao: DAO
 
     override fun getAllMocks(): Array<Any> = arrayOf()
 
     override fun setUp() {
         sqliteDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-        AfsDatabaseNew.Schema.create(driver = sqliteDriver)
+        AfsDatabase.Schema.create(driver = sqliteDriver)
         db = DbModuleCore.providesAfsDatabaseNew(sqliteDriver)
         dao = daoProvider(db, testScheduler)
     }

@@ -17,17 +17,17 @@
 
 package ru.olegivo.afs.favorites.db
 
-import ru.olegivo.afs.common.db.AfsDatabaseNew
-import ru.olegivo.afs.favorites.db.models.FavoriteFilters
-import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 import javax.inject.Inject
 
 class FavoriteDaoImpl @Inject constructor(
-    db: AfsDatabaseNew
+    db: AfsDatabase
 ) : FavoriteDao {
     private val favoriteFilterQueries = db.favoriteFilterQueries
     private val recordReminderScheduleQueries = db.recordReminderScheduleQueries

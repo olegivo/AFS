@@ -17,18 +17,15 @@
 
 package ru.olegivo.afs.schedules.db
 
-import io.reactivex.Scheduler
-import ru.olegivo.afs.common.db.AfsDatabaseNew
-import ru.olegivo.afs.schedules.db.models.Schedules
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.schedules.db.ScheduleDao
 import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import javax.inject.Inject
-import javax.inject.Named
 
 class ScheduleDaoImpl @Inject constructor(
-    db: AfsDatabaseNew,
-    @Named("io") private val ioScheduler: Scheduler
+    db: AfsDatabase
 ) : ScheduleDao {
     private val queries = db.scheduleDbQueries
 
