@@ -21,12 +21,12 @@ import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseDao
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.schedules.db.ReserveDao
-import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 
 class FakeReserveDao(private val tables: FakeAfsDatabase.Tables) :
     ReserveDao,
-    BaseDao<ReservedScheduleEntity> by FakeBaseDao(tables.reservedSchedules, { id }) {
+    BaseDao<ReservedSchedules> by FakeBaseDao(tables.reservedSchedules, { id }) {
 
     override suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long> {
         TODO("Not yet implemented")

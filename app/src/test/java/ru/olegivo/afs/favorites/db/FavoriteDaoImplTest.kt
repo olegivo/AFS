@@ -29,7 +29,7 @@ import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.repeat
 import ru.olegivo.afs.shared.favorites.db.FavoriteDaoImpl
-import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 import java.util.Date
 
 class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
@@ -105,7 +105,7 @@ class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
     @Test
     fun getActiveRecordReminderScheduleIds_RETURNS_only_relevant_ids() {
         val moment = Date()
-        val entity = RecordReminderScheduleEntity(
+        val entity = RecordReminderSchedules(
             scheduleId = getRandomLong(),
             dateFrom = moment.add(minutes = -1).toADate(),
             dateUntil = moment.add(minutes = 1).toADate()
@@ -133,7 +133,7 @@ class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
 
     @Test
     fun hasPlannedReminderToRecord_RETURNS_true() {
-        val entity = RecordReminderScheduleEntity(
+        val entity = RecordReminderSchedules(
             scheduleId = getRandomLong(),
             dateFrom = getRandomDate().toADate(),
             dateUntil = getRandomDate().toADate()
@@ -146,7 +146,7 @@ class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
 
     @Test
     fun hasPlannedReminderToRecord_RETURNS_false() {
-        val entity = RecordReminderScheduleEntity(
+        val entity = RecordReminderSchedules(
             scheduleId = getRandomLong(),
             dateFrom = getRandomDate().toADate(),
             dateUntil = getRandomDate().toADate()

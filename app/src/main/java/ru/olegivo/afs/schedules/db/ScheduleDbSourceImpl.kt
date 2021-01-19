@@ -33,9 +33,9 @@ import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.db.models.toData
 import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.schedules.db.ReserveDao
 import ru.olegivo.afs.shared.schedules.db.ScheduleDao
-import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
@@ -51,7 +51,7 @@ class ScheduleDbSourceImpl @Inject constructor(
     override fun setScheduleReserved(schedule: Schedule): Completable =
         {
             reserveDao.insert(
-                ReservedScheduleEntity(
+                ReservedSchedules(
                     schedule.id,
                     schedule.datetime.toADate()
                 )

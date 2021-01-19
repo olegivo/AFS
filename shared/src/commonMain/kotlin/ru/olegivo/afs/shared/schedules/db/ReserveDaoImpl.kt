@@ -20,7 +20,6 @@ package ru.olegivo.afs.shared.schedules.db
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
-import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 
 class ReserveDaoImpl constructor(db: AfsDatabase) : ReserveDao {
     private val queries = db.reservedScheduleQueries
@@ -33,20 +32,17 @@ class ReserveDaoImpl constructor(db: AfsDatabase) : ReserveDao {
         queries.isScheduleReserved(scheduleId)
             .executeAsOne() // TODO: ioDispatcher?
 
-    override fun insert(vararg obj: ReservedScheduleEntity) =
+    override fun insert(vararg obj: ReservedSchedules) =
         queries.transaction {
             obj.forEach {
-                queries.insert(it.toNewEntity())
+                queries.insert(it)
             }
         }
 
-    override fun upsert(objects: List<ReservedScheduleEntity>) =
+    override fun upsert(objects: List<ReservedSchedules>) =
         queries.transaction {
             objects.forEach {
-                queries.upsert(it.toNewEntity())
+                queries.upsert(it)
             }
         }
 }
-
-private fun ReservedScheduleEntity.toNewEntity() =
-    ReservedSchedules(id, datetime)

@@ -19,19 +19,16 @@ package ru.olegivo.afs.shared.favorites.db
 
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
-import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
-import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
 import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 
 class FavoriteDaoImpl constructor(db: AfsDatabase) : FavoriteDao {
     private val favoriteFilterQueries = db.favoriteFilterQueries
     private val recordReminderScheduleQueries = db.recordReminderScheduleQueries
 
-    override suspend fun getFavoriteFilters(): List<FavoriteFilterEntity> =
+    override suspend fun getFavoriteFilters(): List<FavoriteFilters> =
         favoriteFilterQueries.getFavoriteFilters()
-            .executeAsList()
-            .map { it.toOldEntity() } // TODO: ioDispatcher?
+            .executeAsList() // TODO: ioDispatcher?
 
     override fun removeFilter(
         groupId: Int,
@@ -63,63 +60,25 @@ class FavoriteDaoImpl constructor(db: AfsDatabase) : FavoriteDao {
         recordReminderScheduleQueries.getActiveRecordReminderScheduleIds(moment)
             .executeAsList() // TODO: ioDispatcher?
 
-    override fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity) {
-        recordReminderScheduleQueries.addReminderToRecord(recordReminder.toNewEntity())
+    override fun addReminderToRecord(recordReminder: RecordReminderSchedules) {
+        recordReminderScheduleQueries.addReminderToRecord(recordReminder)
     }
 
     override suspend fun hasPlannedReminderToRecord(scheduleId: Long): Boolean =
         recordReminderScheduleQueries.hasPlannedReminderToRecord(scheduleId)
             .executeAsOne() // TODO: ioDispatcher?
 
-    override fun insert(vararg obj: FavoriteFilterEntity) =
+    override fun insert(vararg obj: FavoriteFilters) =
         favoriteFilterQueries.transaction {
             obj.forEach {
-                favoriteFilterQueries.insert(it.toNewEntity())
+                favoriteFilterQueries.insert(it)
             }
         }
 
-    override fun upsert(objects: List<FavoriteFilterEntity>) =
+    override fun upsert(objects: List<FavoriteFilters>) =
         favoriteFilterQueries.transaction {
             objects.forEach {
-                favoriteFilterQueries.upsert(it.toNewEntity())
+                favoriteFilterQueries.upsert(it)
             }
         }
 }
-
-private fun FavoriteFilterEntity.toNewEntity() =
-    FavoriteFilters(
-        id = id,
-        clubId = clubId,
-        groupId = groupId,
-        group = group,
-        activityId = activityId,
-        activity = activity,
-        dayOfWeek = dayOfWeek,
-        minutesOfDay = minutesOfDay
-    )
-
-private fun FavoriteFilters.toOldEntity() =
-    FavoriteFilterEntity(
-        id = id,
-        clubId = clubId,
-        groupId = groupId,
-        group = group,
-        activityId = activityId,
-        activity = activity,
-        dayOfWeek = dayOfWeek,
-        minutesOfDay = minutesOfDay
-    )
-
-private fun RecordReminderScheduleEntity.toNewEntity() =
-    RecordReminderSchedules(
-        scheduleId = scheduleId,
-        dateFrom = dateFrom,
-        dateUntil = dateUntil
-    )
-
-private fun RecordReminderSchedules.toOldEntity() =
-    RecordReminderScheduleEntity(
-        scheduleId = scheduleId,
-        dateFrom = dateFrom,
-        dateUntil = dateUntil
-    )

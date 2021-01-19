@@ -22,14 +22,14 @@ import ru.olegivo.afs.common.db.FakeBaseDao
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
-import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
-import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 
 class FakeFavoriteDao(private val tables: FakeAfsDatabase.Tables) :
     FavoriteDao,
-    BaseDao<FavoriteFilterEntity> by FakeBaseDao(tables.favoriteFilters, { id }) {
+    BaseDao<FavoriteFilters> by FakeBaseDao(tables.favoriteFilters, { id }) {
 
-    override suspend fun getFavoriteFilters(): List<FavoriteFilterEntity> =
+    override suspend fun getFavoriteFilters(): List<FavoriteFilters> =
         tables.favoriteFilters.values.toList()
 
     override fun removeFilter(
@@ -57,7 +57,7 @@ class FakeFavoriteDao(private val tables: FakeAfsDatabase.Tables) :
         TODO("Not yet implemented")
     }
 
-    override fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity) {
+    override fun addReminderToRecord(recordReminder: RecordReminderSchedules) {
         TODO("Not yet implemented")
     }
 

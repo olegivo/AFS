@@ -25,8 +25,8 @@ import ru.olegivo.afs.common.db.BaseDaoNewTest
 import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomLong
+import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.schedules.db.ReserveDaoImpl
-import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
 import java.util.Date
 
 class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
@@ -38,22 +38,22 @@ class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
         val from = moment.add(days = -1)
         val until = moment.add(days = 1)
 
-        val entity1 = ReservedScheduleEntity(
+        val entity1 = ReservedSchedules(
             id = getRandomLong(),
             datetime = from.toADate()
         )
-        val entity2 = ReservedScheduleEntity(
+        val entity2 = ReservedSchedules(
             id = getRandomLong(),
             datetime = until.add(seconds = -1).toADate()
         )
         val objects = listOf(
             entity1,
             entity2,
-            ReservedScheduleEntity(
+            ReservedSchedules(
                 id = getRandomLong(),
                 datetime = from.add(seconds = -1).toADate()
             ),
-            ReservedScheduleEntity(
+            ReservedSchedules(
                 id = getRandomLong(),
                 datetime = until.toADate()
             )
@@ -68,7 +68,7 @@ class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
     @Test
     fun isScheduleReserved_RETURNS_true() {
         val entity =
-            ReservedScheduleEntity(
+            ReservedSchedules(
                 id = getRandomLong(),
                 datetime = getRandomDate().toADate()
             )
@@ -81,7 +81,7 @@ class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
     @Test
     fun isScheduleReserved_RETURNS_false() {
         val entity =
-            ReservedScheduleEntity(
+            ReservedSchedules(
                 id = getRandomLong(),
                 datetime = getRandomDate().toADate()
             )

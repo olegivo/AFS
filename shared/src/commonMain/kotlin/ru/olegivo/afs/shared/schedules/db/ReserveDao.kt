@@ -19,9 +19,9 @@ package ru.olegivo.afs.shared.schedules.db
 
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
-import ru.olegivo.afs.shared.schedules.db.models.ReservedScheduleEntity
+import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 
-interface ReserveDao : BaseDao<ReservedScheduleEntity> {
+interface ReserveDao : BaseDao<ReservedSchedules> {
 
     suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long>
 

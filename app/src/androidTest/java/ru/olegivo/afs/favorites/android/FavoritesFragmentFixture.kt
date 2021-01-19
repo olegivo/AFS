@@ -25,8 +25,8 @@ import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.givenBlocking
 import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.home.android.HomeFragmentFixture
-import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
-import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
 class FavoritesFragmentFixture(
     externalDependencies: ExternalDependencies,
@@ -34,7 +34,7 @@ class FavoritesFragmentFixture(
 ) : BaseFixture<FavoritesFragmentScreen>(externalDependencies, FavoritesFragmentScreen),
     ChainRuleHolder by homeFragmentFixture {
 
-    fun prepare(filters: List<FavoriteFilterEntity>) {
+    fun prepare(filters: List<FavoriteFilters>) {
         withFakeDatabase {
             action { favorites.insert(*filters.toTypedArray()) }
         }
@@ -46,7 +46,7 @@ class FavoritesFragmentFixture(
 
     fun prepareItemClick(
         favoriteFilter: FavoriteFilter,
-        scheduleEntity: ScheduleEntity
+        scheduleEntity: Schedules
     ) {
         withFakeDatabase {
             action { schedules.insert(scheduleEntity) }
@@ -78,7 +78,7 @@ class FavoritesFragmentFixture(
     fun checkItemClick(
 //        favoriteFilter: FavoriteFilter,
 //        clubId: Int,
-        scheduleEntity: ScheduleEntity
+        scheduleEntity: Schedules
 //        fio: String,
 //        phone: String
     ) {

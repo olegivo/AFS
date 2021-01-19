@@ -18,9 +18,10 @@
 package ru.olegivo.afs.favorites.db.models
 
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
-import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
 
-fun FavoriteFilter.toDb() = FavoriteFilterEntity(
+fun FavoriteFilter.toDb() = FavoriteFilters(
+    id = 0,
     clubId = clubId,
     groupId = groupId,
     group = group,
@@ -30,7 +31,7 @@ fun FavoriteFilter.toDb() = FavoriteFilterEntity(
     minutesOfDay = minutesOfDay
 )
 
-fun FavoriteFilterEntity.toDomain() =
+fun FavoriteFilters.toDomain() =
     FavoriteFilter(
         clubId = clubId,
         groupId = groupId,

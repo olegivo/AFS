@@ -43,7 +43,7 @@ import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
 import ru.olegivo.afs.shared.schedules.db.ReserveDao
 import ru.olegivo.afs.shared.schedules.db.ScheduleDao
-import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import java.util.Calendar
 import java.util.Date
 
@@ -307,7 +307,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
 
     private fun setup(
         filter: FavoriteFilter,
-        list: List<ScheduleEntity>,
+        list: List<Schedules>,
         now: Date = getRandomDate()
     ) {
         givenBlocking(scheduleDao) {

@@ -30,7 +30,7 @@ import ru.olegivo.afs.favorites.db.models.toDomain
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
-import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
@@ -91,7 +91,7 @@ class FavoritesDbSourceImpl @Inject constructor(
     ): Completable =
         {
             favoriteDao.addReminderToRecord(
-                RecordReminderScheduleEntity(
+                RecordReminderSchedules(
                     scheduleId = scheduleId,
                     dateFrom = dateFrom.toADate(),
                     dateUntil = dateUntil.toADate()

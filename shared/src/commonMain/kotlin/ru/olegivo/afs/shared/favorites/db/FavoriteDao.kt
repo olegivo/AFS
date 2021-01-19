@@ -19,15 +19,15 @@ package ru.olegivo.afs.shared.favorites.db
 
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
-import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilterEntity
-import ru.olegivo.afs.shared.favorites.db.models.RecordReminderScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 
-interface FavoriteDao : BaseDao<FavoriteFilterEntity> {
+interface FavoriteDao : BaseDao<FavoriteFilters> {
 
-    suspend fun getFavoriteFilters(): List<FavoriteFilterEntity>
+    suspend fun getFavoriteFilters(): List<FavoriteFilters>
     fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int)
     suspend fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Boolean
     suspend fun getActiveRecordReminderScheduleIds(moment: ADate): List<Long>
-    fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity)
+    fun addReminderToRecord(recordReminder: RecordReminderSchedules)
     suspend fun hasPlannedReminderToRecord(scheduleId: Long): Boolean
 }

@@ -20,9 +20,9 @@ package ru.olegivo.afs.schedules.db.models
 import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.schedules.data.models.DataSchedule
-import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
-fun ScheduleEntity.toData() =
+fun Schedules.toData() =
     DataSchedule(
         id = id,
         clubId = clubId,
@@ -40,8 +40,8 @@ fun ScheduleEntity.toData() =
         recordTo = recordTo?.toDate()
     )
 
-fun DataSchedule.toDb(): ScheduleEntity =
-    ScheduleEntity(
+fun DataSchedule.toDb() =
+    Schedules(
         id = id,
         clubId = clubId,
         groupId = groupId,

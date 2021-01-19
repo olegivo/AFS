@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Oleg Ivashchenko <olegivo@gmail.com>
+ * Copyright (C) 2021 Oleg Ivashchenko <olegivo@gmail.com>
  *
  * This file is part of AFS.
  *
@@ -19,11 +19,11 @@ package ru.olegivo.afs.shared.schedules.db
 
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
-import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
-interface ScheduleDao : BaseDao<ScheduleEntity> {
-    suspend fun getSchedules(clubId: Int, from: ADate, until: ADate): List<ScheduleEntity>?
-    suspend fun getSchedule(id: Long): ScheduleEntity
-    suspend fun getSchedules(ids: List<Long>): List<ScheduleEntity>
-    suspend fun filterSchedules(clubId: Int, groupId: Int, activityId: Int): List<ScheduleEntity>
+interface ScheduleDao : BaseDao<Schedules> {
+    suspend fun getSchedules(clubId: Int, from: ADate, until: ADate): List<Schedules>?
+    suspend fun getSchedule(id: Long): Schedules
+    suspend fun getSchedules(ids: List<Long>): List<Schedules>
+    suspend fun filterSchedules(clubId: Int, groupId: Int, activityId: Int): List<Schedules>
 }

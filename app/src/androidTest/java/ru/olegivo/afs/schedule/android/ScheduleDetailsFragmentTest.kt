@@ -28,8 +28,8 @@ import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
-import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 import java.util.Calendar
 
@@ -58,7 +58,7 @@ class ScheduleDetailsFragmentTest :
         )
 
         val filterEntity = favoritesItem.filter.toDb().copy(id = getRandomInt())
-        val scheduleEntity = ScheduleEntity(
+        val scheduleEntity = Schedules(
             id = getRandomLong(),
             clubId = clubId,
             groupId = filter.groupId,

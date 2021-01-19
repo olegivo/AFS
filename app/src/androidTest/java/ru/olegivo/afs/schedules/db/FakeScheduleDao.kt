@@ -22,25 +22,25 @@ import ru.olegivo.afs.common.db.FakeBaseDao
 import ru.olegivo.afs.shared.common.db.BaseDao
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.ScheduleDao
-import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
 class FakeScheduleDao(private val tables: FakeAfsDatabase.Tables) :
     ScheduleDao,
-    BaseDao<ScheduleEntity> by FakeBaseDao(tables.schedules, { id }) {
+    BaseDao<Schedules> by FakeBaseDao(tables.schedules, { id }) {
 
     override suspend fun getSchedules(
         clubId: Int,
         from: ADate,
         until: ADate
-    ): List<ScheduleEntity>? {
+    ): List<Schedules>? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSchedules(ids: List<Long>): List<ScheduleEntity> {
+    override suspend fun getSchedules(ids: List<Long>): List<Schedules> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSchedule(id: Long): ScheduleEntity = tables.schedules.values.single {
+    override suspend fun getSchedule(id: Long): Schedules = tables.schedules.values.single {
         it.id == id
     }
 
@@ -48,7 +48,7 @@ class FakeScheduleDao(private val tables: FakeAfsDatabase.Tables) :
         clubId: Int,
         groupId: Int,
         activityId: Int
-    ): List<ScheduleEntity> = tables.schedules.values.filter {
+    ): List<Schedules> = tables.schedules.values.filter {
         it.clubId == clubId && it.groupId == groupId && it.activityId == activityId
     }
 }

@@ -19,7 +19,6 @@ package ru.olegivo.afs.shared.schedules.db
 
 import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
-import ru.olegivo.afs.shared.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
 class ScheduleDaoImpl constructor(db: AfsDatabase) : ScheduleDao {
@@ -29,78 +28,45 @@ class ScheduleDaoImpl constructor(db: AfsDatabase) : ScheduleDao {
         clubId: Int,
         from: ADate,
         until: ADate
-    ): List<ScheduleEntity>? =
+    ): List<Schedules>? =
         queries.getSchedules(
             from = from,
             until = until,
             clubId = clubId
         )
             .executeAsList() // TODO: ioDispatcher?
-            .map { it.toOldEntity() }
+            .map { it }
             .takeIf { it.isNotEmpty() } // TODO: ioDispatcher?
 
-    override suspend fun getSchedules(ids: List<Long>): List<ScheduleEntity> =
+    override suspend fun getSchedules(ids: List<Long>): List<Schedules> =
         queries.getSchedulesByIds(ids)
             .executeAsList() // TODO: ioDispatcher?
-            .map { it.toOldEntity() }
+            .map { it }
 
-    override suspend fun getSchedule(id: Long): ScheduleEntity =
+    override suspend fun getSchedule(id: Long): Schedules =
         queries.getSchedule(id)
             .executeAsOne() // TODO: ioDispatcher?
-            .toOldEntity()
 
     override suspend fun filterSchedules(
         clubId: Int,
         groupId: Int,
         activityId: Int
-    ): List<ScheduleEntity> =
+    ): List<Schedules> =
         queries.filterSchedules(clubId = clubId, groupId = groupId, activityId = activityId)
             .executeAsList() // TODO: ioDispatcher?
-            .map { it.toOldEntity() }
 
-    override fun insert(vararg obj: ScheduleEntity) =
+    override fun insert(vararg obj: Schedules) =
         queries.transaction {
             obj.forEach {
-                queries.insert(it.toNewEntity())
+                queries.insert(it)
             }
         }
 
-    override fun upsert(objects: List<ScheduleEntity>) =
+    override fun upsert(objects: List<Schedules>) =
         queries.transaction {
             objects.forEach {
-                queries.upsert(it.toNewEntity())
+                queries.upsert(it)
             }
         }
 }
 
-fun Schedules.toOldEntity() =
-    ScheduleEntity(
-        id = id,
-        clubId = clubId,
-        groupId = groupId,
-        group = group,
-        activityId = activityId,
-        activity = activity,
-        datetime = datetime,
-        length = length,
-        preEntry = preEntry,
-        totalSlots = totalSlots,
-        recordFrom = recordFrom,
-        recordTo = recordTo
-    )
-
-private fun ScheduleEntity.toNewEntity() =
-    Schedules(
-        id = id,
-        clubId = clubId,
-        groupId = groupId,
-        group = group,
-        activityId = activityId,
-        activity = activity,
-        datetime = datetime,
-        length = length,
-        preEntry = preEntry,
-        totalSlots = totalSlots,
-        recordFrom = recordFrom,
-        recordTo = recordTo
-    )
