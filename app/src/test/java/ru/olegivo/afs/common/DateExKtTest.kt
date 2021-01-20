@@ -19,7 +19,7 @@ package ru.olegivo.afs.common
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.util.*
+import java.util.Calendar
 
 class DateExKtTest {
     @Test

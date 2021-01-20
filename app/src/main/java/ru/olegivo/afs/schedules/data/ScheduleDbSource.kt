@@ -23,7 +23,7 @@ import io.reactivex.Single
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import java.util.*
+import java.util.Date
 
 interface ScheduleDbSource {
     fun setScheduleReserved(schedule: Schedule): Completable

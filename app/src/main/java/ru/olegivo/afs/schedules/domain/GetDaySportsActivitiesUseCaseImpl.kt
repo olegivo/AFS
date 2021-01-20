@@ -26,7 +26,7 @@ import ru.olegivo.afs.favorites.domain.models.filterByFavorites
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.Slot
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
 

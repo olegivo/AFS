@@ -26,9 +26,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.olegivo.afs.R
-import ru.olegivo.afs.databinding.FragmentDayScheduleBinding
 import ru.olegivo.afs.analytics.domain.ScreenNameProvider
 import ru.olegivo.afs.common.android.doOnApplyWindowInsets
+import ru.olegivo.afs.databinding.FragmentDayScheduleBinding
 import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.presentation.DayScheduleContract

@@ -28,7 +28,7 @@ import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import ru.olegivo.afs.schedules.domain.ActualizeScheduleUseCase
 import ru.olegivo.afs.schedules.domain.GetDaySportsActivitiesUseCase
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Named
 

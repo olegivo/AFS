@@ -22,8 +22,8 @@ import io.reactivex.Scheduler
 import ru.olegivo.afs.analytics.domain.AnalyticsProvider
 import ru.olegivo.afs.extensions.andThen
 import ru.olegivo.afs.favorites.domain.FavoritesRepository
-import ru.olegivo.afs.favorites.domain.models.filterByFavorites
 import ru.olegivo.afs.favorites.domain.PlanFavoriteRecordReminderUseCase
+import ru.olegivo.afs.favorites.domain.models.filterByFavorites
 import ru.olegivo.afs.schedules.analytics.SchedulesAnalytic
 import javax.inject.Inject
 import javax.inject.Named

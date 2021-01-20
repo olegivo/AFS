@@ -17,7 +17,7 @@
 
 package ru.olegivo.afs.common.domain
 
-import java.util.*
+import java.util.Date
 
 interface DateProvider {
     fun getDate(): Date

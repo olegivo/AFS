@@ -18,7 +18,7 @@
 package ru.olegivo.afs.schedules.data.models
 
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import java.util.*
+import java.util.Date
 
 data class DataSchedule(
     val id: Long,

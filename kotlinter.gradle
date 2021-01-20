@@ -19,9 +19,7 @@ apply plugin: "org.jmailen.kotlinter"
 
 kotlinter {
     disabledRules = [
-            "import-ordering",
             "comment-spacing",
-            "no-wildcard-imports",
             "curly-spacing"
     ]
 }

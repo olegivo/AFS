@@ -18,9 +18,9 @@
 package ru.olegivo.afs.auth.data
 
 import io.reactivex.Single
-import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import ru.olegivo.afs.auth.domain.AuthRepository
 import ru.olegivo.afs.extensions.andThen
+import ru.olegivo.afs.preferences.data.PreferencesDataSource
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(private val preferencesDataSource: PreferencesDataSource) :

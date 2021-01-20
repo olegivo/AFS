@@ -28,10 +28,10 @@ import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import ru.olegivo.afs.BuildConfig
 import ru.olegivo.afs.schedule.network.models.ReserveRequest
-import ru.olegivo.afs.shared.network.models.Schedules
-import ru.olegivo.afs.shared.network.models.Slot
 import ru.olegivo.afs.shared.network.NewApi
 import ru.olegivo.afs.shared.network.NewApiImpl
+import ru.olegivo.afs.shared.network.models.Schedules
+import ru.olegivo.afs.shared.network.models.Slot
 import javax.inject.Inject
 
 class ApiImpl @Inject constructor(private val httpClient: HttpClient) :
