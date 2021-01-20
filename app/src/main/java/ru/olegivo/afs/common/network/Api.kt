@@ -20,9 +20,9 @@ package ru.olegivo.afs.common.network
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.QueryMap
 import ru.olegivo.afs.schedule.network.models.ReserveRequest
+import ru.olegivo.afs.shared.network.NewApi
 import ru.olegivo.afs.shared.network.models.Schedules
 import ru.olegivo.afs.shared.network.models.Slot
-import ru.olegivo.afs.shared.network.NewApi
 
 interface Api : NewApi {
 
