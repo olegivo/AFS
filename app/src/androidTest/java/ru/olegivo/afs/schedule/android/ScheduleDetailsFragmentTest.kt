@@ -21,14 +21,15 @@ import org.junit.Test
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.BaseIntegratedIsolatedUITest
 import ru.olegivo.afs.common.date
+import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.favorites.db.models.toDb
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import ru.olegivo.afs.suite.IntegratedIsolatedUITest
 import java.util.Calendar
 
@@ -57,14 +58,14 @@ class ScheduleDetailsFragmentTest :
         )
 
         val filterEntity = favoritesItem.filter.toDb().copy(id = getRandomInt())
-        val scheduleEntity = ScheduleEntity(
+        val scheduleEntity = Schedules(
             id = getRandomLong(),
             clubId = clubId,
             groupId = filter.groupId,
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = date(2020, 11, 19, 20, 0),
+            datetime = date(2020, 11, 19, 20, 0).toADate(),
             length = getRandomInt(),
             preEntry = true,
             totalSlots = 1,

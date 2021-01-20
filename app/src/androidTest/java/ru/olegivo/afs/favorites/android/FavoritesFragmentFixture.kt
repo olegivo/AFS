@@ -21,12 +21,12 @@ import com.nhaarman.mockitokotlin2.verifyBlocking
 import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.ChainRuleHolder
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.givenBlocking
 import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.home.android.HomeFragmentFixture
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
 class FavoritesFragmentFixture(
     externalDependencies: ExternalDependencies,
@@ -34,7 +34,7 @@ class FavoritesFragmentFixture(
 ) : BaseFixture<FavoritesFragmentScreen>(externalDependencies, FavoritesFragmentScreen),
     ChainRuleHolder by homeFragmentFixture {
 
-    fun prepare(filters: List<FavoriteFilterEntity>) {
+    fun prepare(filters: List<FavoriteFilters>) {
         withFakeDatabase {
             action { favorites.insert(*filters.toTypedArray()) }
         }
@@ -46,7 +46,7 @@ class FavoritesFragmentFixture(
 
     fun prepareItemClick(
         favoriteFilter: FavoriteFilter,
-        scheduleEntity: ScheduleEntity
+        scheduleEntity: Schedules
     ) {
         withFakeDatabase {
             action { schedules.insert(scheduleEntity) }
@@ -78,7 +78,7 @@ class FavoritesFragmentFixture(
     fun checkItemClick(
 //        favoriteFilter: FavoriteFilter,
 //        clubId: Int,
-        scheduleEntity: ScheduleEntity
+        scheduleEntity: Schedules
 //        fio: String,
 //        phone: String
     ) {
@@ -87,7 +87,12 @@ class FavoritesFragmentFixture(
 //        verify(afsDatabase).reserve
 //        verify(scheduleDao).filterSchedules(favoriteFilter, clubId)
 //        verify(scheduleDao).getSchedule(scheduleEntity.id)
-        verifyBlocking(api) { getSlots(scheduleEntity.clubId, mapOf("0" to scheduleEntity.id.toString())) }
+        verifyBlocking(api) {
+            getSlots(
+                scheduleEntity.clubId,
+                mapOf("0" to scheduleEntity.id.toString())
+            )
+        }
 //        verify(reserveDao).isScheduleReserved(scheduleEntity.id)
 //        verify(favoriteDao).exist(
 //            favoriteFilter.groupId,

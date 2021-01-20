@@ -21,9 +21,9 @@ import ru.olegivo.afs.BaseFixture
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.ChainRuleHolder
 import ru.olegivo.afs.favorites.android.FavoritesFragmentFixture
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
 class ScheduleDetailsFragmentFixture(
     externalDependencies: ExternalDependencies,
@@ -33,9 +33,9 @@ class ScheduleDetailsFragmentFixture(
     ChainRuleHolder by favoritesFragmentFixture {
 
     fun prepareFromFavorites(
-        filters: List<FavoriteFilterEntity>,
+        filters: List<FavoriteFilters>,
         favoritesItemToClick: FavoritesItem,
-        scheduleEntity: ScheduleEntity
+        scheduleEntity: Schedules
     ) {
         favoritesFragmentFixture.prepare(filters)
         favoritesFragmentFixture.prepareItemClick(favoritesItemToClick.filter, scheduleEntity)

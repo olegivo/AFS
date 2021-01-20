@@ -24,20 +24,23 @@ import com.squareup.sqldelight.db.SqlDriver
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import ru.olegivo.afs.BuildConfig
-import ru.olegivo.afs.common.db.AfsDatabaseNew
-import ru.olegivo.afs.favorites.db.FavoriteDao
-import ru.olegivo.afs.favorites.db.FavoriteDaoNew
-import ru.olegivo.afs.recordReminders.db.models.RecordReminderSchedules
-import ru.olegivo.afs.reserve.db.models.ReservedSchedules
-import ru.olegivo.afs.schedules.db.ReserveDao
-import ru.olegivo.afs.schedules.db.ReserveDaoNew
-import ru.olegivo.afs.schedules.db.ScheduleDao
-import ru.olegivo.afs.schedules.db.ScheduleDaoNew
-import ru.olegivo.afs.schedules.db.models.Schedules
+import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
-import java.util.Date
+import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.db.AfsDatabase
+import ru.olegivo.afs.shared.favorites.db.FavoriteDao
+import ru.olegivo.afs.shared.favorites.db.FavoriteDaoImpl
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
+import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
+import ru.olegivo.afs.shared.schedules.db.ReserveDao
+import ru.olegivo.afs.shared.schedules.db.ReserveDaoImpl
+import ru.olegivo.afs.shared.schedules.db.ScheduleDao
+import ru.olegivo.afs.shared.schedules.db.ScheduleDaoImpl
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -47,50 +50,56 @@ object DbModule {
     @Provides
     fun providesSqlDriver(@Named("application") context: Context): SqlDriver =
         AndroidSqliteDriver(
-            schema = AfsDatabaseNew.Schema,
+            schema = AfsDatabase.Schema,
             context = context,
             name = BuildConfig.DB_NAME
         )
+
+    @Provides
+    fun provideFavoriteDao(db: AfsDatabase): FavoriteDao = FavoriteDaoImpl(db)
+
+    @Provides
+    fun provideReserveDao(db: AfsDatabase): ReserveDao = ReserveDaoImpl(db)
+
+    @Provides
+    fun provideScheduleDao(db: AfsDatabase): ScheduleDao = ScheduleDaoImpl(db)
 
     @Module
     interface BindsModule {
         @Binds
         fun bindDatabaseHelper(impl: DatabaseHelperImpl): DatabaseHelper
-
-        @Binds
-        fun bindReserveDao(impl: ReserveDaoNew): ReserveDao
-
-        @Binds
-        fun bindScheduleDao(impl: ScheduleDaoNew): ScheduleDao
-
-        @Binds
-        fun bindFavoriteDao(impl: FavoriteDaoNew): FavoriteDao
     }
 }
 
 @Module
 object DbModuleCore {
-    private val dateAdapter = object : ColumnAdapter<Date, Long> {
-        override fun decode(databaseValue: Long) = Date(databaseValue)
-        override fun encode(value: Date) = value.time
+    private val aDateAdapter = object : ColumnAdapter<ADate, Long> {
+        override fun decode(databaseValue: Long): ADate =
+            TimeZone.currentSystemDefault().let {
+                with(it) {
+                    ADate(Instant.fromEpochMilliseconds(databaseValue).toLocalDateTime(), it)
+                }
+            }
+
+        override fun encode(value: ADate) = value.toDate().time
     }
 
     @Singleton
     @Provides
-    fun providesAfsDatabaseNew(sqliteDriver: SqlDriver): AfsDatabaseNew {
-        return AfsDatabaseNew(
+    fun providesAfsDatabaseNew(sqliteDriver: SqlDriver): AfsDatabase {
+        return AfsDatabase(
             sqliteDriver,
             recordReminderSchedulesAdapter = RecordReminderSchedules.Adapter(
-                dateFromAdapter = dateAdapter,
-                dateUntilAdapter = dateAdapter
+                dateFromAdapter = aDateAdapter,
+                dateUntilAdapter = aDateAdapter
             ),
             schedulesAdapter = Schedules.Adapter(
-                datetimeAdapter = dateAdapter,
-                recordFromAdapter = dateAdapter,
-                recordToAdapter = dateAdapter
+                datetimeAdapter = aDateAdapter,
+                recordFromAdapter = aDateAdapter,
+                recordToAdapter = aDateAdapter
             ),
             reservedSchedulesAdapter = ReservedSchedules.Adapter(
-                datetimeAdapter = dateAdapter
+                datetimeAdapter = aDateAdapter
             )
         )
     }

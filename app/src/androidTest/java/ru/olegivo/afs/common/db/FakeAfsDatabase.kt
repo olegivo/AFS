@@ -19,14 +19,14 @@ package ru.olegivo.afs.common.db
 
 import io.reactivex.Completable
 import ru.olegivo.afs.favorites.db.FakeFavoriteDao
-import ru.olegivo.afs.favorites.db.FavoriteDao
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
 import ru.olegivo.afs.schedules.db.FakeReserveDao
 import ru.olegivo.afs.schedules.db.FakeScheduleDao
-import ru.olegivo.afs.schedules.db.ReserveDao
-import ru.olegivo.afs.schedules.db.ScheduleDao
-import ru.olegivo.afs.schedules.db.models.ReservedSchedule
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
+import ru.olegivo.afs.shared.favorites.db.FavoriteDao
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
+import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
+import ru.olegivo.afs.shared.schedules.db.ReserveDao
+import ru.olegivo.afs.shared.schedules.db.ScheduleDao
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
 class FakeAfsDatabase {
     private val tables = Tables()
@@ -48,9 +48,9 @@ class FakeAfsDatabase {
     }
 
     class Tables {
-        val schedules: MutableMap<Long, ScheduleEntity> = mutableMapOf()
-        val favoriteFilters: MutableMap<Int, FavoriteFilterEntity> = mutableMapOf()
-        val reservedSchedules: MutableMap<Long, ReservedSchedule> = mutableMapOf()
+        val schedules: MutableMap<Long, Schedules> = mutableMapOf()
+        val favoriteFilters: MutableMap<Int, FavoriteFilters> = mutableMapOf()
+        val reservedSchedules: MutableMap<Long, ReservedSchedules> = mutableMapOf()
     }
 
     class Actions(private val fakeAfsDatabase: FakeAfsDatabase) {

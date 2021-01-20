@@ -144,15 +144,6 @@ configurations.all {
     }
 }
 
-sqldelight {
-    AfsDatabaseNew {
-        packageName = "ru.olegivo.afs.common.db"
-        sourceFolders = ["sqldelight"]
-        schemaOutputDirectory = file("src/main/sqldelight/databases")
-        dialect = "sqlite:3.24"
-    }
-}
-
 def isNonStable = { String version ->
     def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
     def regex = /^[0-9,.v-]+(-r)?$/
@@ -251,6 +242,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation "com.squareup.sqldelight:android-driver:$sqlDelightVersion"
     implementation "com.squareup.sqldelight:rxjava2-extensions:$sqlDelightVersion"
+    implementation "com.squareup.sqldelight:coroutines-extensions-jvm:$sqlDelightVersion"
 
     implementation "javax.inject:javax.inject:${javaxInjectVersion}"
 

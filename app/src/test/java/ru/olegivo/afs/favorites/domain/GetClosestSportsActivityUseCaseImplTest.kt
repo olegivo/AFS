@@ -20,28 +20,30 @@ package ru.olegivo.afs.favorites.domain
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
-import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.date
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.network.Api
-import ru.olegivo.afs.extensions.toSingle
+import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.favorites.data.models.createFavoriteFilter
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.helpers.checkSingleValue
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomInt
+import ru.olegivo.afs.helpers.givenBlocking
+import ru.olegivo.afs.helpers.willReturn
 import ru.olegivo.afs.schedules.data.ScheduleRepositoryImpl
 import ru.olegivo.afs.schedules.data.models.createDataSchedule
-import ru.olegivo.afs.schedules.db.ReserveDao
-import ru.olegivo.afs.schedules.db.ScheduleDao
 import ru.olegivo.afs.schedules.db.ScheduleDbSourceImpl
-import ru.olegivo.afs.schedules.db.models.ScheduleEntity
 import ru.olegivo.afs.schedules.db.models.toDb
 import ru.olegivo.afs.schedules.network.ScheduleNetworkSourceImpl
+import ru.olegivo.afs.shared.schedules.db.ReserveDao
+import ru.olegivo.afs.shared.schedules.db.ScheduleDao
+import ru.olegivo.afs.shared.schedules.db.models.Schedules
 import java.util.Calendar
 import java.util.Date
 
@@ -55,10 +57,11 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
                 reserveDao = reserveDao,
                 scheduleDao = scheduleDao,
                 ioScheduler = testScheduler,
-                computationScheduler = testScheduler
+                computationScheduler = testScheduler,
+                coroutineToRxAdapter = coroutineToRxAdapter
             ),
             dateProvider = dateProvider,
-            coroutineToRxAdapter = CoroutineToRxAdapter(),
+            coroutineToRxAdapter = coroutineToRxAdapter,
             computationScheduler = testScheduler
         ),
         ioScheduler = testScheduler
@@ -109,7 +112,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = now
+            datetime = now.toADate()
         )
 
         setup(filter, listOf(element), now)
@@ -138,7 +141,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = now
+            datetime = now.toADate()
         )
 
         setup(filter, listOf(element), now)
@@ -167,7 +170,7 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = now
+            datetime = now.toADate()
         )
 
         setup(filter, listOf(element), now)
@@ -199,13 +202,13 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         )
 
         val past = template.copy(
-            datetime = now.add(days = -7)
+            datetime = now.add(days = -7).toADate()
         )
         val middle = template.copy(
-            datetime = now.add(days = getRandomInt(from = -6, until = 7))
+            datetime = now.add(days = getRandomInt(from = -6, until = 7)).toADate()
         )
         val future = template.copy(
-            datetime = now.add(days = 7)
+            datetime = now.add(days = 7).toADate()
         )
 
         setup(
@@ -241,10 +244,10 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         )
 
         val earlier = template.copy(
-            datetime = now.add(days = 7)
+            datetime = now.add(days = 7).toADate()
         )
         val later = template.copy(
-            datetime = now.add(days = 14)
+            datetime = now.add(days = 14).toADate()
         )
 
         setup(
@@ -280,10 +283,10 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
         )
 
         val earlier = template.copy(
-            datetime = now.add(days = -14)
+            datetime = now.add(days = -14).toADate()
         )
         val later = template.copy(
-            datetime = now.add(days = -7)
+            datetime = now.add(days = -7).toADate()
         )
 
         setup(
@@ -304,16 +307,32 @@ class GetClosestSportsActivityUseCaseImplTest : BaseTestOf<GetClosestSportsActiv
 
     private fun setup(
         filter: FavoriteFilter,
-        list: List<ScheduleEntity>,
+        list: List<Schedules>,
         now: Date = getRandomDate()
     ) {
-        given { scheduleDao.filterSchedules(filter, filter.clubId) }
-            .willReturn(list.toSingle())
+        givenBlocking(scheduleDao) {
+            with(filter) {
+                filterSchedules(
+                    clubId = filter.clubId,
+                    groupId = groupId,
+                    activityId = activityId
+                )
+            }
+        }
+            .willReturn { list }
         given { dateProvider.getDate() }.willReturn(now)
     }
 
     private fun verify(filter: FavoriteFilter) {
-        verify(scheduleDao).filterSchedules(filter, filter.clubId)
+        with(filter) {
+            verifyBlocking(scheduleDao) {
+                filterSchedules(
+                    clubId = filter.clubId,
+                    groupId = groupId,
+                    activityId = activityId
+                )
+            }
+        }
         verify(dateProvider).getDate()
     }
 }

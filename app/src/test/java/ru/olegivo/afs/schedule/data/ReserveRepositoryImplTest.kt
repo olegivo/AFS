@@ -26,7 +26,6 @@ import io.reactivex.Maybe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
-import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
@@ -45,9 +44,7 @@ class ReserveRepositoryImplTest : BaseTestOf<ReserveRepository>() {
         reserveNetworkSource = reserveNetworkSource,
         preferencesDataSource = preferencesDataSource,
         scheduleNetworkSource = scheduleNetworkSource,
-        coroutineToRxAdapter = CoroutineToRxAdapter().apply {
-            coroutineContext = testDispatcher
-        }
+        coroutineToRxAdapter = coroutineToRxAdapter
     )
 
     //<editor-fold desc="mocks">

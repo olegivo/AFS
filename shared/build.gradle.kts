@@ -17,11 +17,16 @@
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
+object Versions {
+    val sqldelight = "1.4.4"
+}
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("kotlin-android-extensions")
     id("kotlinx-serialization")
+    id("com.squareup.sqldelight") version "1.4.4"
 }
 
 repositories {
@@ -69,6 +74,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("androidx.core:core-ktx:1.3.1")
+                implementation("com.squareup.sqldelight:android-driver:${Versions.sqldelight}")
             }
         }
         val androidTest by getting {
@@ -77,7 +83,9 @@ kotlin {
                 implementation("junit:junit:4.13")
             }
         }
-        val iosMain by getting
+        val iosMain by getting {
+
+        }
         val iosTest by getting
     }
 }
@@ -122,4 +130,13 @@ tasks.getByName("build").dependsOn(packForXcode)
 
 apply {
     from("${rootProject.projectDir}/kotlinter.gradle")
+}
+
+sqldelight {
+    database("AfsDatabase") {
+        packageName = "ru.olegivo.afs.shared.db"
+        sourceFolders = listOf("sqldelight")
+        schemaOutputDirectory = file("src/main/sqldelight/databases")
+        dialect = "sqlite:3.24"
+    }
 }

@@ -19,6 +19,7 @@ package ru.olegivo.afs.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxMaybe
 import kotlinx.coroutines.rx2.rxSingle
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -29,6 +30,9 @@ class CoroutineToRxAdapter @Inject constructor() {
 
     fun <T : Any> runToSingle(block: suspend CoroutineScope.() -> T) =
         rxSingle(coroutineContext, block)
+
+    fun <T : Any> runToMaybe(block: suspend CoroutineScope.() -> T?) =
+        rxMaybe(coroutineContext, block)
 
     fun runToCompletable(block: suspend CoroutineScope.() -> Unit) =
         rxCompletable(coroutineContext, block)

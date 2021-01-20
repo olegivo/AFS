@@ -17,52 +17,51 @@
 
 package ru.olegivo.afs.favorites.db
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import ru.olegivo.afs.common.db.BaseRxDao
 import ru.olegivo.afs.common.db.FakeAfsDatabase
-import ru.olegivo.afs.common.db.FakeBaseRxDao
-import ru.olegivo.afs.extensions.toSingle
-import ru.olegivo.afs.favorites.db.models.FavoriteFilterEntity
-import ru.olegivo.afs.favorites.db.models.RecordReminderScheduleEntity
-import java.util.Date
+import ru.olegivo.afs.common.db.FakeBaseDao
+import ru.olegivo.afs.shared.common.db.BaseDao
+import ru.olegivo.afs.shared.datetime.ADate
+import ru.olegivo.afs.shared.favorites.db.FavoriteDao
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
+import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 
 class FakeFavoriteDao(private val tables: FakeAfsDatabase.Tables) :
     FavoriteDao,
-    BaseRxDao<FavoriteFilterEntity> by FakeBaseRxDao(tables.favoriteFilters, { id }) {
+    BaseDao<FavoriteFilters> by FakeBaseDao(tables.favoriteFilters, { id }) {
 
-    override fun getFavoriteFilters() = tables.favoriteFilters.values.toList().toSingle()
+    override suspend fun getFavoriteFilters(): List<FavoriteFilters> =
+        tables.favoriteFilters.values.toList()
 
     override fun removeFilter(
         groupId: Int,
         activityId: Int,
         dayOfWeek: Int,
         minutesOfDay: Int
-    ): Completable {
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun exist(
+    override suspend fun exist(
         groupId: Int,
         activityId: Int,
         dayOfWeek: Int,
         minutesOfDay: Int
-    ) = tables.favoriteFilters.values.any {
+    ): Boolean = tables.favoriteFilters.values.any {
         it.groupId == groupId &&
             it.activityId == activityId &&
             it.dayOfWeek == dayOfWeek &&
             it.minutesOfDay == minutesOfDay
-    }.toSingle()
+    }
 
-    override fun getActiveRecordReminderScheduleIds(moment: Date): Single<List<Long>> {
+    override suspend fun getActiveRecordReminderScheduleIds(moment: ADate): List<Long> {
         TODO("Not yet implemented")
     }
 
-    override fun addReminderToRecord(recordReminder: RecordReminderScheduleEntity): Completable {
+    override fun addReminderToRecord(recordReminder: RecordReminderSchedules) {
         TODO("Not yet implemented")
     }
 
-    override fun hasPlannedReminderToRecord(scheduleId: Long): Single<Boolean> {
+    override suspend fun hasPlannedReminderToRecord(scheduleId: Long): Boolean {
         TODO("Not yet implemented")
     }
 }

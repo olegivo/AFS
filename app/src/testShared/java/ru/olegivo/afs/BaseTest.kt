@@ -23,6 +23,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TestRule
+import ru.olegivo.afs.common.CoroutineToRxAdapter
 
 abstract class BaseTest(
     private val rxHelperImpl: RxHelperImpl = RxHelperImpl(
@@ -43,6 +44,10 @@ abstract class BaseTest(
 
     private val mocks: Array<Any> by lazy { getAllMocks() }
     protected abstract fun getAllMocks(): Array<Any>
+
+    protected val coroutineToRxAdapter = CoroutineToRxAdapter().apply {
+        coroutineContext = testDispatcher
+    }
 
     @Before
     open fun setUp() {

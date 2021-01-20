@@ -27,7 +27,6 @@ import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.BaseTestOf
-import ru.olegivo.afs.common.CoroutineToRxAdapter
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.domain.DateProvider
 import ru.olegivo.afs.common.firstDayOfWeek
@@ -51,9 +50,7 @@ class ScheduleRepositoryImplTest : BaseTestOf<ScheduleRepository>() {
         scheduleNetworkSource = scheduleNetworkSource,
         scheduleDbSource = scheduleDbSource,
         dateProvider = dateProvider,
-        coroutineToRxAdapter = CoroutineToRxAdapter().apply {
-            coroutineContext = testDispatcher
-        },
+        coroutineToRxAdapter = coroutineToRxAdapter,
         computationScheduler = testScheduler
     )
 

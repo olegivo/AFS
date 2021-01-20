@@ -19,23 +19,11 @@ package ru.olegivo.afs.common.db
 
 import io.reactivex.rxkotlin.toCompletable
 
-class FakeBaseRxDao<T, TKey>(
-    private val entities: MutableMap<TKey, T>,
-    private val getKey: T.() -> TKey
-) : BaseRxDao<T> {
-    override fun insert(vararg obj: T) =
-        {
-            obj.forEach {
-                val key = it.getKey()
-                if (entities.containsKey(key)) throw RuntimeException("Duplicate key $key. Aborting insert")
-                entities[key] = it
-            }
-        }.toCompletable()
+class FakeBaseRxDao<T, TKey>(entities: MutableMap<TKey, T>, getKey: T.() -> TKey) : BaseRxDao<T> {
+    private val dao = FakeBaseDao(entities, getKey)
+    override fun insertCompletable(vararg obj: T) =
+        { dao.insert(*obj) }.toCompletable()
 
-    override fun upsert(objects: List<T>) =
-        {
-            objects.forEach {
-                entities[it.getKey()] = it
-            }
-        }.toCompletable()
+    override fun upsertCompletable(objects: List<T>) =
+        { dao.upsert(objects) }.toCompletable()
 }

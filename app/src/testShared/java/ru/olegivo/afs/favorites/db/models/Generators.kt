@@ -19,9 +19,11 @@ package ru.olegivo.afs.favorites.db.models
 
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomString
+import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
 
 fun createFavoriteFilterEntity() =
-    FavoriteFilterEntity(
+    FavoriteFilters(
+        id = getRandomInt(),
         clubId = getRandomInt(),
         groupId = getRandomInt(),
         group = getRandomString(),

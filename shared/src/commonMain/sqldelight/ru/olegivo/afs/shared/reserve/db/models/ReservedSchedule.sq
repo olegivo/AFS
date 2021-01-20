@@ -1,0 +1,24 @@
+import ru.olegivo.afs.shared.datetime.ADate;
+
+CREATE TABLE IF NOT EXISTS reservedSchedules (
+    id INTEGER PRIMARY KEY NOT NULL,
+    datetime INTEGER AS ADate NOT NULL
+);
+
+getReservedScheduleIds:
+SELECT id FROM reservedSchedules WHERE datetime >= :from AND datetime < :until
+;
+
+isScheduleReserved:
+SELECT EXISTS (SELECT * FROM reservedSchedules WHERE id = :scheduleId)
+;
+
+insert:
+INSERT INTO reservedSchedules
+VALUES ?
+;
+
+upsert:
+INSERT OR REPLACE INTO reservedSchedules
+VALUES ?
+;

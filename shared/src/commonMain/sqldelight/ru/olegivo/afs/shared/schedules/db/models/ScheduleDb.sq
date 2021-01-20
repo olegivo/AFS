@@ -1,0 +1,113 @@
+import ru.olegivo.afs.shared.datetime.ADate;
+
+CREATE TABLE IF NOT EXISTS schedules (
+    id INTEGER PRIMARY KEY NOT NULL,
+    clubId INTEGER AS Int NOT NULL,
+    groupId INTEGER AS Int NOT NULL,
+    `group` TEXT NOT NULL,
+    activityId INTEGER AS Int NOT NULL,
+    activity TEXT NOT NULL,
+    datetime INTEGER AS ADate NOT NULL,
+    `length` INTEGER AS Int NOT NULL,
+    preEntry INTEGER AS Boolean NOT NULL,
+    totalSlots INTEGER AS Int,
+    recordFrom INTEGER AS ADate,
+    recordTo INTEGER AS ADate
+    -- // TODO: later: room, trainer
+)
+;
+
+CREATE INDEX IF NOT EXISTS index_schedules_datetime_clubId ON schedules (datetime, clubId)
+;
+
+getSchedules:
+SELECT
+    id,
+    clubId,
+    groupId,
+    `group`,
+    activityId,
+    activity,
+    datetime,
+    `length`,
+    preEntry,
+    totalSlots,
+    recordFrom,
+    recordTo
+FROM schedules
+WHERE
+    1=1
+    AND datetime >= :from
+    AND datetime < :until
+    AND clubId = :clubId
+;
+
+getSchedule:
+SELECT
+    id,
+    clubId,
+    groupId,
+    `group`,
+    activityId,
+    activity,
+    datetime,
+    `length`,
+    preEntry,
+    totalSlots,
+    recordFrom,
+    recordTo
+FROM schedules
+WHERE
+    1=1
+    AND id = :id
+;
+
+getSchedulesByIds:
+SELECT
+    id,
+    clubId,
+    groupId,
+    `group`,
+    activityId,
+    activity,
+    datetime,
+    `length`,
+    preEntry,
+    totalSlots,
+    recordFrom,
+    recordTo
+FROM schedules
+WHERE id IN ?
+;
+
+filterSchedules:
+SELECT
+    id,
+    clubId,
+    groupId,
+    `group`,
+    activityId,
+    activity,
+    datetime,
+    `length`,
+    preEntry,
+    totalSlots,
+    recordFrom,
+    recordTo
+FROM schedules
+WHERE
+    1=1
+    AND clubId = :clubId
+    AND groupId = :groupId
+    AND activityId = :activityId
+;
+
+insert:
+INSERT INTO schedules
+VALUES ?
+;
+
+upsert:
+INSERT OR REPLACE INTO schedules
+VALUES ?
+;
