@@ -21,7 +21,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import java.util.*
+import java.util.Date
 
 interface FavoritesRepository {
     fun addFilter(favoriteFilter: FavoriteFilter): Completable

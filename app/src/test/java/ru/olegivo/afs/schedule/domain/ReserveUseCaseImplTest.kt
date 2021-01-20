@@ -33,7 +33,7 @@ import ru.olegivo.afs.schedule.domain.models.Reserve
 import ru.olegivo.afs.schedule.domain.models.ReserveResult
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
 import ru.olegivo.afs.schedules.domain.models.createSportsActivity
-import java.util.*
+import java.util.Date
 
 class ReserveUseCaseImplTest : BaseTestOf<ReserveUseCase>() {
 

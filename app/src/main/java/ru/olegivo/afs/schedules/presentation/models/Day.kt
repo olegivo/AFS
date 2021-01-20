@@ -17,6 +17,6 @@
 
 package ru.olegivo.afs.schedules.presentation.models
 
-import java.util.*
+import java.util.Date
 
 data class Day(val caption: String, val date: Date)

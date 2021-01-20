@@ -19,7 +19,7 @@ package ru.olegivo.afs.schedules.presentation
 
 import ru.olegivo.afs.common.presentation.PresentationContract
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import java.util.*
+import java.util.Date
 
 interface DayScheduleContract {
     interface Presenter : PresentationContract.Presenter<View> {

@@ -19,7 +19,7 @@ package ru.olegivo.afs.schedules.domain
 
 import io.reactivex.Maybe
 import ru.olegivo.afs.schedules.domain.models.SportsActivity
-import java.util.*
+import java.util.Date
 
 interface GetDaySportsActivitiesUseCase {
     operator fun invoke(clubId: Int, day: Date): Maybe<List<SportsActivity>>

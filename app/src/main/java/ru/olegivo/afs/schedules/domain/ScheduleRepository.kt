@@ -23,7 +23,7 @@ import io.reactivex.Single
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.schedules.domain.models.Schedule
 import ru.olegivo.afs.schedules.domain.models.Slot
-import java.util.*
+import java.util.Date
 
 interface ScheduleRepository {
     fun getCurrentWeekSchedule(clubId: Int): Maybe<List<Schedule>>

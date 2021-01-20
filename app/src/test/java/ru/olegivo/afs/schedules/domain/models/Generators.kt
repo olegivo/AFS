@@ -23,7 +23,7 @@ import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.helpers.getRandomString
 import ru.olegivo.afs.schedule.domain.models.ReserveContacts
-import java.util.*
+import java.util.Date
 
 fun createSportsActivity(
     datetime: Date? = null,

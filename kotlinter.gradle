@@ -20,7 +20,6 @@ apply plugin: "org.jmailen.kotlinter"
 kotlinter {
     disabledRules = [
             "comment-spacing",
-            "no-wildcard-imports",
             "curly-spacing"
     ]
 }
