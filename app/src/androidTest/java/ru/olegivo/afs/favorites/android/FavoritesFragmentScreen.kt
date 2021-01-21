@@ -18,11 +18,11 @@
 package ru.olegivo.afs.favorites.android
 
 import android.view.View
-import com.agoda.kakao.recycler.KRecyclerItem
-import com.agoda.kakao.recycler.KRecyclerView
-import com.agoda.kakao.text.KTextView
-import com.agoda.kakao.toolbar.KToolbar
 import com.kaspersky.kaspresso.screens.KScreen
+import io.github.kakaocup.kakao.recycler.KRecyclerItem
+import io.github.kakaocup.kakao.recycler.KRecyclerView
+import io.github.kakaocup.kakao.text.KTextView
+import io.github.kakaocup.kakao.toolbar.KToolbar
 import org.hamcrest.Matcher
 import ru.olegivo.afs.R
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem

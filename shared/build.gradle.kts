@@ -18,7 +18,7 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 object Versions {
-    val sqldelight = "1.4.4"
+    val sqldelight = "1.5.1"
 }
 
 plugins {
@@ -26,13 +26,12 @@ plugins {
     id("com.android.library")
     id("kotlin-android-extensions")
     id("kotlinx-serialization")
-    id("com.squareup.sqldelight") version "1.4.4"
+    id("com.squareup.sqldelight") version "1.5.1"
 }
 
 repositories {
     gradlePluginPortal()
     google()
-    jcenter()
     mavenCentral()
     maven(url = "https://kotlin.bintray.com/kotlinx/")
     maven {
@@ -54,7 +53,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
                 //Network
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
@@ -62,7 +61,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
                 //Coroutines
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.1")
             }
         }
         val commonTest by getting {
@@ -73,14 +72,14 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("androidx.core:core-ktx:1.3.1")
+                implementation("androidx.core:core-ktx:1.6.0")
                 implementation("com.squareup.sqldelight:android-driver:${Versions.sqldelight}")
             }
         }
         val androidTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation("junit:junit:4.13")
+                implementation("junit:junit:4.13.1")
             }
         }
         val iosMain by getting {
@@ -95,8 +94,6 @@ android {
     defaultConfig {
         minSdkVersion(21)
         targetSdkVersion(29)
-        versionCode = 1
-        versionName = "1.0"
     }
     buildTypes {
         getByName("release") {
@@ -111,7 +108,7 @@ android {
     }
 }
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.0.10")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.1")
 }
 val packForXcode by tasks.creating(Sync::class) {
     group = "build"

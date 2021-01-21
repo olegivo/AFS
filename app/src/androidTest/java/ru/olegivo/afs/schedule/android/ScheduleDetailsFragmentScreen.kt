@@ -17,14 +17,14 @@
 
 package ru.olegivo.afs.schedule.android
 
-import com.agoda.kakao.check.KCheckBox
-import com.agoda.kakao.common.assertions.BaseAssertions
-import com.agoda.kakao.common.views.KView
-import com.agoda.kakao.edit.KTextInputLayout
-import com.agoda.kakao.text.KButton
-import com.agoda.kakao.text.KTextView
-import com.agoda.kakao.toolbar.KToolbar
 import com.kaspersky.kaspresso.screens.KScreen
+import io.github.kakaocup.kakao.check.KCheckBox
+import io.github.kakaocup.kakao.common.assertions.BaseAssertions
+import io.github.kakaocup.kakao.common.views.KView
+import io.github.kakaocup.kakao.edit.KTextInputLayout
+import io.github.kakaocup.kakao.text.KButton
+import io.github.kakaocup.kakao.text.KTextView
+import io.github.kakaocup.kakao.toolbar.KToolbar
 import ru.olegivo.afs.R
 import ru.olegivo.afs.schedules.presentation.models.SportsActivityDisplay
 
