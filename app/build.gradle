@@ -228,7 +228,7 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:1.4.0'
+    implementation 'com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:1.4.1'
 
     implementation "com.squareup.cycler:cycler:0.1.4"
 
