@@ -188,7 +188,7 @@ dependencies {
     def recyclerViewVersion = "1.1.0"
     def retrofitVersion = "2.9.0"
     def sqlDelightVersion = '1.4.4'
-    def workVersion = "2.4.0"
+    def workVersion = "2.5.0"
     def androidXFragmentVersion = "1.2.5"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
