@@ -178,7 +178,7 @@ dependencyUpdates {
 dependencies {
     def assertJVersion = '3.19.0'
     def coroutinesVersion = "1.4.2"
-    def daggerVersion = "2.31.2"
+    def daggerVersion = "2.32"
     def javaxInjectVersion = '1'
     def jUnitVersion = '4.13.1'
     def ktorVersion = "1.5.0"
