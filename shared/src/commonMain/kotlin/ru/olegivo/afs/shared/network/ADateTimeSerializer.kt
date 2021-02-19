@@ -62,7 +62,6 @@ object ADateTimeSerializer : KSerializer<ADate> {
 //        return localDateTime
 //        return instant.toLocalDateTime(timeZone)
 //    }
-
 }
 
 @Serializer(forClass = Instant::class)
@@ -75,5 +74,4 @@ object InstantSerializer : KSerializer<Instant> {
 
     override fun deserialize(decoder: Decoder): Instant =
         decoder.decodeString().toInstant()
-
 }

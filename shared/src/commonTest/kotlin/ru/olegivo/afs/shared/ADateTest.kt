@@ -41,7 +41,13 @@ class ADateTest {
     }
 
     private fun String.assertDate(
-        year: Int, month: Month, day: Int, hours: Int, minutes: Int, seconds: Int, timeZone: String
+        year: Int,
+        month: Month,
+        day: Int,
+        hours: Int,
+        minutes: Int,
+        seconds: Int,
+        timeZone: String
     ) {
         val aDate = ADate.fromString(this)
         val localDateTime = aDate.local

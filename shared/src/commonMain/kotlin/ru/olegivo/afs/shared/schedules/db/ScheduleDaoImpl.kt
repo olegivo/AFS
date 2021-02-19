@@ -69,4 +69,3 @@ class ScheduleDaoImpl constructor(db: AfsDatabase) : ScheduleDao {
             }
         }
 }
-
