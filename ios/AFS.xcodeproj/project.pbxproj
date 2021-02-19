@@ -15,6 +15,8 @@
 		7C9744CF25DFE29F002CA9AD /* AFS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7C9744CD25DFE29F002CA9AD /* AFS.xcdatamodeld */; };
 		7C9744DA25DFE29F002CA9AD /* AFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9744D925DFE29F002CA9AD /* AFSTests.swift */; };
 		7C9744E525DFE29F002CA9AD /* AFSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9744E425DFE29F002CA9AD /* AFSUITests.swift */; };
+		7C9744FA25DFE8B4002CA9AD /* shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C9744F925DFE8B4002CA9AD /* shared.framework */; };
+		7C9744FB25DFE8B4002CA9AD /* shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7C9744F925DFE8B4002CA9AD /* shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +36,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		7C9744FC25DFE8B4002CA9AD /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7C9744FB25DFE8B4002CA9AD /* shared.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		7C9744BF25DFE29D002CA9AD /* AFS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AFS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C9744C225DFE29D002CA9AD /* AFSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AFSApp.swift; sourceTree = "<group>"; };
@@ -49,6 +65,7 @@
 		7C9744E025DFE29F002CA9AD /* AFSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AFSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C9744E425DFE29F002CA9AD /* AFSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AFSUITests.swift; sourceTree = "<group>"; };
 		7C9744E625DFE29F002CA9AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7C9744F925DFE8B4002CA9AD /* shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = shared.framework; path = "../shared/build/xcode-frameworks/shared.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C9744FA25DFE8B4002CA9AD /* shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +101,7 @@
 				7C9744D825DFE29F002CA9AD /* AFSTests */,
 				7C9744E325DFE29F002CA9AD /* AFSUITests */,
 				7C9744C025DFE29D002CA9AD /* Products */,
+				7C9744F825DFE8B3002CA9AD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,6 +155,14 @@
 			path = AFSUITests;
 			sourceTree = "<group>";
 		};
+		7C9744F825DFE8B3002CA9AD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7C9744F925DFE8B4002CA9AD /* shared.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,9 +170,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7C9744E925DFE29F002CA9AD /* Build configuration list for PBXNativeTarget "AFS" */;
 			buildPhases = (
+				7C9744FF25DFEC6B002CA9AD /* ShellScript */,
 				7C9744BB25DFE29D002CA9AD /* Sources */,
 				7C9744BC25DFE29D002CA9AD /* Frameworks */,
 				7C9744BD25DFE29D002CA9AD /* Resources */,
+				7C9744FC25DFE8B4002CA9AD /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -259,6 +288,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7C9744FF25DFEC6B002CA9AD /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/..\"\n./gradlew shared:packForXCode -PXCODE_CONFIGURATION=$CONFIGURATION\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7C9744BB25DFE29D002CA9AD /* Sources */ = {
@@ -428,6 +477,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"AFS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
 				INFOPLIST_FILE = AFS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -449,6 +499,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"AFS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
 				INFOPLIST_FILE = AFS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
