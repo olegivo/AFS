@@ -189,7 +189,7 @@ dependencies {
     def retrofitVersion = "2.9.0"
     def sqlDelightVersion = '1.4.4'
     def workVersion = "2.5.0"
-    def androidXFragmentVersion = "1.2.5"
+    def androidXFragmentVersion = "1.3.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':shared')
