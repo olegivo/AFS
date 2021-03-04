@@ -9,17 +9,28 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        VStack {
-            Spacer()
-            AFSButton(title: "Settings") {
-                print("TODO: Settings")
+        NavigationView {
+            VStack {
+                Spacer()
+                NavigationLink (
+                    destination: SettingsView(),
+                    label: {
+                        AFSNavigationLink(title: "Settings")
+                    }
+                )
+                
+                AFSButton(title: "Favorites") {
+                    print("TODO: Favorites")
+                }
+                .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+
+                AFSButton(title: "Schedule") {
+                    print("TODO: Schedule")
+                }
+                .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
             }
-            AFSButton(title: "Favorites") {
-                print("TODO: Favorites")
-            }
-            AFSButton(title: "Schedule") {
-                print("TODO: Schedule")
-            }
+            .padding()
+            .navigationTitle("AFS")
         }
     }
 }
@@ -41,15 +52,22 @@ struct AFSButton: View {
     
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .padding(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                .background(Color.white)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(lineWidth: 2)
-                        .foregroundColor(.blue)
-                )
-                .shadow(color: Color.gray.opacity(0.4), radius: 3, x: 1, y: 2)
+            AFSNavigationLink(title: title)
         }
     }
+}
+
+func AFSNavigationLink(title: String) -> some View {
+    return
+        Text(title)
+        .padding(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+        .frame(maxWidth: .infinity)
+        .background(Color.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(lineWidth: 2)
+                .foregroundColor(.blue)
+        )
+        .shadow(color: Color.gray.opacity(0.4), radius: 3, x: 1, y: 2)
+    
 }
