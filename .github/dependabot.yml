@@ -1,0 +1,60 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.jetbrains.kotlinx:kotlinx-serialization-cbor
+    versions:
+    - 1.1.0
+  - dependency-name: com.google.firebase:firebase-bom
+    versions:
+    - 26.4.0
+    - 26.5.0
+  - dependency-name: com.google.dagger:dagger-android-processor
+    versions:
+    - "2.32"
+  - dependency-name: com.google.dagger:dagger-compiler
+    versions:
+    - "2.32"
+  - dependency-name: com.google.dagger:dagger-android-support
+    versions:
+    - "2.32"
+  - dependency-name: com.google.dagger:dagger-android
+    versions:
+    - "2.32"
+  - dependency-name: com.google.dagger:dagger
+    versions:
+    - "2.32"
+  - dependency-name: io.ktor:ktor-client-serialization-jvm
+    versions:
+    - 1.5.1
+  - dependency-name: io.ktor:ktor-client-serialization
+    versions:
+    - 1.5.1
+  - dependency-name: io.ktor:ktor-client-okhttp
+    versions:
+    - 1.5.1
+  - dependency-name: io.ktor:ktor-client-cio
+    versions:
+    - 1.5.1
+  - dependency-name: io.ktor:ktor-client-core
+    versions:
+    - 1.5.1
+  - dependency-name: com.android.tools:desugar_jdk_libs
+    versions:
+    - 1.1.1
+  - dependency-name: org.objenesis:objenesis
+    versions:
+    - "3.1"
+  - dependency-name: org.jetbrains.kotlin:kotlin-serialization
+    versions:
+    - 1.4.21-2
+  - dependency-name: org.jetbrains.kotlin:kotlin-gradle-plugin
+    versions:
+    - 1.4.21-2
+  - dependency-name: com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection
+    versions:
+    - 1.4.1
