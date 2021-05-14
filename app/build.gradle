@@ -249,7 +249,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.0.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.2.1")
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
