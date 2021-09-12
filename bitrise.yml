@@ -8,8 +8,6 @@ trigger_map:
   - push_branch: '*'
     workflow: primary
 workflows:
-  empty:
-    description: Empty workflow for exclude branch from push trigger
   deploy:
     description: >
       ## How to get a signed APK
@@ -66,8 +64,8 @@ workflows:
     steps:
       - activate-ssh-key@4:
           run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-      - git-clone@4: {}
-      - cache-pull@2: {}
+      - git-clone@4: { }
+      - cache-pull@2: { }
       - install-missing-android-tools@2:
           inputs:
             - gradlew_path: $GRADLEW_PATH
@@ -102,14 +100,31 @@ workflows:
           title: Firebase App Distribution
           inputs:
             - gradle_task: appDistributionUploadDebug
-      - deploy-to-bitrise-io@1: {}
+      - deploy-to-bitrise-io@1: { }
+  empty:
+    description: Empty workflow for exclude branch from push trigger
   primary:
     steps:
       - activate-ssh-key@4:
           run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-      - git-clone@4: {}
-      - cache-pull@2: {}
-      - gradle-runner@1:
+      - git-clone@6: { }
+      - script@1:
+          inputs:
+            - content: >-
+                sudo update-alternatives --set javac
+                /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
+
+                sudo update-alternatives --set java
+                /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+
+
+                export JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+
+                envman add --key JAVA_HOME --value
+                '/usr/lib/jvm/java-11-openjdk-amd64'
+          title: Setup Java 11
+      - cache-pull@2: { }
+      - gradle-runner@2:
           title: Static Analysis
           inputs:
             - gradle_task: staticAnalysis
@@ -142,7 +157,7 @@ workflows:
           inputs:
             - destination: $PROJECT_LOCATION/$MODULE/AFS.debug.jks
             - source: $BITRISEIO_SIGNING_KEYSTORE_DEBUG_URL
-      - gradle-runner@1:
+      - gradle-runner@2:
           title: Android lint
           inputs:
             - gradle_task: lintDebug
@@ -152,7 +167,7 @@ workflows:
             - project_location: $PROJECT_LOCATION
             - module: $MODULE
             - variant: $VARIANT
-      - gradle-runner@1:
+      - gradle-runner@2:
           title: Unit tests coverage
           inputs:
             - gradle_task: testDebugUnitTestCoverageVerification
@@ -163,18 +178,18 @@ workflows:
             - deploy_path: >-
                 $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
             - is_compress: 'true'
-      - gradle-runner@1:
+      - gradle-runner@2:
           title: Build android tests
           inputs:
             - app_file_exclude_filter: '*.apk'
             - test_apk_file_exclude_filter: '*.apk'
             - gradle_task: packageDebugAndroidTest
-      - cache-push@2: {}
+      - cache-push@2: { }
       - avd-manager@1:
           inputs:
             - api_level: '29'
-      - wait-for-android-emulator@1: {}
-      - gradle-runner@1:
+      - wait-for-android-emulator@1: { }
+      - gradle-runner@2:
           title: Run android tests
           inputs:
             - app_file_exclude_filter: '*.apk'
@@ -187,8 +202,8 @@ workflows:
             - deploy_path: >-
                 $PROJECT_LOCATION/$MODULE/build/reports/androidTests/connected/flavors/debugAndroidTest
             - is_compress: 'true'
-      - deploy-to-bitrise-io@1: {}
-      - cache-push@2: {}
+      - deploy-to-bitrise-io@1: { }
+      - cache-push@2: { }
 app:
   envs:
     - opts:

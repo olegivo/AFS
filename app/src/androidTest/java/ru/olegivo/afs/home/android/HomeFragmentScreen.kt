@@ -17,8 +17,8 @@
 
 package ru.olegivo.afs.home.android
 
-import com.agoda.kakao.text.KButton
 import com.kaspersky.kaspresso.screens.KScreen
+import io.github.kakaocup.kakao.text.KButton
 import ru.olegivo.afs.R
 
 object HomeFragmentScreen : KScreen<HomeFragmentScreen>() {

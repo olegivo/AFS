@@ -17,9 +17,9 @@
 
 package ru.olegivo.afs.settings.android
 
-import com.agoda.kakao.check.KCheckBox
-import com.agoda.kakao.toolbar.KToolbar
 import com.kaspersky.kaspresso.screens.KScreen
+import io.github.kakaocup.kakao.check.KCheckBox
+import io.github.kakaocup.kakao.toolbar.KToolbar
 import ru.olegivo.afs.R
 import ru.olegivo.afs.home.android.HomeFragment
 

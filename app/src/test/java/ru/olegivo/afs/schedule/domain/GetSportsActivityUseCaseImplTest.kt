@@ -29,6 +29,9 @@ import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.schedules.domain.ScheduleRepository
+import ru.olegivo.afs.schedules.domain.models.Schedule
+import ru.olegivo.afs.schedules.domain.models.Slot
+import ru.olegivo.afs.schedules.domain.models.SportsActivity
 import ru.olegivo.afs.schedules.domain.models.createSchedule
 import ru.olegivo.afs.schedules.domain.models.createSlot
 
@@ -50,7 +53,7 @@ class GetSportsActivityUseCaseImplTest : BaseTestOf<GetSportsActivityUseCase>() 
     //</editor-fold>
 
     @Test
-    fun `invoke RETURNS sports activity from repository`() {
+    fun `invoke RETURNS sports activity from repository WHEN available slots present`() {
         val clubId = getRandomInt()
         val scheduleId = getRandomLong()
         val schedule = createSchedule()
@@ -58,6 +61,62 @@ class GetSportsActivityUseCaseImplTest : BaseTestOf<GetSportsActivityUseCase>() 
         val isReserved = getRandomBoolean()
         val isFavorite = getRandomBoolean()
 
+        setupResponse(scheduleId, schedule, clubId, slot, isReserved, isFavorite)
+
+        val result = instance.invoke(clubId, scheduleId)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        checkResult(scheduleId, clubId, schedule, result, slot, isReserved, isFavorite)
+    }
+
+    @Test
+    fun `invoke RETURNS sports activity from repository WHEN available slots not present`() {
+        val clubId = getRandomInt()
+        val scheduleId = getRandomLong()
+        val schedule = createSchedule()
+        val slot = createSlot(scheduleId).copy(slots = null)
+        val isReserved = getRandomBoolean()
+        val isFavorite = getRandomBoolean()
+
+        setupResponse(scheduleId, schedule, clubId, slot, isReserved, isFavorite)
+
+        val result = instance.invoke(clubId, scheduleId)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        checkResult(scheduleId, clubId, schedule, result, slot, isReserved, isFavorite)
+    }
+
+    @Test
+    fun `invoke RETURNS sports activity from repository WHEN wrong slots present`() {
+        val clubId = getRandomInt()
+        val scheduleId = getRandomLong()
+        val schedule = createSchedule()
+        val slot = createSlot(scheduleId + 1)
+        val isReserved = getRandomBoolean()
+        val isFavorite = getRandomBoolean()
+
+        setupResponse(scheduleId, schedule, clubId, slot, isReserved, isFavorite)
+
+        val result = instance.invoke(clubId, scheduleId)
+            .test().andTriggerActions()
+            .assertNoErrors()
+            .values().single()
+
+        checkResult(scheduleId, clubId, schedule, result, null, isReserved, isFavorite)
+    }
+
+    private fun setupResponse(
+        scheduleId: Long,
+        schedule: Schedule,
+        clubId: Int,
+        slot: Slot,
+        isReserved: Boolean,
+        isFavorite: Boolean
+    ) {
         given(scheduleRepository.getSchedule(scheduleId))
             .willReturn(Single.just(schedule))
         given(scheduleRepository.getSlots(clubId, listOf(scheduleId)))
@@ -66,19 +125,24 @@ class GetSportsActivityUseCaseImplTest : BaseTestOf<GetSportsActivityUseCase>() 
             .willReturn(Single.just(isReserved))
         given(favoritesRepository.isFavorite(schedule))
             .willReturn(Single.just(isFavorite))
+    }
 
-        val result = instance.invoke(clubId, scheduleId)
-            .test().andTriggerActions()
-            .assertNoErrors()
-            .values().single()
-
+    private fun checkResult(
+        scheduleId: Long,
+        clubId: Int,
+        schedule: Schedule,
+        result: SportsActivity,
+        slot: Slot?,
+        isReserved: Boolean,
+        isFavorite: Boolean
+    ) {
         verify(scheduleRepository).getSchedule(scheduleId)
         verify(scheduleRepository).getSlots(clubId, listOf(scheduleId))
         verify(scheduleRepository).isScheduleReserved(scheduleId)
         verify(favoritesRepository).isFavorite(schedule)
 
         assertThat(result.schedule).isEqualTo(schedule)
-        assertThat(result.availableSlots).isEqualTo(slot.slots!!)
+        assertThat(result.availableSlots).isEqualTo(slot?.slots)
         assertThat(result.isReserved).isEqualTo(isReserved)
         assertThat(result.isFavorite).isEqualTo(isFavorite)
     }

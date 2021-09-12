@@ -13,3 +13,6 @@
 /captures
 .externalNativeBuild
 /shared/build
+ios/AFS.xcodeproj/project.xcworkspace/xcuserdata/
+/ios/AFS.xcodeproj/xcuserdata/
+/ios/DerivedData/
