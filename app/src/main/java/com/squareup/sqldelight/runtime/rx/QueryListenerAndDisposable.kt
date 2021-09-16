@@ -21,7 +21,7 @@ import com.squareup.sqldelight.Query
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.atomic.AtomicBoolean
 
-internal class QueryListenerAndDisposable<T : Any>(
+internal class QueryListenerAndDisposableInt<T : Any>(
     private val query: Query<T>,
     private val emit: () -> Unit
 ) : AtomicBoolean(), Query.Listener, Disposable {

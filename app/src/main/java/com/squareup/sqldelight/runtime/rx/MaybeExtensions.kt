@@ -36,7 +36,8 @@ private class MaybeQueryOnSubscribe<T : Any>(
     private val query: Query<T>
 ) : MaybeOnSubscribe<Query<T>> {
     override fun subscribe(emitter: MaybeEmitter<Query<T>>) {
-        val listenerAndDisposable = QueryListenerAndDisposable(query) { emitter.onSuccess(query) }
+        val listenerAndDisposable =
+            QueryListenerAndDisposableInt(query) { emitter.onSuccess(query) }
         emitter.setDisposable(listenerAndDisposable)
         query.addListener(listenerAndDisposable)
         emitter.onSuccess(query)
