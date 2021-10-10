@@ -21,8 +21,8 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.db.BaseDaoNewTest
-import ru.olegivo.afs.common.toADate
 import ru.olegivo.afs.common.toDate
+import ru.olegivo.afs.common.toInstantX
 import ru.olegivo.afs.helpers.getRandomInt
 import ru.olegivo.afs.randomSubList
 import ru.olegivo.afs.repeat
@@ -75,7 +75,7 @@ class ScheduleDaoImplTest : BaseDaoNewTest<ScheduleDaoImpl>(
 
         dao.upsert(schedules)
         runBlocking {
-            assertThat(dao.getSchedules(clubId, from.toADate(), until.toADate()))
+            assertThat(dao.getSchedules(clubId, from.toInstantX(), until.toInstantX()))
                 .containsExactlyInAnyOrderElementsOf(expected)
         }
     }

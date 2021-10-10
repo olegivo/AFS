@@ -16,25 +16,25 @@
  */
 
 //@file:UseSerializers(InstantSerializer::class)
-@file:UseSerializers(ADateTimeSerializer::class)
+@file:UseSerializers(InstantIso8601Serializer::class)
 
 package ru.olegivo.afs.shared.network.models
 
+import kotlinx.datetime.Instant
+import kotlinx.datetime.serializers.InstantIso8601Serializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import ru.olegivo.afs.shared.datetime.ADate
-import ru.olegivo.afs.shared.network.ADateTimeSerializer
 
 @Serializable
 data class Schedule(
     val activity: Activity,
 //    val age: Any?,
     val age: Int?,
-    val beginDate: ADate?,
+    val beginDate: Instant?,
     // TODO: later: val change: Change?,
     // TODO: later: val commercial: Boolean,
-    val datetime: ADate,
-    val endDate: ADate?,
+    val datetime: Instant,
+    val endDate: Instant?,
     // TODO: later: val firstFree: Boolean,
     val group: Group,
     val id: Long,

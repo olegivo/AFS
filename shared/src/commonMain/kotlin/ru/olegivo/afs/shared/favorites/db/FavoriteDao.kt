@@ -17,8 +17,8 @@
 
 package ru.olegivo.afs.shared.favorites.db
 
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.shared.common.db.BaseDao
-import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
 
@@ -27,7 +27,7 @@ interface FavoriteDao : BaseDao<FavoriteFilters> {
     suspend fun getFavoriteFilters(): List<FavoriteFilters>
     fun removeFilter(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int)
     suspend fun exist(groupId: Int, activityId: Int, dayOfWeek: Int, minutesOfDay: Int): Boolean
-    suspend fun getActiveRecordReminderScheduleIds(moment: ADate): List<Long>
+    suspend fun getActiveRecordReminderScheduleIds(moment: Instant): List<Long>
     fun addReminderToRecord(recordReminder: RecordReminderSchedules)
     suspend fun hasPlannedReminderToRecord(scheduleId: Long): Boolean
 }

@@ -23,7 +23,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toCompletable
 import ru.olegivo.afs.common.CoroutineToRxAdapter
-import ru.olegivo.afs.common.toADate
+import ru.olegivo.afs.common.toInstantX
 import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.extensions.parallelMapList
 import ru.olegivo.afs.extensions.toSingle
@@ -52,8 +52,8 @@ class ScheduleDbSourceImpl @Inject constructor(
         {
             reserveDao.insert(
                 ReservedSchedules(
-                    schedule.id,
-                    schedule.datetime.toADate()
+                    id = schedule.id,
+                    datetime = schedule.datetime.toInstantX()
                 )
             )
         }
@@ -62,7 +62,7 @@ class ScheduleDbSourceImpl @Inject constructor(
 
     override fun getReservedScheduleIds(from: Date, until: Date): Single<List<Long>> =
         coroutineToRxAdapter.runToSingle {
-            reserveDao.getReservedScheduleIds(from.toADate(), until.toADate())
+            reserveDao.getReservedScheduleIds(from.toInstantX(), until.toInstantX())
         }
             .subscribeOn(ioScheduler)
 
@@ -70,8 +70,8 @@ class ScheduleDbSourceImpl @Inject constructor(
         coroutineToRxAdapter.runToMaybe {
             scheduleDao.getSchedules(
                 clubId,
-                from.toADate(),
-                until.toADate()
+                from.toInstantX(),
+                until.toInstantX()
             )
         }
             .subscribeOn(ioScheduler)

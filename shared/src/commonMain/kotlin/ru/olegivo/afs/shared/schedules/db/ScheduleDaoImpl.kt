@@ -17,7 +17,7 @@
 
 package ru.olegivo.afs.shared.schedules.db
 
-import ru.olegivo.afs.shared.datetime.ADate
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
@@ -26,8 +26,8 @@ class ScheduleDaoImpl constructor(db: AfsDatabase) : ScheduleDao {
 
     override suspend fun getSchedules(
         clubId: Int,
-        from: ADate,
-        until: ADate
+        from: Instant,
+        until: Instant
     ): List<Schedules>? =
         queries.getSchedules(
             from = from,
@@ -69,4 +69,3 @@ class ScheduleDaoImpl constructor(db: AfsDatabase) : ScheduleDao {
             }
         }
 }
-

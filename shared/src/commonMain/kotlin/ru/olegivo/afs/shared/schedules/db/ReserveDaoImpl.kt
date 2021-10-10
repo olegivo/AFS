@@ -17,14 +17,14 @@
 
 package ru.olegivo.afs.shared.schedules.db
 
-import ru.olegivo.afs.shared.datetime.ADate
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 
 class ReserveDaoImpl constructor(db: AfsDatabase) : ReserveDao {
     private val queries = db.reservedScheduleQueries
 
-    override suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long> =
+    override suspend fun getReservedScheduleIds(from: Instant, until: Instant): List<Long> =
         queries.getReservedScheduleIds(from, until)
             .executeAsList() // TODO: ioDispatcher?
 

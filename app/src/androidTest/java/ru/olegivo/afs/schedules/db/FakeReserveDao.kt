@@ -17,10 +17,10 @@
 
 package ru.olegivo.afs.schedules.db
 
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseDao
 import ru.olegivo.afs.shared.common.db.BaseDao
-import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 import ru.olegivo.afs.shared.schedules.db.ReserveDao
 
@@ -28,7 +28,7 @@ class FakeReserveDao(private val tables: FakeAfsDatabase.Tables) :
     ReserveDao,
     BaseDao<ReservedSchedules> by FakeBaseDao(tables.reservedSchedules, { id }) {
 
-    override suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long> {
+    override suspend fun getReservedScheduleIds(from: Instant, until: Instant): List<Long> {
         TODO("Not yet implemented")
     }
 

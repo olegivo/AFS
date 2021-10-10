@@ -17,8 +17,6 @@
 
 package ru.olegivo.afs.schedules.db.models
 
-import ru.olegivo.afs.common.toADate
-import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
@@ -32,12 +30,12 @@ fun Schedules.toData() =
         activity = activity,
         // TODO: later: room = room,
         // TODO: later: trainer = trainer,
-        datetime = datetime.toDate(),
+        datetime = datetime,
         length = length,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = recordFrom?.toDate(),
-        recordTo = recordTo?.toDate()
+        recordFrom = recordFrom,
+        recordTo = recordTo
     )
 
 fun DataSchedule.toDb() =
@@ -50,10 +48,10 @@ fun DataSchedule.toDb() =
         activity = activity,
         // TODO: later: room = room,
         // TODO: later: trainer = trainer,
-        datetime = datetime.toADate(),
+        datetime = datetime,
         length = length,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = recordFrom?.toADate(),
-        recordTo = recordTo?.toADate()
+        recordFrom = recordFrom,
+        recordTo = recordTo
     )

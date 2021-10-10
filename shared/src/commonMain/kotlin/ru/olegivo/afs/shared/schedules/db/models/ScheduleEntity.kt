@@ -17,8 +17,9 @@
 
 package ru.olegivo.afs.shared.schedules.db.models
 
-import ru.olegivo.afs.shared.datetime.ADate
+import kotlinx.datetime.Instant
 
+// TODO: get rid of it?
 data class ScheduleEntity(
     val id: Long,
     val clubId: Int,
@@ -28,10 +29,10 @@ data class ScheduleEntity(
     val activity: String,
     // TODO: later: val room: String?,
     // TODO: later: val trainer: String?,
-    val datetime: ADate,
+    val datetime: Instant,
     val length: Int,
     val preEntry: Boolean,
     val totalSlots: Int?,
-    val recordFrom: ADate?,
-    val recordTo: ADate?
+    val recordFrom: Instant?,
+    val recordTo: Instant?
 )

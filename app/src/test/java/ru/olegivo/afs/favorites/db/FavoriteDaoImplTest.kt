@@ -22,7 +22,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.db.BaseDaoNewTest
-import ru.olegivo.afs.common.toADate
+import ru.olegivo.afs.common.toInstantX
 import ru.olegivo.afs.favorites.db.models.createFavoriteFilterEntity
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomInt
@@ -107,27 +107,27 @@ class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
         val moment = Date()
         val entity = RecordReminderSchedules(
             scheduleId = getRandomLong(),
-            dateFrom = moment.add(minutes = -1).toADate(),
-            dateUntil = moment.add(minutes = 1).toADate()
+            dateFrom = moment.add(minutes = -1).toInstantX(),
+            dateUntil = moment.add(minutes = 1).toInstantX()
         )
         val objects = listOf(
             entity,
             // earlier:
             entity.copy(
                 scheduleId = entity.scheduleId + 1,
-                dateFrom = moment.add(hours = -1).toADate(),
-                dateUntil = moment.add(seconds = -1).toADate()
+                dateFrom = moment.add(hours = -1).toInstantX(),
+                dateUntil = moment.add(seconds = -1).toInstantX()
             ),
             // later:
             entity.copy(
                 scheduleId = entity.scheduleId + 2,
-                dateFrom = moment.add(seconds = 1).toADate(),
-                dateUntil = moment.add(hours = 1).toADate()
+                dateFrom = moment.add(seconds = 1).toInstantX(),
+                dateUntil = moment.add(hours = 1).toInstantX()
             )
         )
         objects.forEach { dao.addReminderToRecord(it) }
         runBlocking {
-            assertThat(dao.getActiveRecordReminderScheduleIds(moment.toADate())).containsOnly(entity.scheduleId)
+            assertThat(dao.getActiveRecordReminderScheduleIds(moment.toInstantX())).containsOnly(entity.scheduleId)
         }
     }
 
@@ -135,8 +135,8 @@ class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
     fun hasPlannedReminderToRecord_RETURNS_true() {
         val entity = RecordReminderSchedules(
             scheduleId = getRandomLong(),
-            dateFrom = getRandomDate().toADate(),
-            dateUntil = getRandomDate().toADate()
+            dateFrom = getRandomDate().toInstantX(),
+            dateUntil = getRandomDate().toInstantX()
         )
         dao.addReminderToRecord(entity)
         runBlocking {
@@ -148,8 +148,8 @@ class FavoriteDaoImplTest : BaseDaoNewTest<FavoriteDaoImpl>(
     fun hasPlannedReminderToRecord_RETURNS_false() {
         val entity = RecordReminderSchedules(
             scheduleId = getRandomLong(),
-            dateFrom = getRandomDate().toADate(),
-            dateUntil = getRandomDate().toADate()
+            dateFrom = getRandomDate().toInstantX(),
+            dateUntil = getRandomDate().toInstantX()
         )
         dao.addReminderToRecord(entity.copy(scheduleId = entity.scheduleId + 1))
         runBlocking {

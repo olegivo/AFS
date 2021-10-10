@@ -17,7 +17,7 @@
 
 package ru.olegivo.afs.shared.favorites.db
 
-import ru.olegivo.afs.shared.datetime.ADate
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
@@ -56,7 +56,7 @@ class FavoriteDaoImpl constructor(db: AfsDatabase) : FavoriteDao {
         )
             .executeAsOne()// TODO: ioDispatcher?
 
-    override suspend fun getActiveRecordReminderScheduleIds(moment: ADate): List<Long> =
+    override suspend fun getActiveRecordReminderScheduleIds(moment: Instant): List<Long> =
         recordReminderScheduleQueries.getActiveRecordReminderScheduleIds(moment)
             .executeAsList() // TODO: ioDispatcher?
 

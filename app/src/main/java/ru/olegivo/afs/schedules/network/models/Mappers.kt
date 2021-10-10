@@ -17,7 +17,6 @@
 
 package ru.olegivo.afs.schedules.network.models
 
-import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.schedules.data.models.DataSchedule
 import ru.olegivo.afs.shared.network.models.Club
 import ru.olegivo.afs.shared.network.models.Schedule
@@ -38,10 +37,10 @@ fun Schedule.toData(clubId: Int) =
         activity = activity.title,
         // TODO: later: room = room?.title,
         // TODO: later: trainer = trainers.firstOrNull()?.title,
-        datetime = datetime.toDate(),
+        datetime = datetime,
         length = length,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = beginDate?.toDate(),
-        recordTo = endDate?.toDate()
+        recordFrom = beginDate,
+        recordTo = endDate
     )

@@ -22,7 +22,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toCompletable
 import ru.olegivo.afs.common.CoroutineToRxAdapter
-import ru.olegivo.afs.common.toADate
+import ru.olegivo.afs.common.toInstantX
 import ru.olegivo.afs.extensions.mapList
 import ru.olegivo.afs.favorites.data.FavoritesDbSource
 import ru.olegivo.afs.favorites.db.models.toDb
@@ -74,7 +74,7 @@ class FavoritesDbSourceImpl @Inject constructor(
 
     override fun getActiveRecordReminderSchedules(moment: Date): Single<List<Long>> =
         coroutineToRxAdapter.runToSingle {
-            favoriteDao.getActiveRecordReminderScheduleIds(moment.toADate())
+            favoriteDao.getActiveRecordReminderScheduleIds(moment.toInstantX())
         }
             .subscribeOn(ioScheduler)
 
@@ -93,8 +93,8 @@ class FavoritesDbSourceImpl @Inject constructor(
             favoriteDao.addReminderToRecord(
                 RecordReminderSchedules(
                     scheduleId = scheduleId,
-                    dateFrom = dateFrom.toADate(),
-                    dateUntil = dateUntil.toADate()
+                    dateFrom = dateFrom.toInstantX(),
+                    dateUntil = dateUntil.toInstantX()
                 )
             )
         }
