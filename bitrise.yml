@@ -128,18 +128,18 @@ workflows:
           title: Static Analysis
           inputs:
             - gradle_task: staticAnalysis
-      - deploy-to-bitrise-io@1:
+      - deploy-to-bitrise-io@2:
           title: Upload KtLint results
           inputs:
             - zip_name: ktlint
             - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/ktlint
             - is_compress: 'true'
-      - deploy-to-bitrise-io@1:
+      - deploy-to-bitrise-io@2:
           title: Upload Detekt results
           inputs:
             - zip_name: detekt
             - deploy_path: $PROJECT_LOCATION/$MODULE/build/reports/detekt/detekt.html
-      - install-missing-android-tools@2:
+      - install-missing-android-tools@3:
           inputs:
             - gradlew_path: $GRADLEW_PATH
       - file-downloader@1:
@@ -171,7 +171,7 @@ workflows:
           title: Unit tests coverage
           inputs:
             - gradle_task: testDebugUnitTestCoverageVerification
-      - deploy-to-bitrise-io@1:
+      - deploy-to-bitrise-io@2:
           title: Uload coverage results
           inputs:
             - zip_name: Coverage
@@ -195,14 +195,14 @@ workflows:
 #            - app_file_exclude_filter: '*.apk'
 #            - test_apk_file_exclude_filter: '*.apk'
 #            - gradle_task: connectedDebugAndroidTest
-#      - deploy-to-bitrise-io@1:
+#      - deploy-to-bitrise-io@2:
 #          title: Upload android tests results
 #          inputs:
 #            - zip_name: Android tests
 #            - deploy_path: >-
 #                $PROJECT_LOCATION/$MODULE/build/reports/androidTests/connected/flavors/debugAndroidTest
 #            - is_compress: 'true'
-      - deploy-to-bitrise-io@1: { }
+      - deploy-to-bitrise-io@2: { }
       - cache-push@2: { }
 app:
   envs:
