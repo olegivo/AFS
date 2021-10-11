@@ -48,12 +48,12 @@ kotlin {
         }
     }
     sourceSets {
-        val ktorVersion = "1.4.0"
+        val ktorVersion = "1.6.4"
         val coroutinesVersion = "1.3.9"
 
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.0")
                 //Network
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
@@ -61,7 +61,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
                 //Coroutines
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.0")
             }
         }
         val commonTest by getting {
