@@ -17,8 +17,9 @@
 
 package ru.olegivo.afs.schedules.data.models
 
+import kotlinx.datetime.Instant
+import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.schedules.domain.models.Schedule
-import java.util.Date
 
 data class DataSchedule(
     val id: Long,
@@ -35,13 +36,13 @@ data class DataSchedule(
     // Инструкторы - Цхададзе Алекси
     // TODO: later: val trainer: String?,
     // Предварительная запись
-    val datetime: Date,
+    val datetime: Instant,
     // Всего мест: 21
     val length: Int,
     val preEntry: Boolean,
     val totalSlots: Int?,
-    val recordFrom: Date?,
-    val recordTo: Date?
+    val recordFrom: Instant?,
+    val recordTo: Instant?
 )
 
 fun DataSchedule.toDomain(): Schedule {
@@ -54,11 +55,11 @@ fun DataSchedule.toDomain(): Schedule {
         activity = activity,
         // TODO: later: room = room,
         // TODO: later: trainer = trainer,
-        datetime = datetime,
+        datetime = datetime.toDate(),
         length = length,
         preEntry = preEntry,
         totalSlots = totalSlots,
-        recordFrom = recordFrom,
-        recordTo = recordTo
+        recordFrom = recordFrom?.toDate(),
+        recordTo = recordTo?.toDate()
     )
 }

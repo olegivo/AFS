@@ -17,12 +17,12 @@
 
 package ru.olegivo.afs.shared.schedules.db
 
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.shared.common.db.BaseDao
-import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.schedules.db.models.Schedules
 
 interface ScheduleDao : BaseDao<Schedules> {
-    suspend fun getSchedules(clubId: Int, from: ADate, until: ADate): List<Schedules>?
+    suspend fun getSchedules(clubId: Int, from: Instant, until: Instant): List<Schedules>?
     suspend fun getSchedule(id: Long): Schedules
     suspend fun getSchedules(ids: List<Long>): List<Schedules>
     suspend fun filterSchedules(clubId: Int, groupId: Int, activityId: Int): List<Schedules>

@@ -21,7 +21,6 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import ru.olegivo.afs.shared.datetime.ADate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -30,23 +29,11 @@ fun LocalDateTime.toDate(): Date {
     return Date(toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds())
 }
 
-fun ADate.toDate(): Date {
-    with(timeZone) {
-        return Date(local.toInstant().toEpochMilliseconds())
-    }
-}
-
-fun Date.toADate() = TimeZone.currentSystemDefault().let {
-    with(it) {
-        ADate(Instant.fromEpochMilliseconds(time).toLocalDateTime(), it)
-    }
-}
-
 fun Instant.toDate(): Date {
     return Date(toEpochMilliseconds())
 }
 
-fun Date.toInstant() = Instant.fromEpochMilliseconds(time)
+fun Date.toInstantX() = Instant.fromEpochMilliseconds(time)
 
 fun String.toDate(): Date {
     val offsetDateTime = OffsetDateTime.parse(this, DateTimeFormatter.ISO_OFFSET_DATE_TIME)

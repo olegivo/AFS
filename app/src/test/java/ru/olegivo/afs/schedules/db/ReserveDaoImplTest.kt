@@ -22,7 +22,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import ru.olegivo.afs.common.add
 import ru.olegivo.afs.common.db.BaseDaoNewTest
-import ru.olegivo.afs.common.toADate
+import ru.olegivo.afs.common.toInstantX
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomLong
 import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
@@ -40,27 +40,27 @@ class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
 
         val entity1 = ReservedSchedules(
             id = getRandomLong(),
-            datetime = from.toADate()
+            datetime = from.toInstantX()
         )
         val entity2 = ReservedSchedules(
             id = getRandomLong(),
-            datetime = until.add(seconds = -1).toADate()
+            datetime = until.add(seconds = -1).toInstantX()
         )
         val objects = listOf(
             entity1,
             entity2,
             ReservedSchedules(
                 id = getRandomLong(),
-                datetime = from.add(seconds = -1).toADate()
+                datetime = from.add(seconds = -1).toInstantX()
             ),
             ReservedSchedules(
                 id = getRandomLong(),
-                datetime = until.toADate()
+                datetime = until.toInstantX()
             )
         )
         dao.upsert(objects)
         runBlocking {
-            assertThat(dao.getReservedScheduleIds(from.toADate(), until.toADate()))
+            assertThat(dao.getReservedScheduleIds(from.toInstantX(), until.toInstantX()))
                 .containsExactlyInAnyOrder(entity1.id, entity2.id)
         }
     }
@@ -70,7 +70,7 @@ class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
         val entity =
             ReservedSchedules(
                 id = getRandomLong(),
-                datetime = getRandomDate().toADate()
+                datetime = getRandomDate().toInstantX()
             )
         dao.upsert(listOf(entity))
         runBlocking {
@@ -83,7 +83,7 @@ class ReserveDaoImplTest : BaseDaoNewTest<ReserveDaoImpl>(
         val entity =
             ReservedSchedules(
                 id = getRandomLong(),
-                datetime = getRandomDate().toADate()
+                datetime = getRandomDate().toInstantX()
             )
         dao.upsert(listOf(entity))
         runBlocking {

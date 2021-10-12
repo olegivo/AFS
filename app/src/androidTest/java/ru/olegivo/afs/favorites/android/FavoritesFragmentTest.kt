@@ -21,7 +21,7 @@ import org.junit.Test
 import ru.olegivo.afs.ExternalDependencies
 import ru.olegivo.afs.common.android.BaseIntegratedIsolatedUITest
 import ru.olegivo.afs.common.date
-import ru.olegivo.afs.common.toADate
+import ru.olegivo.afs.common.toInstantX
 import ru.olegivo.afs.favorites.db.models.toDb
 import ru.olegivo.afs.favorites.domain.models.FavoriteFilter
 import ru.olegivo.afs.favorites.presentation.models.FavoritesItem
@@ -135,7 +135,7 @@ class FavoritesFragmentTest :
             group = filter.group,
             activityId = filter.activityId,
             activity = filter.activity,
-            datetime = date(2020, 11, 19, 20, 0).toADate(),
+            datetime = date(2020, 11, 19, 20, 0).toInstantX(),
             length = 90,
             preEntry = true,
             totalSlots = 1,

@@ -25,12 +25,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
 import ru.olegivo.afs.BuildConfig
-import ru.olegivo.afs.common.toDate
 import ru.olegivo.afs.settings.android.DatabaseHelperImpl
 import ru.olegivo.afs.settings.domain.DatabaseHelper
-import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.db.AfsDatabase
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 import ru.olegivo.afs.shared.favorites.db.FavoriteDaoImpl
@@ -73,15 +70,11 @@ object DbModule {
 
 @Module
 object DbModuleCore {
-    private val aDateAdapter = object : ColumnAdapter<ADate, Long> {
-        override fun decode(databaseValue: Long): ADate =
-            TimeZone.currentSystemDefault().let {
-                with(it) {
-                    ADate(Instant.fromEpochMilliseconds(databaseValue).toLocalDateTime(), it)
-                }
-            }
+    private val instantAdapter = object : ColumnAdapter<Instant, Long> {
+        override fun decode(databaseValue: Long): Instant =
+            Instant.fromEpochMilliseconds(databaseValue)
 
-        override fun encode(value: ADate) = value.toDate().time
+        override fun encode(value: Instant) = value.toEpochMilliseconds()
     }
 
     @Singleton
@@ -90,16 +83,16 @@ object DbModuleCore {
         return AfsDatabase(
             sqliteDriver,
             recordReminderSchedulesAdapter = RecordReminderSchedules.Adapter(
-                dateFromAdapter = aDateAdapter,
-                dateUntilAdapter = aDateAdapter
+                dateFromAdapter = instantAdapter,
+                dateUntilAdapter = instantAdapter
             ),
             schedulesAdapter = Schedules.Adapter(
-                datetimeAdapter = aDateAdapter,
-                recordFromAdapter = aDateAdapter,
-                recordToAdapter = aDateAdapter
+                datetimeAdapter = instantAdapter,
+                recordFromAdapter = instantAdapter,
+                recordToAdapter = instantAdapter
             ),
             reservedSchedulesAdapter = ReservedSchedules.Adapter(
-                datetimeAdapter = aDateAdapter
+                datetimeAdapter = instantAdapter
             )
         )
     }

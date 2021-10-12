@@ -17,10 +17,10 @@
 
 package ru.olegivo.afs.favorites.db
 
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.common.db.FakeAfsDatabase
 import ru.olegivo.afs.common.db.FakeBaseDao
 import ru.olegivo.afs.shared.common.db.BaseDao
-import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.favorites.db.FavoriteDao
 import ru.olegivo.afs.shared.favorites.db.models.FavoriteFilters
 import ru.olegivo.afs.shared.recordReminders.db.models.RecordReminderSchedules
@@ -53,7 +53,7 @@ class FakeFavoriteDao(private val tables: FakeAfsDatabase.Tables) :
             it.minutesOfDay == minutesOfDay
     }
 
-    override suspend fun getActiveRecordReminderScheduleIds(moment: ADate): List<Long> {
+    override suspend fun getActiveRecordReminderScheduleIds(moment: Instant): List<Long> {
         TODO("Not yet implemented")
     }
 

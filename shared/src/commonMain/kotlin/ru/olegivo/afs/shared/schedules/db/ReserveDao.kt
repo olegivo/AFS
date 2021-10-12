@@ -17,13 +17,13 @@
 
 package ru.olegivo.afs.shared.schedules.db
 
+import kotlinx.datetime.Instant
 import ru.olegivo.afs.shared.common.db.BaseDao
-import ru.olegivo.afs.shared.datetime.ADate
 import ru.olegivo.afs.shared.reserve.db.models.ReservedSchedules
 
 interface ReserveDao : BaseDao<ReservedSchedules> {
 
-    suspend fun getReservedScheduleIds(from: ADate, until: ADate): List<Long>
+    suspend fun getReservedScheduleIds(from: Instant, until: Instant): List<Long>
 
     suspend fun isScheduleReserved(scheduleId: Long): Boolean
 }

@@ -1,4 +1,5 @@
-import ru.olegivo.afs.shared.datetime.ADate;
+import kotlinx.datetime.Instant;
+
 
 CREATE TABLE IF NOT EXISTS schedules (
     id INTEGER PRIMARY KEY NOT NULL,
@@ -7,12 +8,12 @@ CREATE TABLE IF NOT EXISTS schedules (
     `group` TEXT NOT NULL,
     activityId INTEGER AS Int NOT NULL,
     activity TEXT NOT NULL,
-    datetime INTEGER AS ADate NOT NULL,
+    datetime INTEGER AS Instant NOT NULL,
     `length` INTEGER AS Int NOT NULL,
     preEntry INTEGER AS Boolean NOT NULL,
     totalSlots INTEGER AS Int,
-    recordFrom INTEGER AS ADate,
-    recordTo INTEGER AS ADate
+    recordFrom INTEGER AS Instant,
+    recordTo INTEGER AS Instant
     -- // TODO: later: room, trainer
 )
 ;

@@ -17,6 +17,7 @@
 
 package ru.olegivo.afs.schedules.data.models
 
+import ru.olegivo.afs.common.toInstantX
 import ru.olegivo.afs.helpers.getRandomBoolean
 import ru.olegivo.afs.helpers.getRandomDate
 import ru.olegivo.afs.helpers.getRandomInt
@@ -33,10 +34,10 @@ fun createDataSchedule() =
         activity = getRandomString(),
         // TODO: later: room = getRandomString(),
         // TODO: later: trainer = getRandomString(),
-        datetime = getRandomDate(),
+        datetime = getRandomDate().toInstantX(),
         length = getRandomInt(),
         preEntry = getRandomBoolean(),
         totalSlots = getRandomInt(),
-        recordFrom = getRandomDate(),
-        recordTo = getRandomDate()
+        recordFrom = getRandomDate().toInstantX(),
+        recordTo = getRandomDate().toInstantX()
     )

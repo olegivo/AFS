@@ -1,8 +1,9 @@
-import ru.olegivo.afs.shared.datetime.ADate;
+import kotlinx.datetime.Instant;
+
 
 CREATE TABLE IF NOT EXISTS reservedSchedules (
     id INTEGER PRIMARY KEY NOT NULL,
-    datetime INTEGER AS ADate NOT NULL
+    datetime INTEGER AS Instant NOT NULL
 );
 
 getReservedScheduleIds:
