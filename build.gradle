@@ -18,7 +18,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.5.30'
+    ext {
+        kotlin_version = '1.5.30'
+        composeVersion = '1.0.3'
+        coroutinesVersion = "1.4.2"
+        materialComposeAdapterVersion = '1.0.3'
+        appCompatComposeAdapterVersion = '0.19.0'
+    }
     repositories {
         google()
     }

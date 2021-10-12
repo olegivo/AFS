@@ -59,6 +59,9 @@ ru/olegivo/afs/errors/*.*
 //Android
 ru/olegivo/afs/**/android/**/*.*
 
+//Compose
+ru/olegivo/afs/**/compose/**/*.*
+
 //Network
 ru/olegivo/afs/data/network/dto/*.*
 ru/olegivo/afs/auth/network/AccessTokenInterceptor.*
