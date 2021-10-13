@@ -200,7 +200,7 @@ workflows:
           inputs:
             - zip_name: Android tests
             - deploy_path: >-
-                $PROJECT_LOCATION/$MODULE/build/reports/androidTests/connected/flavors/debugAndroidTest
+                $PROJECT_LOCATION/$MODULE/build/reports/androidTests/connected
             - is_compress: 'true'
       - deploy-to-bitrise-io@2: { }
       - cache-push@2: { }
