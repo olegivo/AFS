@@ -178,30 +178,30 @@ workflows:
             - deploy_path: >-
                 $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
             - is_compress: 'true'
-#      - gradle-runner@2:
-#          title: Build android tests
-#          inputs:
-#            - app_file_exclude_filter: '*.apk'
-#            - test_apk_file_exclude_filter: '*.apk'
-#            - gradle_task: packageDebugAndroidTest
-#      - cache-push@2: { }
-#      - avd-manager@1:
-#          inputs:
-#            - api_level: '29'
-#      - wait-for-android-emulator@1: { }
-#      - gradle-runner@2:
-#          title: Run android tests
-#          inputs:
-#            - app_file_exclude_filter: '*.apk'
-#            - test_apk_file_exclude_filter: '*.apk'
-#            - gradle_task: connectedDebugAndroidTest
-#      - deploy-to-bitrise-io@2:
-#          title: Upload android tests results
-#          inputs:
-#            - zip_name: Android tests
-#            - deploy_path: >-
-#                $PROJECT_LOCATION/$MODULE/build/reports/androidTests/connected/flavors/debugAndroidTest
-#            - is_compress: 'true'
+      - gradle-runner@2:
+          title: Build android tests
+          inputs:
+            - app_file_exclude_filter: '*.apk'
+            - test_apk_file_exclude_filter: '*.apk'
+            - gradle_task: packageDebugAndroidTest
+      - cache-push@2: { }
+      - avd-manager@1:
+          inputs:
+            - api_level: '29'
+      - wait-for-android-emulator@1: { }
+      - gradle-runner@2:
+          title: Run android tests
+          inputs:
+            - app_file_exclude_filter: '*.apk'
+            - test_apk_file_exclude_filter: '*.apk'
+            - gradle_task: connectedDebugAndroidTest
+      - deploy-to-bitrise-io@2:
+          title: Upload android tests results
+          inputs:
+            - zip_name: Android tests
+            - deploy_path: >-
+                $PROJECT_LOCATION/$MODULE/build/reports/androidTests/connected
+            - is_compress: 'true'
       - deploy-to-bitrise-io@2: { }
       - cache-push@2: { }
 app:

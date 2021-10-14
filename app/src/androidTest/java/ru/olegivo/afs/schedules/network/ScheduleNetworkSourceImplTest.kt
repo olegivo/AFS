@@ -36,15 +36,15 @@ class ScheduleNetworkSourceImplTest : AuthorizedApiTest() {
     fun getSchedule_all_clubs() = runBlockingTest {
         val scheduleNetworkSource = ScheduleNetworkSourceImpl(api)
         val schedules = runBlocking {
-            getClubs().map { club ->
-                getSchedule(scheduleNetworkSource, club.id)
+            val clubs = getClubs()
+            clubs.map { club ->
+                val schedule = getSchedule(scheduleNetworkSource, club.id)
+                schedule
             }
         }
 
         assertThat(schedules).isNotEmpty
-        schedules.forEach {
-            assertThat(it).isNotEmpty
-        }
+        assertThat(schedules).matches { it.isNotEmpty() }
     }
 
     private suspend fun getSchedule(
