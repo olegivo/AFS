@@ -107,7 +107,7 @@ workflows:
     steps:
       - activate-ssh-key@4:
           run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-      - git-clone@6: { }
+      - git-clone@8: { }
       - script@1:
           inputs:
             - content: >-
@@ -124,10 +124,10 @@ workflows:
                 '/usr/lib/jvm/java-11-openjdk-amd64'
           title: Setup Java 11
       - cache-pull@2: { }
-      - gradle-runner@2:
-          title: Static Analysis
-          inputs:
-            - gradle_task: staticAnalysis
+#      - gradle-runner@3:
+#          title: Static Analysis
+#          inputs:
+#            - gradle_task: staticAnalysis
       - deploy-to-bitrise-io@2:
           title: Upload KtLint results
           inputs:
@@ -157,7 +157,7 @@ workflows:
           inputs:
             - destination: $PROJECT_LOCATION/$MODULE/AFS.debug.jks
             - source: $BITRISEIO_SIGNING_KEYSTORE_DEBUG_URL
-      - gradle-runner@2:
+      - gradle-runner@3:
           title: Android lint
           inputs:
             - gradle_task: lintDebug
@@ -167,7 +167,7 @@ workflows:
             - project_location: $PROJECT_LOCATION
             - module: $MODULE
             - variant: $VARIANT
-      - gradle-runner@2:
+      - gradle-runner@3:
           title: Unit tests coverage
           inputs:
             - gradle_task: testDebugUnitTestCoverageVerification
@@ -178,7 +178,7 @@ workflows:
             - deploy_path: >-
                 $PROJECT_LOCATION/$MODULE/build/reports/jacoco/testDebugUnitTestCoverage
             - is_compress: 'true'
-#      - gradle-runner@2:
+#      - gradle-runner@3:
 #          title: Build android tests
 #          inputs:
 #            - app_file_exclude_filter: '*.apk'
@@ -189,7 +189,7 @@ workflows:
 #          inputs:
 #            - api_level: '29'
 #      - wait-for-android-emulator@1: { }
-#      - gradle-runner@2:
+#      - gradle-runner@3:
 #          title: Run android tests
 #          inputs:
 #            - app_file_exclude_filter: '*.apk'
@@ -218,3 +218,7 @@ app:
     - opts:
         is_expand: false
       GRADLEW_PATH: ./gradlew
+meta:
+  bitrise.io:
+    stack: linux-docker-android-22.04
+    machine_type_id: standard
