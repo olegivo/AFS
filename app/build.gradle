@@ -60,9 +60,9 @@ android {
     defaultConfig {
         applicationId appId
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 8
-        versionName "0.5.0"
+        targetSdkVersion 33
+        versionCode 9
+        versionName "0.5.1"
         testInstrumentationRunner "ru.olegivo.afs.CustomAndroidJUnitRunner"
     }
     buildTypes {
