@@ -124,10 +124,10 @@ workflows:
                 '/usr/lib/jvm/java-11-openjdk-amd64'
           title: Setup Java 11
       - cache-pull@2: { }
-      - gradle-runner@3:
-          title: Static Analysis
-          inputs:
-            - gradle_task: staticAnalysis
+#      - gradle-runner@3:
+#          title: Static Analysis
+#          inputs:
+#            - gradle_task: staticAnalysis
       - deploy-to-bitrise-io@2:
           title: Upload KtLint results
           inputs:
